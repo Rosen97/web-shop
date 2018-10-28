@@ -1,18 +1,25 @@
 <template>
     <div id="index">
-        <p>index</p>
+        <m-header></m-header>
         <nav-bar></nav-bar>
     </div>
 </template>
 
 <script>
+    import mHeader from '../../components/mHeader'
     import navBar from '../../components/navBar'
     export default {
         components: {
+            mHeader,
             navBar
         },
         data() {
             return {}
+        },
+        created(){
+            this.$http('/home/data','POST').then((res)=>{
+                console.log(res)
+            })
         }
     }
 </script>
