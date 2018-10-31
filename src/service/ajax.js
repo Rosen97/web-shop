@@ -11,7 +11,14 @@ axios.interceptors.request.use(function (config) {
 // 响应拦截器
 axios.interceptors.response.use(function (response) {
     let responseStatus = response.data.status
-    return response
+    if(responseStatus === 10){
+        window.location.href = '/#/user/login'
+    }else if(responseStatus === 1){
+        console.log(response.data.msg)
+    }else if(responseStatus === 0){
+        return response.data
+    }
+    // console.log(response)
     // if (responseStatus === 0) {
     //     //响应信息只有状态码为1时 回调函数
     //     return response

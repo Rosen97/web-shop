@@ -20,11 +20,21 @@
             </div>
             <button class="login-btn" @click="loginSubmit" :class="{'active' : username&&password}">登录</button>
         </div>
+        <popup v-show="errorShow">
+            <div class="login-error">
+                <p>用户名或者密码不正确</p>
+                <div>
+                    <span @click="hideError">确定</span>
+                    <span>找回密码</span>
+                </div>
+            </div>
+        </popup>
     </div>
 </template>
 
 <script>
     import userHeader from '../../components/user/userHeader'
+    import popup from '../../components/common/popup'
     export default {
         data() {
             return {
@@ -32,7 +42,8 @@
                 password: '',
                 clearUsername: false,
                 clearPassword: false,
-                eyeIsActive: false
+                eyeIsActive: false,
+                errorShow: false
             }
         },
         methods: {
@@ -44,12 +55,8 @@
                     username: this.username,
                     password: this.password
                 },'POST').then((res)=>{
-                    console.log(res)
-                    if(res.status === 0){
-                        alert('登录成功')
-                    }else{
-                        alert(res.msg)
-                    }
+                    localStorage.setItem('username',JSON.stringify(res.username))
+                    this.$router.go(-1)
                 })
             },
             clearText(e){
@@ -73,10 +80,14 @@
             },
             changeDelete(className,isShow){
                 className === 'login-username' ? this.clearUsername = isShow : this.clearPassword = isShow
+            },
+            hideError(){
+                this.errorShow = false
             }
         },
         components: {
-            userHeader
+            userHeader,
+            popup
         }
     }
 </script>
@@ -153,6 +164,43 @@
             border-radius: 40px;
             &.active{
                 background: rgba(254,103,0,1);
+            }
+        }
+    }
+    .login-error{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 80%;
+        height: 240px;
+        margin-left: -40%;
+        margin-top: -120px;
+        -webkit-border-radius: 20px;
+        -moz-border-radius: 20px;
+        border-radius: 20px;
+        background: #fff;
+        p{
+            width: 100%;
+            height: 140px;
+            text-align: center;
+            line-height: 140px;
+            font-size: 42px;
+            border-bottom: 1px solid #999;
+        }
+        div{
+            width: 100%;
+            height: 100px;
+            display: flex;
+            span{
+                flex: 1;
+                text-align: center;
+                line-height: 100px;
+                font-size: 40px;
+                color: #218BFD;
+                box-sizing: border-box;
+                &:first-child{
+                    border-right: 1px solid #999;
+                }
             }
         }
     }

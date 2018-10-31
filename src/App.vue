@@ -1,12 +1,17 @@
 <template>
     <div id="app">
-        <router-view/>
+        <router-view class="router-view"></router-view>
     </div>
 </template>
 
 <script>
     export default {
-        name: 'App'
+        // 监听路由的路径，可以通过不同的路径去选择不同的切换效果
+        data(){
+            return{
+                transitionName: 'slide-left'
+            }
+        }
     }
 </script>
 
@@ -34,4 +39,5 @@
     li{
         list-style-type: none;
     }
+
 </style>

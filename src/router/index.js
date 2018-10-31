@@ -6,46 +6,53 @@ import shopcart from '@/pages/shopcart/shopcart'
 import user from '@/pages/user/user'
 import userLogin from '@/pages/user/login'
 import userRegister from '@/pages/user/register'
+import userInfo from '@/pages/user/child/userInfo'
 
 Vue.use(Router)
 
 export default new Router({
     routes: [
         {
+            path: '/',
+            redirect: '/index'
+        },
+        {
             path: '/index',
-            name: 'index',
             component: index
         },{
             path: '/category',
-            name: 'category',
             component: category
         },{
             path: '/shopcart',
-            name: 'shopcart',
             component: shopcart
         },{
             path: '/user',
-            name: 'user',
             meta: {
-                navShow: true
+                navShow: true,
+                index: 1
             },
             component: user,
             children: [
                 {
                     path: 'login',
-                    name: 'userLogin',
                     meta: {
-                        navShow: false
+                        navShow: false,
                     },
                     component: userLogin
                 },
                 {
                     path: 'register',
-                    name: 'userRegister',
                     meta: {
                         navShow: false
                     },
                     component: userRegister
+                },
+                {
+                    path: 'userInfo',
+                    meta: {
+                        navShow: false
+                    },
+                    component: userInfo
                 }
             ]
         }

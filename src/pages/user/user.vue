@@ -1,13 +1,13 @@
 <template>
     <div>
         <div class="user-box"  v-show="$route.meta.navShow">
-            <div class="user-header">
+            <div class="user-header" v-if="!username">
                 <i class="iconfont icon-user"></i>
                 <router-link tag="span" to="/user/login">登录 / 注册</router-link>
             </div>
-            <!--<div class="user-header">-->
-                <!--<span>rosenwang</span>-->
-            <!--</div>-->
+            <div class="user-header" v-else>
+                <span v-text="username"></span>
+            </div>
             <div class="user-content">
                 <div class="user-order">
                     <span>我的订单</span>
@@ -79,59 +79,39 @@
                                 <i class="iconfont icon-right"></i>
                             </div>
                         </li>
-                        <li class="user-list-item">
+                        <router-link tag="li" class="user-list-item" to="/user/userInfo">
                             <i class="iconfont icon-shezhi user-list-item-left"></i>
                             <div class="user-list-item-right">
                                 <span>设置</span>
                                 <i class="iconfont icon-right"></i>
                             </div>
-                        </li>
-                        <li class="user-list-item-gap"></li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-icon user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>更多功能</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-huiyuanzhongxin user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>会员中心</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-fuwufang user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>服务中心</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-shezhi user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>设置</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
+                        </router-link>
                     </ul>
                 </div>
             </div>
             <nav-bar></nav-bar>
         </div>
-        <router-view></router-view>
+        <transition name="slide">
+            <router-view class="router-view"></router-view>
+        </transition>
     </div>
 </template>
 
 <script>
     import navBar from '../../components/navBar'
     export default {
+        data(){
+            return {
+                username: ''
+            }
+        },
         components: {
             navBar
         },
-        data() {
-            return {}
+        created(){
+            this.$http('/api/user/get_information.do',{},'POST').then((res)=>{
+                this.username = res.username
+            })
         }
     }
 </script>
@@ -243,5 +223,22 @@
                 }
             }
         }
+    }
+    /*切换样式出错处理*/
+    .router-view{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: 0 auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .slide-enter-active, .slide-leave-active{
+        transition: all .4s;
+    }
+    .slide-enter, .slide-leave{
+        transform: translate3d(2rem, 0, 0);
+        opacity: 0;
     }
 </style>
