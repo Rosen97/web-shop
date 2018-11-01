@@ -15,10 +15,10 @@
                             <i class="iconfont icon-right"></i>
                         </div>
                     </li>
-                    <li>
+                    <router-link tag="li" to="/user/shipping">
                         <span>收货地址</span>
                         <div><i class="iconfont icon-right"></i></div>
-                    </li>
+                    </router-link>
                 </ul>
             </div>
             <div class="user-reset-item">
@@ -277,9 +277,6 @@
                     line-height: 100px;
                     font-size: 36px;
                     @include border-1px(#dcdcdc);
-                    &:last-child{
-                      @include border-1px(#fff);
-                    }
                     div{
                         font-size: 30px;
                         i{
