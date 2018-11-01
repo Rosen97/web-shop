@@ -18,12 +18,12 @@
 </script>
 
 <style lang="scss" scoped="" type="text/scss">
+    @import '../common/style/mixin';
     .header-box{
         position: fixed;
         left: 0;
         top: 0;
-        display: flex;
-        justify-content: space-between;
+        @include fj;
         width: 100%;
         height: 80px;
         line-height: 80px;
@@ -56,9 +56,7 @@
                 box-sizing: border-box;
                 background-color: #f7f7f7;
                 border: 1px solid #999;
-                -webkit-border-radius: 5px;
-                -moz-border-radius: 5px;
-                border-radius: 5px;
+                @include borderRadius(5px)
             }
         }
         .icon-saoma{

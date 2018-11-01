@@ -4,9 +4,10 @@ import index from '@/pages/index/index'
 import category from '@/pages/category/category'
 import shopcart from '@/pages/shopcart/shopcart'
 import user from '@/pages/user/user'
-import userLogin from '@/pages/user/login'
-import userRegister from '@/pages/user/register'
+import userLogin from '@/pages/user/child/login'
+import userRegister from '@/pages/user/child/register'
 import userInfo from '@/pages/user/child/userInfo'
+import shipping from '@/pages/user/child/shipping'
 
 Vue.use(Router)
 
@@ -28,8 +29,7 @@ export default new Router({
         },{
             path: '/user',
             meta: {
-                navShow: true,
-                index: 1
+                navShow: true
             },
             component: user,
             children: [
@@ -53,7 +53,14 @@ export default new Router({
                         navShow: false
                     },
                     component: userInfo
-                }
+                },
+                {
+                    path: 'shipping',
+                    meta: {
+                        navShow: false
+                    },
+                    component: shipping
+              }
             ]
         }
     ]

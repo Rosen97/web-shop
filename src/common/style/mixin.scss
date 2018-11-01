@@ -1,6 +1,6 @@
 @import './base.scss';
-$orange: #FF6B01;
-$bc: #e4e4e4;
+$orange: #FE852E;
+$bc: #F7F7F7;
 $fc:#fff;
 
 // 背景图片地址和大小
@@ -10,12 +10,27 @@ $fc:#fff;
   background-size: 100% 100%;
 }
 
+//圆角
 @mixin borderRadius($radius) {
   -webkit-border-radius: $radius;
   -moz-border-radius: $radius;
   -ms-border-radius: $radius;
   -o-border-radius: $radius;
   border-radius: $radius;
+}
+
+//1px底部边框
+@mixin border-1px($color){
+  position: relative;
+  &:after{
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid $color;
+    content: '';
+  }
 }
 //定位全屏
 @mixin allcover{
@@ -67,5 +82,4 @@ $fc:#fff;
 @mixin fj($type: space-between){
   display: flex;
   justify-content: $type;
-
 }

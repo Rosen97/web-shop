@@ -30,6 +30,7 @@
 </script>
 
 <style lang="scss" scoped="" type="text/scss">
+    @import '../common/style/mixin';
     .nav-bar{
         position: fixed;
         left: 0;
@@ -40,9 +41,8 @@
         background: #F7F7F7;
         .nav-list{
             width: 100%;
-            display: flex;
+            @include fj;
             flex-direction: row;
-            justify-content: space-between;
             padding: 0;
             .nav-list-item{
                 display: flex;

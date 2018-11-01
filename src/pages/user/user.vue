@@ -1,12 +1,13 @@
 <template>
     <div>
         <div class="user-box"  v-show="$route.meta.navShow">
-            <div class="user-header" v-if="!username">
+            <div class="user-header" v-if="!loginName">
                 <i class="iconfont icon-user"></i>
                 <router-link tag="span" to="/user/login">登录 / 注册</router-link>
             </div>
             <div class="user-header" v-else>
-                <span v-text="username"></span>
+                <img src="../../assets/user_default.jpg" />
+                <p v-text="loginName"></p>
             </div>
             <div class="user-content">
                 <div class="user-order">
@@ -65,21 +66,7 @@
                                 <i class="iconfont icon-right"></i>
                             </div>
                         </li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-huiyuanzhongxin user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>会员中心</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-fuwufang user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>服务中心</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <router-link tag="li" class="user-list-item" to="/user/userInfo">
+                        <router-link tag="li" class="user-list-item reset" to="/user/userInfo">
                             <i class="iconfont icon-shezhi user-list-item-left"></i>
                             <div class="user-list-item-right">
                                 <span>设置</span>
@@ -99,42 +86,51 @@
 
 <script>
     import navBar from '../../components/navBar'
+    import { mapState } from 'vuex'
     export default {
-        data(){
-            return {
-                username: ''
-            }
+        computed: {
+            ...mapState({
+                isLogin: state => state.isLogin,
+                loginName: state => state.loginName
+            })
         },
         components: {
             navBar
-        },
-        created(){
-            this.$http('/api/user/get_information.do',{},'POST').then((res)=>{
-                this.username = res.username
-            })
         }
     }
 </script>
 
 <style lang="scss" scoped="" type="text/scss">
+    @import '../../common/style/mixin';
     .user-header{
+        display: flex;
         width: 100%;
         padding: 40px 0;
+        height: 70px;
         line-height: 70px;
         background: #FE852E;
         .iconfont{
             margin-left: 30px;
-            padding: 20px;
+            padding: 0 16px;
             font-size: 40px;
             color: #fff;
             border: 1px solid #fff;
-            border-radius: 50%;
+            @include borderRadius(50%);
             background: orange;
         }
-        span{
+        span,p{
+            display: inline-block;
+            height: 100%;
+            line-height: 70px;
             margin-left: 20px;
             font-size: 28px;
             color: #ffffff;
+        }
+        img{
+            width: 70px;
+            height: 70px;
+            margin: 0 0 0 30px;
+            border-radius: 50%;
         }
     }
     .user-content{
@@ -146,7 +142,7 @@
             line-height: 90px;
             padding: 0 20px;
             font-size: 30px;
-            border-bottom: 1px solid #999;
+            @include border-1px(#999);
             div{
                 color: #999;
                 .iconfont{
@@ -213,7 +209,10 @@
                         flex: 9;
                         display: flex;
                         justify-content: space-between;
-                        border-bottom: 1px solid #dcdcdc;
+                        @include border-1px(#dcdcdc);
+                        .reset{
+                            @include border-1px(#fff);
+                        }
                     }
                 }
                 .user-list-item-gap{

@@ -101,6 +101,7 @@
 </template>
 
 <script>
+    import {mapState, mapMutations} from 'vuex'
     export default {
         data() {
             return {
@@ -117,12 +118,20 @@
                 editShow: false
             }
         },
+        computed: {
+            ...mapState({
+                loginName: state => state.loginName
+            })
+        },
         created(){
             setTimeout(()=>{
                 this.getUserInfo()
             },800)
         },
         methods: {
+            ...mapMutations([
+                "RECORD_USERINFO"
+            ]),
             getUserInfo(){
                 this.$http('/api/user/get_information.do',{},'POST').then((res)=>{
                     this.userInfo.username = res.username
@@ -139,9 +148,9 @@
             logout(){
                 this.$http('/api/user/logout.do',{},'POST').then((res)=>{
                     //do nothing
-
                 })
-                this.getUserInfo()
+                this.RECORD_USERINFO('')
+                this.$router.push('/user')
             },
             hideInfo(){
                 this.infoShow = false
@@ -150,7 +159,7 @@
                 this.editShow = true
                 let $info = e.currentTarget.getAttribute('data-info')
                 this.editType = $info
-                this.editText = this.userInfo[$info]
+                this.editText = this.userInfo[$info]   //动态赋值
             },
             confirmEdit(){
                 this.hideEdit()
@@ -171,7 +180,9 @@
 </script>
 
 <style lang="scss" type="text/scss" scoped>
+    @import '../../../common/style/mixin';
     .user-box{
+        background: $bc;
         .user-reset-header{
             position: relative;
             width: 100%;
@@ -181,7 +192,7 @@
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
-            border-bottom: 1px solid #dcdcdc;
+            @include border-1px(#999);
             background: #fff;
             i{
                 position: absolute;
@@ -205,7 +216,7 @@
                     line-height: 90px;
                     font-size: 32px;
                     box-sizing: border-box;
-                    background: #F4F4F4;
+                    background: $bc;
                 }
                 ul{
                     width: 100%;
@@ -213,14 +224,16 @@
                     box-sizing: border-box;
                     background: #fff;
                     li{
-                        display: flex;
-                        justify-content: space-between;
+                        @include fj;
                         width: 100%;
                         height: 100px;
                         overflow: hidden;
                         line-height: 100px;
                         font-size: 36px;
                         border-bottom: 1px solid #dcdcdc;
+                        &:last-child{
+                          border-bottom: none;
+                        }
                         div{
                             font-size: 30px;
                             i{
@@ -250,7 +263,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: #F4F4F4;
+            background: $bc;
             z-index: 1000;
             ul{
                 width: 100%;
@@ -258,13 +271,15 @@
                 box-sizing: border-box;
                 background: #fff;
                 li{
-                    display: flex;
-                    justify-content: space-between;
+                    @include fj;
                     width: 100%;
                     height: 100px;
                     line-height: 100px;
                     font-size: 36px;
-                    border-bottom: 1px solid #dcdcdc;
+                    @include border-1px(#dcdcdc);
+                    &:last-child{
+                      @include border-1px(#fff);
+                    }
                     div{
                         font-size: 30px;
                         i{
