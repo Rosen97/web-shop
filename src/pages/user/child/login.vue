@@ -65,7 +65,7 @@
           password: this.password
         },'POST').then((res)=>{
           this.RECORD_USERINFO(res.username)
-          this.$router.go(-1)
+          this.$router.push('/user')
         })
       },
       clearText(e){

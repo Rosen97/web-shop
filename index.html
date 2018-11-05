@@ -3,10 +3,28 @@
 <head>
     <meta charset="utf-8">
     <title>web-shop</title>
-    <link rel="stylesheet" href="http://at.alicdn.com/t/font_776987_9po2j5ffbj.css">
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_776987_jd9roguitw.css">
 </head>
 <body>
 <div id="app"></div>
+<script type="text/javascript">
+    //解决遮罩层滚动穿透问题，分别在遮罩层弹出后和关闭前调用
+    const ModalHelper = ((bodyCls) => {
+        let scrollTop;
+        return {
+            afterOpen: function () {
+                scrollTop = document.scrollingElement.scrollTop;
+                document.body.classList.add(bodyCls);
+                document.body.style.top = -scrollTop + 'px';
+            },
+            beforeClose: function () {
+                document.body.classList.remove(bodyCls);
+                // scrollTop lost after set position:fixed, restore it back.
+                document.scrollingElement.scrollTop = scrollTop;
+            }
+        };
+    })('dialog-open');
+</script>
 <!-- built files will be auto injected -->
 </body>
 </html>

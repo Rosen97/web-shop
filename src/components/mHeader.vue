@@ -27,6 +27,8 @@
         width: 100%;
         height: 80px;
         line-height: 80px;
+        z-index: 100;
+        background: #fff;
         .icon-iconfontzhizuobiaozhun023110{
             flex: 1;
             text-align: center;

@@ -28,3 +28,8 @@ a{
 li{
   list-style-type: none;
 }
+//解决端遮罩层穿透
+body.dialog-open {
+  position: fixed;
+  width: 100%;
+}

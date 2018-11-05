@@ -8,6 +8,7 @@ import userLogin from '@/pages/user/child/login'
 import userRegister from '@/pages/user/child/register'
 import userInfo from '@/pages/user/child/userInfo'
 import shipping from '@/pages/user/child/shipping'
+import resetPassword from '@/pages/user/child/reset-password'
 
 Vue.use(Router)
 
@@ -60,7 +61,13 @@ export default new Router({
                         navShow: false
                     },
                     component: shipping
-              }
+                },{
+                    path: 'reset-password',
+                    meta: {
+                        navShow: false
+                    },
+                    component: resetPassword
+                }
             ]
         }
     ]

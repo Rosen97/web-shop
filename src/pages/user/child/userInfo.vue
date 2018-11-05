@@ -24,10 +24,10 @@
             <div class="user-reset-item">
                 <p>账号安全</p>
                 <ul>
-                    <li>
+                    <router-link tag="li" to="/user/reset-password">
                         <span>修改密码</span>
                         <div><i class="iconfont icon-right"></i></div>
-                    </li>
+                    </router-link>
                 </ul>
             </div>
             <div class="user-reset-item">
@@ -124,9 +124,14 @@
             })
         },
         created(){
-            setTimeout(()=>{
-                this.getUserInfo()
-            },800)
+            console.log('111',this.loginName)
+            if(!this.loginName){
+                setTimeout(()=>{
+                    this.$router.push('/user/login')
+                },800)
+                return
+            }
+            this.getUserInfo()
         },
         methods: {
             ...mapMutations([
