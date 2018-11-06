@@ -7,15 +7,15 @@ let homeData = {
         headList: [
             {
                 imgUrl: 'https://i1.mifile.cn/a4/xmad_15411417211918_EUHLt.jpg',
-                categoryId: 100010
+                categoryId: 2577
             },
             {
                 imgUrl: 'https://i1.mifile.cn/a4/xmad_15413178186011_hyJGI.jpg',
-                categoryId: 100011
+                categoryId: 2576
             },
             {
                 imgUrl: 'https://i1.mifile.cn/a4/xmad_15414198595656_ShROo.jpg 2x',
-                categoryId: 100011
+                categoryId: 100
             }
         ],
         phoneList: [

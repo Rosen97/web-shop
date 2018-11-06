@@ -9,6 +9,7 @@ import userRegister from '@/pages/user/child/register'
 import userInfo from '@/pages/user/child/userInfo'
 import shipping from '@/pages/user/child/shipping'
 import resetPassword from '@/pages/user/child/reset-password'
+import categoryDetail from '@/pages/category/category-detail'
 
 Vue.use(Router)
 
@@ -23,7 +24,16 @@ export default new Router({
             component: index
         },{
             path: '/category',
-            component: category
+            component: category,
+            children: [
+                {
+                    path: ':id',
+                    meta: {
+                        navShow: false,
+                    },
+                    component: categoryDetail
+                }
+            ]
         },{
             path: '/shopcart',
             component: shopcart

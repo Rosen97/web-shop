@@ -1,7 +1,8 @@
 <template>
     <div>
-        <m-header></m-header>
-        <nav-bar></nav-bar>
+        <m-header v-show="$route.meta.navShow"></m-header>
+        <nav-bar v-show="$route.meta.navShow"></nav-bar>
+        <router-view></router-view>
     </div>
 </template>
 
