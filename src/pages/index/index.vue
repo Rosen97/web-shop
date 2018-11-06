@@ -2,13 +2,7 @@
     <div id="index">
         <m-header></m-header>
         <nav-bar></nav-bar>
-        <slider style="margin-top: 90px;verflow: hidden;">
-            <div @click="foucsClick($event)" v-for="(item,index) in headList" data-id="item.category">
-                <a>
-                    <img :src="item.imgUrl ? item.imgUrl : ''" height="300" />
-                </a>
-            </div>
-        </slider>
+        <slider style="margin-top: 40px;" :imgUrl="headList"></slider>
         <div class="service-tag-list">
             <div class="service-tag-item">
                 <i class="iconfont icon-kongxinduigou"></i>
@@ -74,7 +68,9 @@
         },
         created(){
             this.$http('/home/data','POST').then((res)=>{
-                this.headList = res.headList
+              res.headList.forEach((item)=>{
+                this.headList.push(item.imgUrl)
+              })
             })
         },
         components: {
