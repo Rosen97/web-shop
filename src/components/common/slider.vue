@@ -21,7 +21,7 @@
             default: []
         },
         mounted() {
-            new Swiper('.swiper-container', {
+            this.slider = new Swiper('.swiper-container', {
                 autoplay: true,
                 speed: 500,
                 loop: true,

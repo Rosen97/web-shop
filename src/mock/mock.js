@@ -106,4 +106,91 @@ let homeData = {
         ]
     }
 }
+let categoryData = {
+    status: 0,
+    data: [
+      {
+        name: '新品',
+        desc: 'slide1'
+      },
+      {
+        name: '手机',
+        desc: 'slide2'
+      },
+      {
+        name: '电脑',
+        desc: 'slide3'
+      },
+      {
+        name: '家电',
+        desc: 'slide4'
+      },
+      {
+        name: '新品',
+        desc: 'slide1'
+      },
+      {
+        name: '手机',
+        desc: 'slide2'
+      },
+      {
+        name: '电脑',
+        desc: 'slide3'
+      },
+      {
+        name: '家电',
+        desc: 'slide4'
+      },
+      {
+        name: '新品',
+        desc: 'slide1'
+      },
+      {
+        name: '手机',
+        desc: 'slide2'
+      },
+      {
+        name: '电脑',
+        desc: 'slide3'
+      },
+      {
+        name: '家电',
+        desc: 'slide4'
+      },
+      {
+        name: '新品',
+        desc: 'slide1'
+      },
+      {
+        name: '手机',
+        desc: 'slide2'
+      },
+      {
+        name: '电脑',
+        desc: 'slide3'
+      },
+      {
+        name: '家电',
+        desc: 'slide4'
+      },
+      {
+        name: '新品',
+        desc: 'slide1'
+      },
+      {
+        name: '手机',
+        desc: 'slide2'
+      },
+      {
+        name: '电脑',
+        desc: 'slide3'
+      },
+      {
+        name: '家电',
+        desc: 'slide4'
+      }
+    ]
+}
+
 Mock.mock('/home/data', 'post', homeData)
+Mock.mock('/category/data', 'post', categoryData)

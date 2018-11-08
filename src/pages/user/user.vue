@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="user-box"  v-show="$route.meta.navShow">
+        <div class="user-box">
             <div class="user-header" v-if="!loginName">
                 <i class="iconfont icon-user"></i>
                 <router-link tag="span" to="/user/login">登录 / 注册</router-link>
@@ -94,6 +94,9 @@
                 loginName: state => state.loginName
             })
         },
+      created(){
+        console.log('我是父路由')
+      },
         components: {
             navBar
         }
