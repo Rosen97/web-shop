@@ -13,7 +13,7 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     let responseStatus = response.data.status
     if(responseStatus === 10){
-        window.location.href = '/#/user/login'
+        window.location.href = '/#/login'
     }else if(responseStatus === 1){
         console.log(response)
     }else if(responseStatus === 0){
@@ -32,7 +32,7 @@ axios.interceptors.response.use(function (response) {
 })
 
 // axios请求封装
-export default function http(url, data, type) {
+export default function http(url = '', data = {}, type = 'POST') {
     return new Promise((resolve, reject) => {
         console.log('http requestUrl: ' + url)
         console.log('http requestData: ' + JSON.stringify(data))

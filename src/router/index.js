@@ -1,22 +1,20 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import index from '@/pages/index/index'
-const category = resolve => require(['@/pages/category/category'], resolve)
-const categoryList = resolve => require(['@/pages/category/category-list'], resolve)
-const categoryDetail = resolve => require(['@/pages/category/category-detail'], resolve)
-const search = resolve => require(['@/pages/category/search'], resolve)
-const order = resolve => require(['@/pages/shopcart/order'], resolve)
-const payment = resolve => require(['@/pages/shopcart/payment'], resolve)
-// const category = r => require.ensure([], () => r(require('@/pages/category/category')), 'category')
-// const categoryDetail = r => require.ensure([], () => r(require('@/pages/category/category-detail')), 'categoryDetail')
-import shopcart from '@/pages/shopcart/shopcart'
-import user from '@/pages/user/user'
-import userLogin from '@/pages/user/child/login'
-import userRegister from '@/pages/user/child/register'
-import userInfo from '@/pages/user/child/userInfo'
-import shipping from '@/pages/user/child/shipping'
-import resetPassword from '@/pages/user/child/reset-password'
-// import categoryDetail from '@/pages/category/category-detail'
+
+//  懒路由加载
+const index = r => require.ensure([], () => r(require('@/pages/index/index')), 'index')
+const category = r => require.ensure([], () => r(require('@/pages/category/category')), 'category')
+const search = r => require.ensure([], () => r(require('@/pages/search/search')), 'search')
+const productList = r => require.ensure([], () => r(require('@/pages/product-list/product-list')), 'productList')
+const productDetail = r => require.ensure([], () => r(require('@/pages/product-detail/product-detail')), 'productDetail')
+const user = r => require.ensure([], () => r(require('@/pages/user/user')), 'user')
+const profile = r => require.ensure([], () => r(require('@/pages/profile/profile')), 'profile')
+const login = r => require.ensure([], () => r(require('@/pages/login/login')), 'login')
+const register = r => require.ensure([], () => r(require('@/pages/register/register')), 'register')
+const shopcart = r => require.ensure([], () => r(require('@/pages/shopcart/shopcart')), 'shopcart')
+const order = r => require.ensure([], () => r(require('@/pages/order/order')), 'order')
+const payment = r => require.ensure([], () => r(require('@/pages/payment/payment')), 'payment')
+
 
 Vue.use(Router)
 
@@ -28,51 +26,76 @@ export default new Router({
         },
         {
             path: '/index',
+            meta: {
+                index: 1
+            },
             component: index
-        },{
+        }, {
             path: '/category',
+            meta: {
+                index: 1
+            },
             component: category
+        }, {
+            path: '/search',
+            meta: {
+                index: 2
+            },
+            component: search
+        },{
+            path: '/product-list',
+            meta: {
+                index: 3
+            },
+            component: productList
         },{
             path: '/product/:id',
-            component: categoryDetail
-        },
-        {
-            path: '/category-list',
-            component: categoryList
-        },
-        {
-            path: '/shopcart',
-            component: shopcart
+            meta: {
+                index: 4
+            },
+            component: productDetail
         },{
             path: '/user',
+            meta: {
+                index: 1
+            },
             component: user
         },{
-            path: '/userInfo',
-            component: userInfo
+            path: '/profile',
+            meta: {
+                index: 2
+            },
+            component: profile
         },{
-            path: '/user/login',
-            component: userLogin
+            path: '/login',
+            meta: {
+                index: 2
+            },
+            component: login
         },{
-            path: '/user/register',
-            component: userRegister
+            path: '/register',
+            meta: {
+                index: 2
+            },
+            component: register
         },{
-            path: '/user/shipping',
-            component: shipping
+            path: '/shopcart',
+            meta: {
+                index: 1
+            },
+            component: shopcart
         },{
-            path: '/user/reset-password',
-            component: resetPassword
-        },
-        {
             path: '/order',
+            meta: {
+                index: 2
+            },
             component: order
-        },
-        {
-            path: '/payment/:orderNo',
+        },{
+            path: '/payment',
+            meta: {
+                index: 3
+            },
             component: payment
-        },
-        {
-            path: '/search',
-            component: search
         }
     ]
 })

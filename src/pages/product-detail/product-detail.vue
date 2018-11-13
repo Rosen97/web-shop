@@ -36,7 +36,12 @@
 
 <script>
     import slider from 'components/common/slider'
+    import { productDetail,cartCount,addCart } from "../../service/getData";
+
     export default {
+        components: {
+            slider
+        },
         data() {
             return {
                 subImageList: [],
@@ -52,9 +57,7 @@
             async getDetail(){
                 let subImages = [],
                     imageHost = ''
-                await this.$http('/api/product/detail.do',{
-                    productId: this.$route.params.id
-                },'POST').then((res)=>{
+                await productDetail(this.$route.params.id).then((res)=>{
                     console.log(res)
                     subImages = res.subImages.split(',')
                     imageHost = res.imageHost
@@ -67,15 +70,13 @@
                 })
             },
             getCartCount(){
-                this.$http('/api/cart/get_cart_product_count.do',{},'POST').then((res)=>{
+                cartCount().then((res)=>{
+                    console.log(res)
                     this.cartCount = res
                 })
             },
             async addCart(){
-                await this.$http('/api/cart/add.do',{
-                    productId: this.categoryData.id,
-                    count: 1
-                },'POST').then((res)=>{
+                await addCart(this.categoryData.id,1).then((res)=>{
                     console.log(res)
                 })
                 this.getCartCount()
@@ -83,9 +84,6 @@
             goBack(){
                 this.$router.go(-1)
             }
-        },
-        components: {
-            slider
         }
     }
 </script>

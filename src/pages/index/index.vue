@@ -75,6 +75,7 @@
     import mHeader from 'components/mHeader'
     import navBar from 'components/navBar'
     import slider from 'components/common/slider'
+    import { homeData } from "../../service/getData";
 
     export default {
         data() {
@@ -86,11 +87,8 @@
             }
         },
         created() {
-            this.$http('/home/data', 'POST').then((res) => {
+            homeData().then((res) => {
                 console.log(res)
-                // res.headList.forEach((item) => {
-                //     this.headList.push(item.imgUrl)
-                // })
                 this.headList = res.headList
                 this.phoneList = res.phoneList
                 this.electricList = res.electricList

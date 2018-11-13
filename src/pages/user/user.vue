@@ -3,7 +3,7 @@
         <div class="user-box">
             <div class="user-header" v-if="!loginName">
                 <i class="iconfont icon-user"></i>
-                <router-link tag="span" to="/user/login">登录 / 注册</router-link>
+                <router-link tag="span" to="login">登录 / 注册</router-link>
             </div>
             <div class="user-header" v-else>
                 <img src="../../assets/user_default.jpg" />
@@ -66,7 +66,7 @@
                                 <i class="iconfont icon-right"></i>
                             </div>
                         </li>
-                        <router-link tag="li" class="user-list-item reset" to="userInfo">
+                        <router-link tag="li" class="user-list-item reset" to="profile">
                             <i class="iconfont icon-shezhi user-list-item-left"></i>
                             <div class="user-list-item-right">
                                 <span>设置</span>

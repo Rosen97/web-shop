@@ -35,6 +35,7 @@
     import Swiper from 'swiper'
     import 'swiper/dist/css/swiper.min.css'
     import 'swiper/dist/js/swiper.min.js'
+    import { categoryData } from "../../service/getData";
 
     export default {
         components: {
@@ -60,7 +61,7 @@
         methods: {
             //获取catgory菜单数据
             async getCategoryData() {
-                await this.$http('/category/data', {}, 'POST').then((res) => {
+                await categoryData().then((res) => {
                     this.categoryData = res
                 })
             },

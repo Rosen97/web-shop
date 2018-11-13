@@ -126,7 +126,7 @@
         created(){
             if(!this.loginName){
                 setTimeout(()=>{
-                    this.$router.push('/user/login')
+                    this.$router.push('/login')
                 },800)
                 return
             }
@@ -184,7 +184,7 @@
 </script>
 
 <style lang="scss" type="text/scss" scoped>
-    @import '../../../common/style/mixin';
+    @import '../../common/style/mixin';
     .user-box{
         background: $bc;
         .user-reset-header{
@@ -236,7 +236,7 @@
                         font-size: 36px;
                         border-bottom: 1px solid #dcdcdc;
                         &:last-child{
-                          border-bottom: none;
+                            border-bottom: none;
                         }
                         div{
                             font-size: 30px;
