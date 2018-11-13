@@ -18,7 +18,7 @@ export const productDetail = (productId) => $http('/api/product/detail.do',{
 });
 
 /**
- * 购物车列表
+ * 购物车列表 h
  */
 export const cartList = () => $http('/api/cart/list.do');
 
@@ -29,7 +29,7 @@ export const cartList = () => $http('/api/cart/list.do');
 export const cartCount = () => $http('/api/cart/get_cart_product_count.do');
 
 /**
- * 购物车添加商品
+ * 购物车添加商品 h
  */
 export const addCart = (productId,count) => $http('/api/cart/add.do',{
     productId,
