@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Qs from 'qs'
+var root = process.env.API_HOST
 
 //请求拦截器
 axios.interceptors.request.use(function (config) {
@@ -40,6 +41,7 @@ export default function http(url, data, type) {
             Promise = axios({
                 method: 'get',
                 url: url,
+                baseUrl: root,
                 data: data,
                 // 是否携带cookie信息
                 withCredentials: true,
@@ -48,6 +50,7 @@ export default function http(url, data, type) {
             Promise = axios({
                 method: 'post',
                 url: url,
+                baseUrl: root,
                 data: Qs.stringify(data),
                 // 是否携带cookie信息
                 withCredentials: false,

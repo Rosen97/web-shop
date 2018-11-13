@@ -2,7 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/pages/index/index'
 const category = resolve => require(['@/pages/category/category'], resolve)
+const categoryList = resolve => require(['@/pages/category/category-list'], resolve)
 const categoryDetail = resolve => require(['@/pages/category/category-detail'], resolve)
+const search = resolve => require(['@/pages/category/search'], resolve)
+const order = resolve => require(['@/pages/shopcart/order'], resolve)
+const payment = resolve => require(['@/pages/shopcart/payment'], resolve)
 // const category = r => require.ensure([], () => r(require('@/pages/category/category')), 'category')
 // const categoryDetail = r => require.ensure([], () => r(require('@/pages/category/category-detail')), 'categoryDetail')
 import shopcart from '@/pages/shopcart/shopcart'
@@ -27,65 +31,48 @@ export default new Router({
             component: index
         },{
             path: '/category',
-            component: category,
-            meta: {
-                navShow: true,
-            },
-            children: [
-                {
-                    path: ':id',
-                    meta: {
-                        navShow: false,
-                      keepAlive: true
-                    },
-                    component: categoryDetail
-                }
-            ]
+            component: category
         },{
+            path: '/product/:id',
+            component: categoryDetail
+        },
+        {
+            path: '/category-list',
+            component: categoryList
+        },
+        {
             path: '/shopcart',
             component: shopcart
         },{
             path: '/user',
-            meta: {
-                navShow: true
-            },
-            component: user,
-            children: [
-                {
-                    path: 'login',
-                    meta: {
-                        navShow: false,
-                    },
-                    component: userLogin
-                },
-                {
-                    path: 'register',
-                    meta: {
-                        navShow: false
-                    },
-                    component: userRegister
-                },
-                {
-                    path: 'userInfo',
-                    meta: {
-                        navShow: false
-                    },
-                    component: userInfo
-                },
-                {
-                    path: 'shipping',
-                    meta: {
-                        navShow: false
-                    },
-                    component: shipping
-                },{
-                    path: 'reset-password',
-                    meta: {
-                        navShow: false
-                    },
-                    component: resetPassword
-                }
-            ]
+            component: user
+        },{
+            path: '/userInfo',
+            component: userInfo
+        },{
+            path: '/user/login',
+            component: userLogin
+        },{
+            path: '/user/register',
+            component: userRegister
+        },{
+            path: '/user/shipping',
+            component: shipping
+        },{
+            path: '/user/reset-password',
+            component: resetPassword
+        },
+        {
+            path: '/order',
+            component: order
+        },
+        {
+            path: '/payment/:orderNo',
+            component: payment
+        },
+        {
+            path: '/search',
+            component: search
         }
     ]
 })

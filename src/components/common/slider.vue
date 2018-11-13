@@ -2,7 +2,7 @@
     <div class="swiper-container" :class="{'empty': imgUrl === []}">
         <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="item in imgUrl" @click="initFocus(item.categoryId)">
-                <router-link tag="a" :to="`/category/${item.categoryId}`">
+                <router-link tag="a" :to="`/product/${item.categoryId}`">
                     <img :src="item.imgUrl" class="swiper_img">
                 </router-link>
             </div>

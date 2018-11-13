@@ -66,7 +66,7 @@
                                 <i class="iconfont icon-right"></i>
                             </div>
                         </li>
-                        <router-link tag="li" class="user-list-item reset" to="/user/userInfo">
+                        <router-link tag="li" class="user-list-item reset" to="userInfo">
                             <i class="iconfont icon-shezhi user-list-item-left"></i>
                             <div class="user-list-item-right">
                                 <span>设置</span>
@@ -78,9 +78,6 @@
             </div>
             <nav-bar></nav-bar>
         </div>
-        <transition name="slide">
-            <router-view class="router-view"></router-view>
-        </transition>
     </div>
 </template>
 

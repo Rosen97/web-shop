@@ -144,8 +144,7 @@
                     pageNum: 1,
                     pageSize: 10
                 },'POST').then((res)=>{
-                    console.log(res)
-                    if(res.list){
+                    if(res.list.length > 0){
                         this.shipping.userId = res.list[0].userId
                     }
                     this.shippingList = res.list
@@ -281,7 +280,6 @@
         }
         .user-shipping-list{
             width: 100%;
-            padding-bottom: 100px;
             background: #eee;
             .user-shipping-item{
                 width: 100%;

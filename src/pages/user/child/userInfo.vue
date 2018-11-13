@@ -124,7 +124,6 @@
             })
         },
         created(){
-            console.log('111',this.loginName)
             if(!this.loginName){
                 setTimeout(()=>{
                     this.$router.push('/user/login')

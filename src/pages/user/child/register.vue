@@ -63,7 +63,7 @@
         this.$http('/api/user/register.do',{
           username: this.requestData.username,
           password: this.requestData.password,
-          email: 'xxxxx@qq.com',   //不能传空邮箱
+          email: 'xxxxx1111@qq.com',   //不能传空邮箱
           phone: this.requestData.phone,
           question: '',
           answer: ''

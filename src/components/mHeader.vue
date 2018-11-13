@@ -3,7 +3,7 @@
         <i class="iconfont icon-iconfontzhizuobiaozhun023110"></i>
         <div class="header-search">
             <i class="iconfont icon-search"></i>
-            <input class="header-search-text" placeholder="小米8年度旗舰机">
+            <input class="header-search-text" @focus="getSearch" placeholder="小米8年度旗舰机">
         </div>
         <i class="iconfont icon-saoma"></i>
     </div>
@@ -13,6 +13,11 @@
     export default {
         data() {
             return {}
+        },
+        methods: {
+            getSearch(){
+                this.$router.push('/search')
+            }
         }
     }
 </script>

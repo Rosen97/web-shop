@@ -14,7 +14,8 @@
                             <i class="iconfont icon-duigou" data-selected="true" @click="selectProduct($event,item.productId)" v-if="item.productChecked"></i>
                             <i class="iconfont icon-weibiaoti38" data-selected="false" @click="selectProduct($event,item.productId)" v-else></i>
                         </div>
-                        <img :src="imageHost + item.productMainImage"/>
+                        <img :src="imageHost + item.productMainImage" v-if="item.productMainImage" />
+                        <img src="../../assets/product_default.jpg" v-else />
                         <div class="shopcart-item-info">
                             <p class="shopcart-name" v-text="item.productName"></p>
                             <p class="shopcart-subtitle" v-text="item.productSubtitle"></p>
@@ -30,13 +31,13 @@
         </div>
         <div class="shopcart-footer">
             <div class="shopcart-item-select" @click="selectAll">
-                <i class="iconfont icon-duigou" v-if="allChecked === true"></i>
+                <i class="iconfont icon-duigou" v-if="allChecked === true && cartProductVoList.length"></i>
                 <i class="iconfont icon-weibiaoti38" v-else></i>
                 <span>全选</span>
             </div>
             <div class="shopcart-accounts">
                 <span>合计：<i v-text="`￥${cartTotalPrice}`"></i></span>
-                <button>结算</button>
+                <button @click="settleAccounts" :class="{'active' : cartTotalPrice > 0}">结算</button>
             </div>
         </div>
         <nav-bar></nav-bar>
@@ -65,6 +66,7 @@
         methods: {
             async getCartList(){
                 await this.$http('/api/cart/list.do',{},'POST').then((res)=>{
+                    console.log(res)
                     this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
                 })
             },
@@ -133,6 +135,13 @@
                     this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
                 })
                 this.resetSlide()
+            },
+            //结算
+            settleAccounts(){
+                if(!this.cartTotalPrice){
+                    return
+                }
+                this.$router.push('/order')
             }
         }
     }
@@ -141,10 +150,13 @@
 <style lang="scss" scoped="" type="text/scss">
     @import "../../common/style/mixin";
     .shopcart{
+        position: fixed;
+        left: 0;
+        top: 0;
         width: 100%;
-        min-height: 100%;
+        height: 100%;
         padding-bottom: 200px;
-        background: #fff;
+        background: #F6F4F5;
         .shopcart-header{
             position: fixed;
             left: 0;
@@ -163,7 +175,7 @@
             margin-top: 100px;
             .shopcart-empty{
                 width: 100%;
-                margin: 100px 0;
+                padding-top: 200px;
                 text-align: center;
                 img{
                     display: inline-block;
@@ -303,6 +315,9 @@
                     text-align: center;
                     font-size: 30px;
                     color: #fff;
+                    background: #DADADA;
+                }
+                button.active{
                     background: $orange;
                 }
             }

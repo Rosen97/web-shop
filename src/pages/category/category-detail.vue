@@ -27,9 +27,9 @@
             <div>
                 <i class="iconfont icon-gouwuche"></i>
                 <span>购物车</span>
-                <span class="cart-num">2</span>
+                <span class="cart-num" v-text="cartCount" v-show="cartCount"></span>
             </div>
-            <button>加入购物车</button>
+            <button @click="addCart">加入购物车</button>
         </div>
     </div>
 </template>
@@ -40,11 +40,13 @@
         data() {
             return {
                 subImageList: [],
-                categoryData: {}
+                categoryData: {},
+                cartCount: 0
             }
         },
         created(){
             this.getDetail()
+            this.getCartCount()
         },
         methods: {
             async getDetail(){
@@ -63,6 +65,20 @@
                         imgUrl: imageHost + item
                     })
                 })
+            },
+            getCartCount(){
+                this.$http('/api/cart/get_cart_product_count.do',{},'POST').then((res)=>{
+                    this.cartCount = res
+                })
+            },
+            async addCart(){
+                await this.$http('/api/cart/add.do',{
+                    productId: this.categoryData.id,
+                    count: 1
+                },'POST').then((res)=>{
+                    console.log(res)
+                })
+                this.getCartCount()
             },
             goBack(){
                 this.$router.go(-1)

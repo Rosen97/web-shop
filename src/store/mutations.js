@@ -1,7 +1,13 @@
-import {RECORD_USERINFO} from "./mutation-types"
+import {
+    RECORD_USERINFO,
+    RECORD_SHIPPINGID
+} from "./mutation-types"
 
 export default {
-  [RECORD_USERINFO](state,username){
-    state.loginName = username
-  }
+    [RECORD_USERINFO](state, username) {
+        state.loginName = username
+    },
+    [RECORD_SHIPPINGID](state, shippingId) {
+        state.shippingId = shippingId
+    }
 }
