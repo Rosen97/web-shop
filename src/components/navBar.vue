@@ -1,11 +1,11 @@
 <template>
     <div class="nav-bar">
         <ul class="nav-list">
-            <router-link tag="li" class="nav-list-item active" to="/index">
+            <router-link tag="li" class="nav-list-item active" to="home">
                 <i class="iconfont icon-home"></i>
                 <span>首页</span>
             </router-link>
-            <router-link tag="li" class="nav-list-item" to="/category">
+            <router-link tag="li" class="nav-list-item" to="category">
                 <i class="iconfont icon-chazhaobiaodanliebiao"></i>
                 <span>分类</span>
             </router-link>

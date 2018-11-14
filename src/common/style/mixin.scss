@@ -78,6 +78,12 @@ $fc:#fff;
   color: $color;
 }
 
+@mixin boxSizing{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 //flex 布局和 子元素 对其方式
 @mixin fj($type: space-between){
   display: flex;

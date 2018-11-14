@@ -46,6 +46,7 @@
         margin-top: 0;
         .swiper_img {
             width: 100%;
+            height: 340px;
         }
     }
 

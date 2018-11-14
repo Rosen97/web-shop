@@ -1,30 +1,44 @@
 <template>
     <div>
         <div>
-            <m-header></m-header>
+            <header class="category-header wrap">
+                <i class="iconfont icon-left"></i>
+                <div class="header-search">
+                    <i class="iconfont icon-search"></i>
+                    <span class="search-title">家电返场同价11.11</span>
+                </div>
+                <i class="iconfont icon-More"></i>
+            </header>
             <nav-bar></nav-bar>
-            <div class="search-wrap" ref="searchWrap">
-                <ul class="nav-side">
-                    <li v-for="(item,index) in categoryData" v-text="item.name"
-                        :class="{'active' : currentIndex === index}" @click="selectMenu(index)"></li>
-                </ul>
+            <section class="search-wrap" ref="searchWrap">
+                <list-scroll :scroll-data="categoryData" class="nav-side-wrapper">
+                    <ul class="nav-side">
+                        <li v-for="(item,index) in categoryData" v-text="item.name"
+                            :class="{'active' : currentIndex === index}" @click="selectMenu(index)"></li>
+                    </ul>
+                </list-scroll>
                 <div class="search-content">
-                    <div class="swiper-container">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide" v-for="item in categoryData">
-                                <img class="category-main-img" :src="item.mainImgUrl"/>
-                                <p class="catogory-title" v-text="item.name"></p>
-                                <div class="category-list">
-                                    <div class="product-item" v-for="product in item.list">
-                                        <img :src="product.imgUrl" class="product-img"/>
-                                        <p v-text="product.title" class="product-title"></p>
+                    <list-scroll style="width: 100%;height: 100%;overflow: hidden;" :scroll-data="categoryData" >
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                                <transition name="fade-out">
+                                    <div class="swiper-slide" v-for="(item,index) in categoryData"
+                                         v-if="currentIndex === index">
+                                        <img class="category-main-img" :src="item.mainImgUrl"/>
+                                        <p class="catogory-title" v-text="item.name"></p>
+                                        <div class="category-list">
+                                            <div class="product-item" v-for="product in item.list">
+                                                <img :src="product.imgUrl" class="product-img"/>
+                                                <p v-text="product.title" class="product-title"></p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </transition>
                             </div>
                         </div>
-                    </div>
+                    </list-scroll>
                 </div>
-            </div>
+            </section>
         </div>
     </div>
 </template>
@@ -32,15 +46,14 @@
 <script>
     import mHeader from '../../components/mHeader'
     import navBar from '../../components/navBar'
-    import Swiper from 'swiper'
-    import 'swiper/dist/css/swiper.min.css'
-    import 'swiper/dist/js/swiper.min.js'
-    import { categoryData } from "../../service/getData";
+    import listScroll from '../../components/common/list-scroll'
+    import {categoryData} from "../../service/getData";
 
     export default {
         components: {
             mHeader,
-            navBar
+            navBar,
+            listScroll
         },
         data() {
             return {
@@ -54,9 +67,6 @@
         },
         mounted() {
             this.setSearchWrapHeight()
-            setTimeout(() => {
-                this.initSwiper()
-            }, 500)
         },
         methods: {
             //获取catgory菜单数据
@@ -70,23 +80,9 @@
                 let $screenHeight = document.documentElement.clientHeight
                 this.$refs.searchWrap.style.height = $screenHeight - 200 + 'px'
             },
-            initSwiper() {
-                let _this = this
-                this.slider = new Swiper('.swiper-container', {
-                    direction: 'vertical', // 垂直切换选项
-                    initialSlide: this.currentIndex,
-                    on: {
-                        //列表滑动完毕时
-                        slideChangeTransitionEnd: function () {
-                            _this.currentIndex = this.activeIndex
-                        }
-                    }
-                })
-            },
             //左侧菜单和右侧区域联动
             selectMenu($index) {
                 this.currentIndex = $index
-                this.slider.slideTo($index)
             }
         }
     }
@@ -95,51 +91,101 @@
 <style lang="scss" scoped="" type="text/scss">
     @import '../../common/style/mixin';
 
+    .category-header {
+        position: fixed;
+        left: 0;
+        top: 0;
+        @include fj;
+        width: 100%;
+        height: 100px;
+        line-height: 100px;
+        padding: 0 30px;
+        @include boxSizing;
+        font-size: 30px;
+        color: #656771;
+        z-index: 10000;
+        &.active {
+            background: #F63515;
+        }
+        .icon-left {
+            font-size: 50px;
+            font-weight: bold;
+        }
+        .header-search {
+            display: flex;
+            width: 80%;
+            height: 40px;
+            line-height: 40px;
+            margin: 20px 0;
+            padding: 10px 0;
+            color: #232326;
+            background: #F7F7F7;
+            @include borderRadius(40px);
+            .icon-search {
+                padding: 0 20px 0 40px;
+                font-size: 34px;
+            }
+            .search-title {
+                font-size: 24px;
+                color: #666;
+            }
+        }
+        .icon-More {
+            font-size: 40px;
+        }
+    }
+
     .search-wrap {
         @include fj;
         width: 100%;
         margin-top: 100px;
+        background: #F8F8F8;
         border-top: 1px solid #999;
-        .nav-side {
+        .nav-side-wrapper {
+            width: 28%;
             height: 100%;
-            overflow: scroll;
-            border-right: 1px solid #999;
-            li {
-                padding: 20px 15px;
-                text-align: center;
-                font-size: 30px;
-                &.active {
-                    font-size: 32px;
-                    color: $orange;
+            overflow: hidden;
+            .nav-side {
+                width: 100%;
+                @include boxSizing;
+                background: #F8F8F8;
+                li {
+                    width: 100%;
+                    height: 92px;
+                    text-align: center;
+                    line-height: 92px;
+                    font-size: 28px;
+                    &.active {
+                        color: #F63515;
+                        background: #fff;
+                    }
                 }
             }
         }
         .search-content {
-            width: 78%;
+            width: 72%;
             height: 100%;
             padding: 0 20px;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
+            background: #fff;
+            @include boxSizing;
             .swiper-container {
                 width: 100%;
-                height: 100%;
-                .swiper-slide{
+                .swiper-slide {
                     width: 100%;
-                    .category-main-img{
+                    .category-main-img {
                         width: 100%;
                     }
-                    .catogory-title{
+                    .catogory-title {
                         width: 100%;
                         font-size: 40px;
                         padding: 20px 0;
                     }
-                    .category-list{
+                    .category-list {
                         display: flex;
                         flex-wrap: wrap;
                         flex-shrink: 0;
                         width: 100%;
-                        .product-item{
+                        .product-item {
                             width: 33.3333%;
                             margin-bottom: 20px;
                             text-align: center;
@@ -149,5 +195,13 @@
                 }
             }
         }
+    }
+
+    .fade-out-enter-active, .fade-out-leave-active {
+        transition: opacity 2s;
+    }
+
+    .fade-out-enter, .fade-out-leave-to {
+        opacity: 0;
     }
 </style>

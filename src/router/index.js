@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 //  懒路由加载
-const index = r => require.ensure([], () => r(require('@/pages/index/index')), 'index')
+const home = r => require.ensure([], () => r(require('@/pages/home/home')), 'home')
 const category = r => require.ensure([], () => r(require('@/pages/category/category')), 'category')
 const search = r => require.ensure([], () => r(require('@/pages/search/search')), 'search')
 const productList = r => require.ensure([], () => r(require('@/pages/product-list/product-list')), 'productList')
@@ -22,14 +22,14 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/index'
+            redirect: '/home'
         },
         {
-            path: '/index',
+            path: '/home',
             meta: {
                 index: 1
             },
-            component: index
+            component: home
         }, {
             path: '/category',
             meta: {
