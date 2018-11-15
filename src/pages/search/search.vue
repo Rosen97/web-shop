@@ -21,6 +21,12 @@
             <div class="search-list hot-list">
                 <p>热门搜索</p>
                 <div>
+                    <span class="hot">手环</span>
+                    <span class="hot">外星人电脑</span>
+                    <span class="hot">王亚妮</span>
+                    <span>手环</span>
+                    <span>外星人电脑</span>
+                    <span>王亚妮</span>
                     <span>手环</span>
                     <span>外星人电脑</span>
                     <span>王亚妮</span>
@@ -74,23 +80,27 @@
             @include border-1px(#dcdcdc);
             .icon-left{
                 width: 10%;
-                padding-top: 8px;
-                font-size: 46px;
+                font-size: 50px;
+              color: #252525;
+              font-weight: bold;
             }
             .search-con{
-                width: 70%;
+                width: 76%;
                 height: 100%;
-                margin-left: -40px;
+                line-height: 60px;
+                margin-left: -20px;
                 padding-left: 30px;
+                font-size: 26px;
                 background: #F7F7F7;
                 border-radius: 40px;
-                box-sizing: border-box;
+                @include boxSizing;
                 .iconfont{
-                    font-size: 30px;
+                    font-size: 36px;
+                    padding-right: 20px;
                 }
                 input{
                     height: 100%;
-                    font-size: 30px;
+                    font-size: 24px;
                     background: #F7F7F7;
                 }
             }
@@ -101,7 +111,7 @@
                 line-height: 60px;
                 color: #fff;
                 font-size: 26px;
-                background: $orange;
+                background: #E93B3D;
                 border-radius: 10px;
             }
         }
@@ -112,7 +122,7 @@
             .search-list{
                 width: 100%;
                 &.history-list{
-                    margin-bottom: 40px;
+                    margin-bottom: 20px;
                 }
                 p{
                     position: relative;
@@ -124,12 +134,21 @@
                         font-size: 34px;
                     }
                 }
-                div span{
-                    padding: 10px 30px;
-                    margin: 0 5px 5px 0;
-                    font-size: 26px;
-                    background: #F0F2F5;
-                    border-radius: 10px;
+                div {
+                    display: flex;
+                    flex-shrink: 0;
+                    flex-wrap: wrap;
+                    span{
+                        padding: 8px 26px;
+                        margin: 0 20px 20px 0;
+                        font-size: 24px;
+                        color: #686868;
+                        background: #F0F2F5;
+                        border-radius: 10px;
+                        &.hot{
+                            color: #E93B3D;
+                        }
+                    }
                 }
             }
         }
