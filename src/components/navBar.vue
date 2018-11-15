@@ -38,7 +38,7 @@
         width: 100%;
         padding: 10px 0;
         z-index: 1000;
-        background: #F7F7F7;
+        background: #fff;
         .nav-list{
             width: 100%;
             @include fj;
@@ -51,7 +51,7 @@
                 text-align: center;
                 color: #666;
                 &.router-link-active{
-                    color: #FF6B01;
+                    color: $red;
                 }
                 i{
                     tetx-align: center;

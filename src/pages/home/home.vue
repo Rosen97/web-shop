@@ -89,7 +89,7 @@
         color: #fff;
         z-index: 10000;
         &.active{
-            background: #F63515;
+            background: $red;
         }
         .icon-caidan{
             font-size: 50px;
@@ -106,7 +106,7 @@
             @include borderRadius(40px);
             .app-name{
                 padding: 0 20px;
-                color: #F63515;
+                color: $red;
                 font-size: 40px;
                 font-weight: bold;
                 border-right: 1px solid #666;
@@ -164,7 +164,7 @@
                     &:nth-child(2){
                         padding: 10px 0;
                         font-size: 26px;
-                        color: #F63515;
+                        color: $red;
                     }
                 }
                 .floor-products{

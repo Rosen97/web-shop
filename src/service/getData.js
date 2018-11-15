@@ -201,6 +201,24 @@ export const selectAddress = (shippingId) => $http('/api/shipping/select.do',{
 
 /**
  * 地址列表
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 export const addressList = (pageNum,pageSize) => $http('/api/shipping/list.do',{
   pageNum,

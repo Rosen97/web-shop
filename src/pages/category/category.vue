@@ -2,7 +2,7 @@
     <div>
         <div>
             <header class="category-header wrap">
-                <i class="iconfont icon-left"></i>
+                <i class="iconfont icon-left" @click="goHome"></i>
                 <div class="header-search">
                     <i class="iconfont icon-search"></i>
                     <span class="search-title">家电返场同价11.11</span>
@@ -22,12 +22,13 @@
                         <div class="swiper-container">
                             <div class="swiper-wrapper">
                                 <transition name="fade-out">
-                                    <div class="swiper-slide" v-for="(item,index) in categoryData"
+                                    <div class="swiper-slide" v-for="(category,index) in categoryData"
                                          v-if="currentIndex === index">
-                                        <img class="category-main-img" :src="item.mainImgUrl"/>
-                                        <p class="catogory-title" v-text="item.name"></p>
-                                        <div class="category-list">
-                                            <div class="product-item" v-for="product in item.list">
+                                        <img class="category-main-img" :src="category.mainImgUrl"
+                                                                        v-if="category.mainImgUrl"/>
+                                        <div class="category-list" v-for="products in category.list">
+                                            <p class="catogory-title">{{products.title}}</p>
+                                            <div class="product-item" v-for="product in products.productList">
                                                 <img :src="product.imgUrl" class="product-img"/>
                                                 <p v-text="product.title" class="product-title"></p>
                                             </div>
@@ -72,6 +73,7 @@
             //获取catgory菜单数据
             async getCategoryData() {
                 await categoryData().then((res) => {
+                  console.log(res)
                     this.categoryData = res
                 })
             },
@@ -83,6 +85,10 @@
             //左侧菜单和右侧区域联动
             selectMenu($index) {
                 this.currentIndex = $index
+            },
+            goHome(){
+              console.log(11111)
+              this.$router.push('/home')
             }
         }
     }
@@ -105,7 +111,7 @@
         color: #656771;
         z-index: 10000;
         &.active {
-            background: #F63515;
+            background: $red;
         }
         .icon-left {
             font-size: 50px;
@@ -156,7 +162,7 @@
                     line-height: 92px;
                     font-size: 28px;
                     &.active {
-                        color: #F63515;
+                        color: $red;
                         background: #fff;
                     }
                 }
@@ -175,16 +181,17 @@
                     .category-main-img {
                         width: 100%;
                     }
-                    .catogory-title {
-                        width: 100%;
-                        font-size: 40px;
-                        padding: 20px 0;
-                    }
                     .category-list {
                         display: flex;
                         flex-wrap: wrap;
                         flex-shrink: 0;
                         width: 100%;
+                      .catogory-title {
+                        width: 100%;
+                        font-size: 34px;
+                        font-weight: 500;
+                        padding: 40px 0;
+                      }
                         .product-item {
                             width: 33.3333%;
                             margin-bottom: 20px;
