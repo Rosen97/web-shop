@@ -15,7 +15,8 @@ axios.interceptors.response.use(function (response) {
     if(responseStatus === 10){
         window.location.href = '/#/login'
     }else if(responseStatus === 1){
-        console.log(response)
+        alert(response.data.msg)
+        return
     }else if(responseStatus === 0){
         return response.data
     }

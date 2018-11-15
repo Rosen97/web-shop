@@ -1,101 +1,106 @@
 <template>
     <div>
-        <user-header></user-header>
-        <div class="main-icon">LUNAR</div>
-        <div class="login-form">
-            <div class="login-form-item">
-                <input class="login-username" type="text" placeholder="请输入账户名" v-model="username"
-                       @mouseenter="inputEnter($event)" @mouseleave="inputLeave($event)" />
-                <i class="iconfont icon-delete1" @click="clearText($event)" data-type="username" v-show="clearUsername"></i>
-            </div>
-            <div class="login-form-item">
-                <input class="login-password" type="password" placeholder="请输入密码" v-model="password"
-                       @mouseenter="inputEnter($event)" @mouseleave="inputLeave($event)" ref="password" />
-                <i class="iconfont icon-delete1" @click="clearText($event)" data-type="password"  v-show="clearPassword"></i>
-                <i class="iconfont icon-eye" :class="{'active' : eyeIsActive}" @click="showPassword"></i>
-            </div>
-            <div class="other-edit">
-                <router-link tag="a" to="./register">注册</router-link>
-                <a>忘记密码</a>
-            </div>
-            <button class="login-btn" @click="loginSubmit" :class="{'active' : username&&password}">登录</button>
-        </div>
-        <popup v-show="errorShow">
-            <div class="login-error">
-                <p>用户名或者密码不正确</p>
-                <div>
-                    <span @click="hideError">确定</span>
-                    <span>找回密码</span>
+        <m-header :mTitle="'京东登录'"></m-header>
+        <section class="page">
+            <div class="login-page">
+                <div class="login-wrap">
+                    <div class="login-text">
+                        <input @mouseenter="focusText"
+                               @mouseleave="blurText" v-model="username" type="text" class="login-username" placeholder="用户名/邮箱/已验证手机" />
+                        <i class="iconfont icon-close" data-close="username" v-show="!usernameClose" @click="clearText"></i>
+                    </div>
+                    <div class="login-text">
+                        <input @mouseenter="focusText"
+                               @mouseleave="blurText" ref="passwordText" v-model="password" type="password" class="login-password" placeholder="请输入密码"  />
+                        <div>
+                            <i class="iconfont icon-close" data-close="password" v-show="!passwordClose" @click="clearText"></i>
+                            <i class="iconfont icon-eye1 eye" @click="changeType" v-if="!passwordType"></i>
+                            <i class="iconfont icon-eye eye" @click="changeType" v-else></i>
+                            <span>忘记密码</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="login-error">{{errMsg}}</div>
+                <button class="login-button" :class="{'active' : removeSpace(username)&&removeSpace(password)}" @click="loginSubmit">登  录</button>
+                <div class="quick-nav">
+                    <span class="register-button">快速注册</span>
+                </div>
+                <div class="other-login">
+                    <div class="other-head">
+                        <i></i>
+                        <span>其它登录方式</span>
+                        <i></i>
+                    </div>
+                    <div class="other-con">
+                        <div class="login-icon">
+                            <i class="iconfont icon-tubiao215"></i>
+                            <span>qq</span>
+                        </div>
+                        <div class="login-icon">
+                            <i class="iconfont icon-weixin1"></i>
+                            <span>微信</span>
+                        </div>
+                    </div>
+                    <p>登录即代表您已同意<a>京东隐私政策</a></p>
                 </div>
             </div>
-        </popup>
+        </section>
     </div>
 </template>
 
 <script>
-    import userHeader from 'components/user/userHeader'
+    import mHeader from 'components/common/m-header'
     import popup from 'components/common/popup'
-    import {mapState, mapMutations} from 'vuex'
+    import {userLogin} from '../../service/getData'
+
     export default {
         data() {
             return {
                 username: '',
                 password: '',
-                clearUsername: false,
-                clearPassword: false,
-                eyeIsActive: false,
-                errorShow: false
+                errMsg: '',
+                usernameClose: true,
+                passwordClose: true,
+                passwordType: 0
             }
         },
-        computed: {
-            ...mapState({
-                loginName: state => state.loginName
-            })
-        },
         methods: {
-            ...mapMutations([
-                'RECORD_USERINFO'
-            ]),
+            focusText(e){
+                let $className = e.currentTarget.className
+                $className === 'login-username' ? this.usernameClose = false : this.passwordClose = false
+            },
+            blurText(e){
+                let $className = e.currentTarget.className
+                $className === 'login-username' ? this.usernameClose = true : this.passwordClose = true
+            },
+            clearText(e){
+                let $close = e.currentTarget.getAttribute('data-close')
+                console.log($close)
+                this[$close] = ''
+            },
+            changeType(){
+                let $type = this.$refs.passwordText.getAttribute('type'),
+                    value = ''
+                console.log($type)
+                $type === 'password' ? value = 'text' : value = 'password'
+                this.$refs.passwordText.setAttribute('type',value)
+                this.passwordType = !this.passwordType
+            },
+            removeSpace(value){
+                return value.replace(/\s+/g,"")
+            },
             loginSubmit(){
                 if(!this.username || !this.password){
                     return
                 }
-                this.$http('/api/user/login.do',{
-                    username: this.username,
-                    password: this.password
-                },'POST').then((res)=>{
-                    this.RECORD_USERINFO(res.username)
-                    this.$router.push('/user')
+                userLogin(this.username,this.password).then((res)=>{
+                        this.errMsg = ''
+                        console.log(res)
                 })
-            },
-            clearText(e){
-                let $type = e.target.getAttribute('data-type')
-                $type === 'username' ? this.username = '' : this.password = ''
-            },
-            showPassword(){
-                if(this.$refs.password.type === 'password'){
-                    this.$refs.password.type = 'text'
-                    this.eyeIsActive = true
-                }else{
-                    this.$refs.password.type = 'password'
-                    this.eyeIsActive = false
-                }
-            },
-            inputEnter(e){
-                this.changeDelete(e.target.className,true)
-            },
-            inputLeave(e){
-                this.changeDelete(e.target.className,false)
-            },
-            changeDelete(className,isShow){
-                className === 'login-username' ? this.clearUsername = isShow : this.clearPassword = isShow
-            },
-            hideError(){
-                this.errorShow = false
             }
         },
         components: {
-            userHeader,
+            mHeader,
             popup
         }
     }
@@ -103,106 +108,133 @@
 
 <style lang="scss" type="text/scss" scoped>
     @import '../../common/style/mixin';
-    .main-icon{
-        width: 160px;
-        height: 160px;
-        margin: 60px auto;
-        text-align: center;
-        line-height:160px;
-        font-size: 40px;
-        color: #fff;
-        @include borderRadius(50%);
-        background: #FE6700;
-    }
-    .login-form{
-        width: 100%;
-        padding: 0 20px;
-        box-sizing: border-box;
-        .login-form-item{
-            @include fj;
+    .login-page{
+        margin-top: 60px;
+        .login-wrap{
             width: 100%;
-            margin-top: 60px;
-            @include border-1px(#999);
-            input{
+            .login-text{
+                @include fj;
+                width: 100%;
                 height: 60px;
                 line-height: 60px;
-                font-size: 30px;
-            }
-            input.login-username{
-                width: 90%;
-            }
-            input.login-password{
-                width: 80%;
-            }
-            .iconfont{
-                text-align: right;
-                width: 10%;
-                height: 60px;
-                line-height: 60px;
-                font-size: 25px;
-                color: #999;
-            }
-            .icon-eye{
-                font-size: 40px;
-            }
-            .icon-eye.active{
-                color: #333;
+                padding: 20px 0;
+                margin-top: 20px;
+                border-bottom: 1px solid #dcdcdc;
+                .iconfont{
+                    font-size: 26px;
+                    color: #CCCCCC;
+                    &.eye{
+                        padding: 0 30px;
+                        font-size: 40px;
+                        border-right: 1px solid #dcdcdc;
+                    }
+                }
+                input{
+                    width: 100%;
+                    height: 100%;
+                    margin-right: 20px;
+                    line-height: 60px;
+                    color: #222;
+                    font-size: 32px;
+                    &.login-password{
+                        width: 50%;
+                    }
+                }
+                span{
+                    padding-left: 20px;
+                    font-size: 30px;
+                }
+                div{
+                    display: flex;
+                }
             }
         }
-        .other-edit{
+        .login-error{
             width: 100%;
-            padding: 40px 0;
-            text-align: right;
-            a{
-                font-size: 30px;
-                margin-left: 20px;
-            }
+            height: 40px;
+            line-height: 40px;
+            padding: 30px 0;
+            color: $red;
+            font-size: 26px;
         }
-        .login-btn{
-            width: 90%;
-            height: 70px;
-            margin: 30px 5% 0 5%;
-            line-height: 70px;
-            color: #fff;
-            font-size: 30px;
-            background: rgba(254,103,0,.5);
-            @include borderRadius(40px);
-            &.active{
-                background: rgba(254,103,0,1);
-            }
-        }
-    }
-    .login-error{
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 80%;
-        height: 240px;
-        margin-left: -40%;
-        margin-top: -120px;
-        @include borderRadius(20px);
-        background: #fff;
-        p{
-            width: 100%;
-            height: 140px;
-            text-align: center;
-            line-height: 140px;
-            font-size: 42px;
-            @include border-1px(#999);
-        }
-        div{
+        .login-button{
             width: 100%;
             height: 100px;
-            display: flex;
-            span{
-                flex: 1;
+            text-align: center;
+            line-height: 100px;
+            color: #fff;
+            font-size: 32px;
+            background: rgba(246,53,21,.5);
+            @include borderRadius(60px);
+            &.active{
+                background: rgb(246,53,21)
+            }
+        }
+        .quick-nav{
+            padding: 40px 0;
+            width: 100%;
+            text-align: right;
+            .register-button{
+                color: #999;
+                font-size: 28px;
+            }
+        }
+        .other-login{
+            width: 100%;
+            margin-top: 100px;
+            .other-head{
+                @include fj;
+                i{
+                    flex: 1;
+                    height: 1px;
+                    margin-top: 18px;
+                    background: #dcdcdc;
+                }
+                span{
+                    flex: 1;
+                    text-align: center;
+                    font-size: 28px;
+                    color: #dcdcdc;
+                }
+            }
+            .other-con{
+                display: flex;
+                width: 320px;
+                padding: 40px 0;
+                margin: 0 auto;
+                .login-icon{
+                    display: flex;
+                    flex-direction: column;
+                    width: 96px;
+                    margin: 0 30px;
+                    text-align: center;
+                    .iconfont{
+                        width: 100%;
+                        height: 96px;
+                        line-height: 96px;
+                        font-size: 60px;
+                        color: #15B8F5;
+                        background: #E7F7FE;
+                        @include borderRadius(50%);
+                        &.icon-weixin1{
+                            font-size: 50px;
+                            color: #09BB07;
+                            background: #E6F8E6;
+                        }
+                    }
+                    span{
+                        padding-top: 20px;
+                        color: #999;
+                    }
+                }
+            }
+            p{
+                margin-top: 20px;
+                width: 100%;
                 text-align: center;
-                line-height: 100px;
-                font-size: 40px;
-                color: #218BFD;
-                box-sizing: border-box;
-                &:first-child{
-                    border-right: 1px solid #999;
+                color: #999;
+                a{
+                    color: #409eff;
                 }
             }
         }
