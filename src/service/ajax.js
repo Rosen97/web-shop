@@ -15,19 +15,15 @@ axios.interceptors.response.use(function (response) {
     if(responseStatus === 10){
         window.location.href = '/#/login'
     }else if(responseStatus === 1){
-        alert(response.data.msg)
-        return
+        if(response.request.responseURL.indexOf('get_user_info.do') != -1){  //检查用户名 返回response
+            return response
+        }else{
+            alert(response.data.msg)
+            return
+        }
     }else if(responseStatus === 0){
         return response.data
     }
-    // console.log(response)
-    // if (responseStatus === 0) {
-    //     //响应信息只有状态码为1时 回调函数
-    //     return response
-    // } else {
-    //     //请求错误时根据状态码弹出错误信息
-    //     console.log(response.data)
-    // }
 }, function (error) {
     return Promise.reject(error)
 })

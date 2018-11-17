@@ -1,6 +1,6 @@
 <template>
     <div class="header-box">
-        <i class="iconfont icon-iconfontzhizuobiaozhun023110"></i>
+        <i class="iconfont icon-iconfontzhizuobiaozhun023110" @click="goBack"></i>
         <div class="header-search">
             <i class="iconfont icon-search"></i>
             <input class="header-search-text" @focus="getSearch" placeholder="小米8年度旗舰机">

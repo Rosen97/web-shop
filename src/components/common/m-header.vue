@@ -1,6 +1,6 @@
 <template>
     <header class="wrap">
-        <i class="iconfont icon-left"></i>
+        <i class="iconfont icon-left" @click="goBack"></i>
         <span>{{mTitle}}</span>
     </header>
 </template>
@@ -14,26 +14,18 @@
                 default: ''
             }
         },
-        data() {
-            return {}
-        },
-        watch: {},
-        created() {
-
-        },
-        mounted() {
-
-        },
-        computed() {
-
-        },
-        methods: {}
+        methods: {
+            goBack() {
+                this.$router.go(-1)
+            }
+        }
     }
 </script>
 
 <style lang="scss" type="text/scss" scoped>
     @import '../../common/style/mixin';
-    header{
+
+    header {
         position: relative;
         width: 100%;
         height: 88px;
@@ -42,7 +34,7 @@
         padding: 0 20px;
         font-size: 34px;
         @include boxSizing;
-        .iconfont{
+        .iconfont {
             position: absolute;
             left: 20px;
             top: 0;

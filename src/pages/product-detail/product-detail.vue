@@ -1,36 +1,41 @@
 <template>
-    <div class="category-detail">
-        <div class="detail-nav">
+    <div class="product-detail">
+        <header class="detail-nav">
             <i class="iconfont icon-left-circle" @click="goBack"></i>
             <i class="iconfont icon-more1"></i>
-        </div>
-        <slider :imgUrl="subImageList" class="detail-slider"></slider>
-        <div class="detail-info">
+        </header>
+        <slider :imgUrl="subImageList" :imgHeight="700" class="detail-slider"></slider>
+        <section class="detail-info">
             <p class="detail-info-name" v-text="categoryData.name"></p>
             <p class="detail-info-subtitle" v-text="categoryData.subtitle"></p>
             <div>
                 <span class="detail-info-price" v-text="`￥${categoryData.price}`"></span>
                 <span class="detail-info-stock" v-text="`库存${categoryData.stock}`"></span>
             </div>
-        </div>
-        <div class="detail-content">
-            <p class="detail-gap"></p>
-            <ul>
-                <li>概述</li>
-                <li>参数</li>
-                <li>安装服务</li>
-                <li>常见问题</li>
-            </ul>
-            <div v-html="categoryData.detail"></div>
-        </div>
-        <div class="detail-cart">
-            <div>
-                <i class="iconfont icon-gouwuche"></i>
-                <span>购物车</span>
-                <span class="cart-num" v-text="cartCount" v-show="cartCount"></span>
+        </section>
+        <section>
+            <div class="detail-content">
+                <p class="detail-gap"></p>
+                <ul>
+                    <li>概述</li>
+                    <li>参数</li>
+                    <li>安装服务</li>
+                    <li>常见问题</li>
+                </ul>
+                <div v-html="categoryData.detail"></div>
             </div>
-            <button @click="addCart">加入购物车</button>
-        </div>
+            <div class="detail-cart">
+                <router-link tag="div" to="/shopcart" class="detail-cart-left">
+                    <i class="iconfont icon-gouwuche"></i>
+                    <span>购物车</span>
+                    <span class="cart-num" v-text="cartCount" v-show="cartCount"></span>
+                </router-link>
+                <div>
+                    <button @click="addCart">加入购物车</button>
+                    <button>立即购买</button>
+                </div>
+            </div>
+        </section>
     </div>
 </template>
 
@@ -90,7 +95,7 @@
 
 <style lang="scss" type="text/scss">
     @import '../../common/style/mixin';
-    .category-detail{
+    .product-detail{
         width: 100%;
         .detail-nav{
             @include fj;
@@ -108,7 +113,7 @@
             }
         }
         .detail-slider img{
-            height: 500px;
+            height: 700px;
         }
         .detail-info{
             width: 100%;
@@ -175,14 +180,14 @@
             left: 0;
             bottom: 0;
             width: 100%;
-            padding: 10px 20px;
+            height: 100px;
             font-size: 30px;
             background: #fff;
             z-index: 1000;
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
-            div{
+            .detail-cart-left{
                 position: relative;
                 display: flex;
                 flex-direction: column;
@@ -205,14 +210,18 @@
                     z-index: 100;
                 }
             }
-            button{
-                width: 260px;
-                height: 60px;
-                margin-top: 10px;
-                color: #fff;
-                font-size: 30px;
-                background: $orange;
-                border-radius: 40px;
+            div{
+                button{
+                    width: 260px;
+                    height: 100px;
+                    color: #fff;
+                    font-size: 30px;
+                    background: $red;
+                    &:nth-child(1){
+                        margin-right: -10px;
+                        background: $orange;
+                    }
+                }
             }
         }
     }

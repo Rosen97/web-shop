@@ -5,7 +5,7 @@
             <div class="header-search">
                 <span class="app-name">JD</span>
                 <i class="iconfont icon-search"></i>
-                <span class="search-title">家电返场同价11.11</span>
+                <router-link tag="span" class="search-title" to="./search">家电返场同价11.11</router-link>
             </div>
             <span>登录</span>
         </header>

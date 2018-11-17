@@ -45,11 +45,12 @@
         },
         methods: {
             getSearch(){
-                if(!this.searchText){
+                let keyword = this.searchText.replace(/^\s+|\s+$/g,"")   //去除两头空格
+                if(!keyword){
                     alert('请输入搜索内容')
                     return
                 }
-                this.$router.push('/category-list?keyword='+this.searchText+'&categoryId=0')
+                this.$router.push('/product-list?keyword='+keyword+'&categoryId=0')
             },
             goBack(){
                 this.$router.go(-1)

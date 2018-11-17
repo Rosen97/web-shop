@@ -16,14 +16,14 @@
                             <i class="iconfont icon-close" data-close="password" v-show="!passwordClose" @click="clearText"></i>
                             <i class="iconfont icon-eye1 eye" @click="changeType" v-if="!passwordType"></i>
                             <i class="iconfont icon-eye eye" @click="changeType" v-else></i>
-                            <span>忘记密码</span>
+                            <router-link tag="span" to="./forget-password">忘记密码</router-link>
                         </div>
                     </div>
                 </div>
                 <div class="login-error">{{errMsg}}</div>
                 <button class="login-button" :class="{'active' : removeSpace(username)&&removeSpace(password)}" @click="loginSubmit">登  录</button>
                 <div class="quick-nav">
-                    <span class="register-button">快速注册</span>
+                    <router-link tag="span" class="register-button" to="./register">快速注册</router-link>
                 </div>
                 <div class="other-login">
                     <div class="other-head">
@@ -51,6 +51,7 @@
 <script>
     import mHeader from 'components/common/m-header'
     import popup from 'components/common/popup'
+    import {removeSpace} from "../../common/js/util";
     import {userLogin} from '../../service/getData'
 
     export default {
@@ -63,6 +64,9 @@
                 passwordClose: true,
                 passwordType: 0
             }
+        },
+        computed(){
+
         },
         methods: {
             focusText(e){
@@ -87,7 +91,7 @@
                 this.passwordType = !this.passwordType
             },
             removeSpace(value){
-                return value.replace(/\s+/g,"")
+                return removeSpace(value)
             },
             loginSubmit(){
                 if(!this.username || !this.password){
@@ -95,7 +99,7 @@
                 }
                 userLogin(this.username,this.password).then((res)=>{
                         this.errMsg = ''
-                        console.log(res)
+                        this.$router.go(-1)
                 })
             }
         },

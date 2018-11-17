@@ -1,99 +1,110 @@
 <template>
-    <div>
-        <div class="user-box">
-            <div class="user-header" v-if="!loginName">
-                <i class="iconfont icon-user"></i>
-                <router-link tag="span" to="login">登录 / 注册</router-link>
-            </div>
-            <div class="user-header" v-else>
-                <img src="../../assets/user_default.jpg" />
-                <p v-text="loginName"></p>
-            </div>
-            <div class="user-content">
-                <div class="user-order">
-                    <span>我的订单</span>
+    <div class="user-box">
+        <header class="user-head">
+            <i class="iconfont icon-left"></i>
+            <span>我的京东</span>
+            <i class="iconfont icon-More"></i>
+        </header>
+        <section class="user-page">
+            <div class="user-info">
+                <div class="info">
+                    <img src="//img11.360buyimg.com/jdphoto/s120x122_jfs/t5683/191/7076936752/5123/834e5571/596dd62bN7a8affc5.png" />
                     <div>
-                        <span>全部订单</span>
-                        <i class="iconfont icon-right"></i>
+                        <p>{{userInfo.username}}</p>
+                        <span class="name">用户名：{{userInfo.username}}</span>
+                        <span>{{userInfo.phone}}</span>
                     </div>
-                </div>
-                <div class="user-menu">
-                    <div class="user-menu-item">
-                        <i class="iconfont icon-daifukuan"></i>
-                        <span>待付款</span>
-                    </div>
-                    <div class="user-menu-item">
-                        <i class="iconfont icon-daishouhuo"></i>
-                        <span>待收货</span>
-                    </div>
-                    <div class="user-menu-item">
-                        <i class="iconfont icon-daipingjia"></i>
-                        <span>待评价</span>
-                    </div>
-                    <div class="user-menu-item">
-                        <i class="iconfont icon-tool"></i>
-                        <span>退换修</span>
-                    </div>
-                </div>
-                <div class="user-list">
-                    <ul>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-youhuiquan user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>优惠券</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-huiyuanzhongxin user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>会员中心</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-fuwufang user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>服务中心</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <li class="user-list-item-gap"></li>
-                        <li class="user-list-item">
-                            <i class="iconfont icon-icon user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>更多功能</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </li>
-                        <router-link tag="li" class="user-list-item reset" to="profile">
-                            <i class="iconfont icon-shezhi user-list-item-left"></i>
-                            <div class="user-list-item-right">
-                                <span>设置</span>
-                                <i class="iconfont icon-right"></i>
-                            </div>
-                        </router-link>
-                    </ul>
+                    <span class="account-management">
+                        <i class="iconfont icon-shezhi"></i>账号管理
+                    </span>
                 </div>
             </div>
-            <nav-bar></nav-bar>
-        </div>
+            <div class="user-menu">
+                <div class="menu-item">
+                    <i class="iconfont icon-daifukuan1"></i>
+                    <span>待付款</span>
+                </div>
+                <div class="menu-item">
+                    <i class="iconfont icon-daishouhuo1"></i>
+                    <span>待收货</span>
+                </div>
+                <div class="menu-item">
+                    <i class="iconfont icon-money"></i>
+                    <span>退换/售后</span>
+                </div>
+                <div class="menu-item">
+                    <i class="iconfont icon-icon1"></i>
+                    <span>全部订单</span>
+                </div>
+            </div>
+            <div class="user-fork">
+                <div class="fork-item">
+                    <i>0</i>
+                    <span>关注的商品</span>
+                </div>
+                <div class="fork-item">
+                    <i>0</i>
+                    <span>关注的店铺</span>
+                </div>
+                <div class="fork-item">
+                    <i>0</i>
+                    <span>我的足迹</span>
+                </div>
+            </div>
+            <p class="recommend-title">为你推荐</p>
+            <div class="recommend-list">
+                <div class="recommend-item">
+                    <img/>
+                    <span>数据库是小类型扩散系数</span>
+                    <i>￥ 1988</i>
+                </div>
+                <div class="recommend-item">
+                    <img/>
+                    <span>数据库是小类型扩散系数</span>
+                    <i>￥ 1988</i>
+                </div>
+                <div class="recommend-item">
+                    <img/>
+                    <span>数据库是小类型扩散系数</span>
+                    <i>￥ 1988</i>
+                </div>
+                <div class="recommend-item">
+                    <img/>
+                    <span>数据库是小类型扩散系数</span>
+                    <i>￥ 1988</i>
+                </div>
+
+            </div>
+        </section>
+        <nav-bar></nav-bar>
     </div>
 </template>
 
 <script>
     import navBar from '../../components/navBar'
-    import { mapState } from 'vuex'
+    import {checkLogin} from "../../service/getData";
+
     export default {
-        computed: {
-            ...mapState({
-                isLogin: state => state.isLogin,
-                loginName: state => state.loginName
+        data(){
+            return{
+                userInfo: {
+
+                }
+            }
+        },
+        beforeCreate(){
+            checkLogin().then((res)=>{
+                if(res.status === 1){   //未登录跳转
+                    this.$router.push('./login')
+                    return
+                }
+                this.userInfo = res
+                console.log(res)
             })
         },
-      created(){
-        console.log('我是父路由')
-      },
+        created() {
+            console.log('我是父路由')
+        },
         components: {
             navBar
         }
@@ -102,142 +113,165 @@
 
 <style lang="scss" scoped="" type="text/scss">
     @import '../../common/style/mixin';
-    .user-header{
-        display: flex;
-        width: 100%;
-        padding: 40px 0;
-        height: 70px;
-        line-height: 70px;
-        background: #FE852E;
-        .iconfont{
-            margin-left: 30px;
-            padding: 0 16px;
-            font-size: 40px;
-            color: #fff;
-            border: 1px solid #fff;
-            @include borderRadius(50%);
-            background: orange;
-        }
-        span,p{
-            display: inline-block;
-            height: 100%;
-            line-height: 70px;
-            margin-left: 20px;
-            font-size: 28px;
-            color: #ffffff;
-        }
-        img{
-            width: 70px;
-            height: 70px;
-            margin: 0 0 0 30px;
-            border-radius: 50%;
-        }
-    }
-    .user-content{
-        width: 100%;
-        .user-order{
-            display: flex;
-            justify-content: space-between;
-            height: 90px;
-            line-height: 90px;
+    .user-box{
+        background: #F7F7F7;
+        .user-head{
+            @include fj;
+            width: 100%;
+            height: 88px;
             padding: 0 20px;
+            line-height: 88px;
             font-size: 30px;
-            @include border-1px(#999);
-            div{
-                color: #999;
-                .iconfont{
-                    font-size: 40px;
+            @include boxSizing;
+            border-bottom: 1px solid #dcdcdc;
+            .iconfont{
+                font-size: 44px;
+            }
+        }
+        .user-info{
+            width: 94%;
+            margin: 20px 3%;
+            height: 230px;
+            background: linear-gradient(90deg,#eb3c3c,#ff7459);
+            box-shadow: 0 2px 5px rgba(255,98,98,.4);
+            @include borderRadius(12px);
+            .info{
+                position: relative;
+                display: flex;
+                width: 100%;
+                height: 100%;
+                padding: 50px 30px;
+                @include boxSizing;
+                img{
+                    width: 120px;
+                    height: 120px;
+                }
+                div{
+                    display: flex;
+                    flex-direction: column;
+                    margin-left: 20px;
+                    line-height: 40px;
+                    font-size: 28px;
+                    color: #fff;
+                    .name{
+                        color: hsla(0,0%,100%,.7);
+                        font-size: 26px;
+                        padding: 5px 0;
+                    }
+                    span{
+                        &:nth-child(1){
+                            color: #999;
+                            font-size: 26px;
+                        }
+                    }
+                }
+                .account-management{
+                    position: absolute;
+                    top: 20px;
+                    right: 40px;
+                    font-size: 26px;
+                    color: rgba(76,0,0,.7);
+                    .iconfont{
+                        padding-right: 10px;
+                        font-size: 28px;
+                        color: rgba(76,0,0,.7);
+                    }
                 }
             }
         }
         .user-menu{
             display: flex;
-            justify-content: space-between;
-            .user-menu-item{
-                flex: 1;
+            justify-content: space-around;
+            width: 100%;
+            height: 150px;
+            background: #fff;
+            .menu-item{
                 display: flex;
                 flex-direction: column;
-                padding: 20px 0;
+                flex: 1;
+                height: 100px;
                 text-align: center;
-                font-size: 30px;
+                margin: 25px 0;
                 .iconfont{
                     font-size: 50px;
-                    padding-bottom: 10px;
-                    color: #666;
+                    color: #DD9E58;
+                    &.icon-money{
+                        font-size: 44px;
+                        padding-top: 6px;
+                    }
+                    &.icon-icon1{
+                        @extend .icon-money;
+                        color: $red;
+                    }
+                }
+                span{
+                    padding-top: 10px;
+                    font-size: 24px;
+                    color: #000;
                 }
             }
         }
-        .user-list{
+        .user-fork{
+            margin: 30px 0;
+            @extend .user-menu;
+            .fork-item{
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                height: 100px;
+                margin: 30px 0;
+                text-align: center;
+                i{
+                    font-style: normal;
+                    font-weight: bold;
+                    padding: 10px 0;
+                    font-size: 28px;
+                }
+            }
+        }
+        .recommend-title{
             width: 100%;
-            ul{
-                .user-list-item{
-                    display: flex;
-                    justify-content: space-between;
-                    width: 100%;
-                    padding-left: 30px;
-                    height: 90px;
-                    line-height: 90px;
-                    font-size: 30px;
-                    -webkit-box-sizing: border-box;
-                    -moz-box-sizing: border-box;
-                    box-sizing: border-box;
-                    .iconfont{
-                        font-size: 30px;
-                        padding-right: 20px;
-                    }
-                    .user-list-item-left{
-                        flex: 1;
-                        text-align: center;
-                        font-size: 50px;
-                        &.icon-youhuiquan{
-                            color: #FA6B58;
-                        }
-                        &.icon-huiyuanzhongxin{
-                            color: #FDBF2C;
-                        }
-                        &.icon-fuwufang{
-                            color: #F96C5E;
-                        }
-                        &.icon-icon{
-                            color: #9ED35A;
-                        }
-                        &.icon-shezhi{
-                            color: #808B98;
-                        }
-                    }
-                    .user-list-item-right{
-                        flex: 9;
-                        display: flex;
-                        justify-content: space-between;
-                        @include border-1px(#dcdcdc);
-                        .reset{
-                            @include border-1px(#fff);
-                        }
-                    }
+            height: 90px;
+            padding-left: 20px;
+            line-height: 90px;
+            background: #fff;
+            @include boxSizing;
+        }
+        .recommend-list{
+            display: flex;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-top: 30px;
+            padding-bottom: 150px;
+            @include boxSizing;
+            background: #fff;
+            .recommend-item{
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+                padding: 20px;
+                @include boxSizing;
+                border-bottom: 1px solid #dcdcdc;
+                &:nth-child(2n-1){
+                    border-right: 1px solid #dcdcdc;
                 }
-                .user-list-item-gap{
-                    width: 100%;
-                    height: 10px;
-                    background: #e8e8e8;
+                img{
+                    width: 274px;
+                    height: 274px;
+                }
+                span{
+                    padding: 15px 0;
+                    font-size: 26px;
+                    line-height: 30px;
+                    color: #333;
+                }
+                i{
+                    font-style: normal;
+                    font-size: 32px;
+                    color: $red;
                 }
             }
         }
-    }
-    /*切换样式出错处理*/
-    .router-view{
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        margin: 0 auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    .slide-enter-active, .slide-leave-active{
-        transition: all .4s;
-    }
-    .slide-enter, .slide-leave{
-        transform: translate3d(2rem, 0, 0);
-        opacity: 0;
     }
 </style>

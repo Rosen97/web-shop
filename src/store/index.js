@@ -7,8 +7,7 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-    loginName: '',
-    shippingId: 0
+    isLogin: 0   //0-未登录  1-登录
 }
 
 export default new Vuex.Store({

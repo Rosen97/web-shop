@@ -1,18 +1,17 @@
 <template>
-    <div class="shopcart">
-        <div class="shopcart-header" v-text="`购物车(${cartProductVoList.length})`"></div>
-        <div class="shopcart-content">
-            <div class="shopcart-empty" v-if="cartProductVoList.length === 0">
-                <img src="../../assets/shopcart-empty.png">
-                <p>购物车竟然是空的</p>
-                <p>“再忙，也要记得买点什么犒劳自己”</p>
-            </div>
-            <div class="shopcart-list" v-else>
+    <div class="shopcart-box">
+        <header class="user-head">
+            <i class="iconfont icon-left" @click="goBack"></i>
+            <span>购物车</span>
+            <i class="iconfont icon-More"></i>
+        </header>
+        <section class="shopcart-page">
+            <div class="shopcart-list">
                 <div class="shopcart-item" v-for="item in cartProductVoList" data-type="0">
                     <div class="shopcart-item-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
                         <div class="shopcart-item-select">
-                            <i class="iconfont icon-duigou" data-selected="true" @click="selectProduct($event,item.productId)" v-if="item.productChecked"></i>
-                            <i class="iconfont icon-weibiaoti38" data-selected="false" @click="selectProduct($event,item.productId)" v-else></i>
+                            <i class="iconfont icon-duigou" data-selected="1" @click="selectProduct($event,item.productId)" v-if="item.productChecked"></i>
+                            <i class="iconfont icon-weibiaoti38" data-selected="0" @click="selectProduct($event,item.productId)" v-else></i>
                         </div>
                         <img :src="imageHost + item.productMainImage" v-if="item.productMainImage" />
                         <img src="../../assets/product_default.jpg" v-else />
@@ -21,31 +20,46 @@
                             <p class="shopcart-subtitle" v-text="item.productSubtitle"></p>
                             <div class="shopcart-num">
                                 <span class="shopcart-price" v-text="`￥${item.productPrice}`"></span>
-                                <span class="shopcart-quantity" v-text="`X${item.quantity}`"></span>
+                                <div class="shopcart-quantity">
+                                    <i @click="reduceCount(item.productId,item.quantity,item.productStock)" :class="{'active' : item.quantity === 1}">-</i>
+                                    <span>{{item.quantity}}</span>
+                                    <i @click="addCount(item.productId,item.quantity)" :class="{'active' : item.quantity === item.productStock}">+</i>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="delete" @click="deleteShopcart(item.productId)">删除</div>
                 </div>
             </div>
-        </div>
-        <div class="shopcart-footer">
-            <div class="shopcart-item-select" @click="selectAll">
-                <i class="iconfont icon-duigou" v-if="allChecked === true && cartProductVoList.length"></i>
-                <i class="iconfont icon-weibiaoti38" v-else></i>
-                <span>全选</span>
+            <div class="shopcart-footer">
+                <div class="shopcart-item-select" @click="selectAll">
+                    <i class="iconfont icon-duigou" v-if="allChecked === true && cartProductVoList.length"></i>
+                    <i class="iconfont icon-weibiaoti38" v-else></i>
+                    <span>全选</span>
+                </div>
+                <div class="shopcart-accounts">
+                    <span>合计：<i v-text="`￥${cartTotalPrice}`"></i></span>
+                    <button @click="settleAccounts" :class="{'active' : cartTotalPrice > 0}">结算</button>
+                </div>
             </div>
-            <div class="shopcart-accounts">
-                <span>合计：<i v-text="`￥${cartTotalPrice}`"></i></span>
-                <button @click="settleAccounts" :class="{'active' : cartTotalPrice > 0}">结算</button>
-            </div>
-        </div>
+        </section>
         <nav-bar></nav-bar>
     </div>
 </template>
 
 <script>
     import navBar from '../../components/navBar'
+    import {
+        checkLogin,
+        cartList,
+        selectProduct,
+        unSelectProduct,
+        selectAll,
+        unSelectAll,
+        deleteProduct,
+        updateCartCount
+    } from "../../service/getData";
+
     export default {
         components: {
             navBar
@@ -60,36 +74,69 @@
                 endX: 0
             }
         },
+        beforeCreate(){
+            checkLogin().then((res)=>{
+                if(res.status === 1){
+                    this.$router.push('./login')
+                    return
+                }
+            })
+        },
         created(){
             this.getCartList()
         },
         methods: {
             async getCartList(){
-                await this.$http('/api/cart/list.do',{},'POST').then((res)=>{
+                await cartList().then((res)=>{
                     console.log(res)
                     this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
                 })
             },
-            //后台接口来取消/选中商品
+            //取消/选中商品
             async selectProduct($event,id){
-                let $selected = $event.currentTarget.getAttribute('data-selected'),
-                    $url = ''
-                $selected == 'true' ? $url = '/api/cart/un_select.do' : $url = '/api/cart/select.do'
-                !$selected ? $url = '/api/cart/un_select.do' : '/api/cart/select.do'
-                await this.$http($url,{
-                    productId: id
-                },'POST').then((res)=>{
-                    this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
-                })
+                let $selected = parseInt($event.currentTarget.getAttribute('data-selected'))
+                if(!$selected){
+                    await selectProduct(id).then((res)=>{
+                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    })
+                }else{
+                    await unSelectProduct(id).then((res)=>{
+                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    })
+                }
                 this.getCartList()
             },
             selectAll(){
-                let $url = ''
-                this.allChecked === true ? $url = '/api/cart/un_select_all.do' : $url = '/api/cart/select_all.do'
-                this.$http($url,{},'POST').then((res)=>{
+                if(this.allChecked){
+                    unSelectAll().then((res)=>{
+                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    })
+                }else{
+                    selectAll().then((res)=>{
+                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    })
+                }
+            },
+            //增减商品数量
+            addCount(id,num,stock){
+                if(num === stock){  //数量不超过库存数
+                    alert('超过该商品的库存量')
+                    return
+                }
+                num ++
+                updateCartCount(id,num).then((res)=>{
                     this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
                 })
-                this.getCartList()
+            },
+            reduceCount(id,num){
+                if(num === 1){   //数量最小为1
+                    alert('该商品1件起售')
+                    return
+                }
+                num --
+                updateCartCount(id,num).then((res)=>{
+                    this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                })
             },
             setConfig(imageHost,cartProductVoList,cartTotalPrice,allChecked){
                 this.imageHost = imageHost
@@ -101,7 +148,6 @@
             touchStart(e){
                 // 记录初始位置
                 this.startX = e.touches[0].clientX
-                console.log(this.startX)
             },
             //滑动结束
             touchEnd(e){
@@ -128,10 +174,7 @@
                 }
             },
             deleteShopcart(id){
-                this.$http('/api/cart/delete_product.do',{
-                    productIds: id
-                },"POST").then((res)=>{
-                    console.log(res)
+                deleteProduct(id).then((res)=>{
                     this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
                 })
                 this.resetSlide()
@@ -142,6 +185,9 @@
                     return
                 }
                 this.$router.push('/order')
+            },
+            goBack(){
+                this.$router.go(-1)
             }
         }
     }
@@ -149,124 +195,119 @@
 
 <style lang="scss" scoped="" type="text/scss">
     @import "../../common/style/mixin";
-    .shopcart{
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        padding-bottom: 200px;
-        background: #F6F4F5;
-        .shopcart-header{
-            position: fixed;
-            left: 0;
-            top: 0;
+    .shopcart-box{
+        background: #f7f7f7;
+        padding-bottom: 10%;
+        .user-head{
+            @include fj;
             width: 100%;
-            height: 100px;
-            text-align: center;
-            line-height: 100px;
-            color: #ffffff;
-            font-size: 36px;
-            background: $orange;
-            z-index: 100;
-        }
-        .shopcart-content{
-            width: 100%;
-            margin-top: 100px;
-            .shopcart-empty{
-                width: 100%;
-                padding-top: 200px;
-                text-align: center;
-                img{
-                    display: inline-block;
-                    width: 300px;
-                    height: 300px;
-                    margin-left: -20px;
-                }
-                p{
-                    font-size: 36px;
-                    padding-bottom: 20px;
-                    &:last-child{
-                        font-size: 28px;
-                        color: #999;
-                    }
-                }
+            height: 88px;
+            padding: 0 20px;
+            line-height: 88px;
+            font-size: 30px;
+            @include boxSizing;
+            border-bottom: 1px solid #dcdcdc;
+            .iconfont{
+                font-size: 44px;
             }
-            .shopcart-list{
-                width: 100%;
-                overflow: hidden;
-                background: #fff;
-                .shopcart-item{
-                    position: relative;
-                    -webkit-transition: all 0.2s;
-                    transition: all 0.2s;
-                    .shopcart-item-box{
-                        display: flex;
-                        margin-bottom: 20px;
-                        padding: 20px 0;
-                        background: #eee;
-                        .shopcart-item-select{
-                            width: 12%;
-                            height: 180px;
-                            line-height: 180px;
-                            text-align: center;
-                            .iconfont{
-                                display: inline-block;
-                                width: 100%;
-                                height: 100%;
-                                font-size: 40px;
-                                &.icon-duigou{
-                                    color: $orange;
-                                }
-                                &.icon-weibiaoti38{
-                                    color: #999;
-                                }
-                            }
-                        }
-                        img{
-                            width: 180px;
-                            height: 180px;
-                        }
-                        .shopcart-item-info{
-                            width: 60%;
-                            margin-left: 20px;
-                            line-height: 40px;
-                            .shopcart-name{
-                                height: 80px;
-                                overflow: hidden;
-                            }
-                            .shopcart-subtitle{
-                                color: #999;
-                                height: 40px;
-                                overflow: hidden;
-                            }
-                            .shopcart-num{
-                                @include fj;
-                                padding-top: 10px;
-                                font-size: 30px;
-                                .shopcart-price{
-                                    color: $orange;
-                                }
-                                .shopcart-quantity{
-                                    color: #999;
-                                    font-size: 28px;
-                                }
-                            }
-                        }
-                    }
-                    .delete{
-                        position: absolute;
-                        right: -260px;
-                        top: 0;
-                        width: 260px;
-                        height: 220px;
+        }
+        .shopcart-list{
+            width: 100%;
+            overflow: hidden;
+            background: #f7f7f7;
+            .shopcart-item{
+                position: relative;
+                -webkit-transition: all 0.2s;
+                transition: all 0.2s;
+                .shopcart-item-box{
+                    display: flex;
+                    margin-bottom: 20px;
+                    padding: 20px 0;
+                    background: #fff;
+                    .shopcart-item-select{
+                        width: 12%;
+                        height: 180px;
+                        line-height: 180px;
                         text-align: center;
-                        line-height: 220px;
-                        font-size: 32px;
-                        color: #fff;
-                        background: red;
-                        z-index: 1000;
+                        .iconfont{
+                            display: inline-block;
+                            width: 100%;
+                            height: 100%;
+                            font-size: 40px;
+                            &.icon-duigou{
+                                color: $red;
+                            }
+                            &.icon-weibiaoti38{
+                                color: #999;
+                            }
+                        }
                     }
+                    img{
+                        width: 180px;
+                        height: 180px;
+                    }
+                    .shopcart-item-info{
+                        width: 60%;
+                        margin-left: 20px;
+                        line-height: 40px;
+                        .shopcart-name{
+                            height: 80px;
+                            overflow: hidden;
+                        }
+                        .shopcart-subtitle{
+                            color: #999;
+                            height: 40px;
+                            overflow: hidden;
+                        }
+                        .shopcart-num{
+                            @include fj;
+                            padding-top: 10px;
+                            font-size: 30px;
+                            .shopcart-price{
+                                color: $red;
+                            }
+                            .shopcart-quantity{
+                                @include fj;
+                                width: 210px;
+                                height: 60px;
+                                line-height: 60px;
+                                color: #999;
+                                background: #fff;
+                                span{
+                                    width: 80px;
+                                    height: 100%;
+                                    text-align: center;
+                                    line-height: 60px;
+                                    background: #F7F7F7;
+                                }
+                                i{
+                                    width: 60px;
+                                    height: 100%;
+                                    text-align: center;
+                                    line-height: 60px;
+                                    font-style: normal;
+                                    font-size: 50px;
+                                    background: #F7F7F7;
+                                    &.active{
+                                        color: #dcdcdc;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .delete{
+                    position: absolute;
+                    right: -260px;
+                    top: 0;
+                    width: 260px;
+                    height: 220px;
+                    text-align: center;
+                    line-height: 220px;
+                    font-size: 32px;
+                    color: #fff;
+                    background: red;
+                    z-index: 1000;
                 }
             }
         }
@@ -288,7 +329,7 @@
                     height: 100%;
                     font-size: 40px;
                     &.icon-duigou{
-                        color: $orange;
+                        color: $red;
                     }
                     &.icon-weibiaoti38{
                         color: #999;
@@ -306,7 +347,7 @@
                     i{
                         padding: 0 10px;
                         font-style: normal;
-                        color: $orange;
+                        color: $red;
                     }
                 }
                 button{
@@ -318,30 +359,30 @@
                     background: #DADADA;
                 }
                 button.active{
-                    background: $orange;
+                    background: $red;
                 }
             }
         }
-        .shopcart-item[data-type="0"]{
-            transform: translate3d(0,0,0);
-        }
-        .shopcart-item[data-type="1"]{
-            transform: translate3d(-260px,0,0);
-        }
-        .shopcart-item:after{
-            content: " ";
-            position: absolute;
-            left: 0.2rem;
-            bottom: 0;
-            right: 0;
-            height: 1px;
-            border-bottom: 1px solid #ccc;
-            color: #ccc;
-            -webkit-transform-origin: 0 100%;
-            transform-origin: 0 100%;
-            -webkit-transform: scaleY(0.5);
-            transform: scaleY(0.5);
-            z-index: 2;
-        }
+    }
+    .shopcart-item[data-type="0"]{
+        transform: translate3d(0,0,0);
+    }
+    .shopcart-item[data-type="1"]{
+        transform: translate3d(-260px,0,0);
+    }
+    .shopcart-item:after{
+        content: " ";
+        position: absolute;
+        left: 0.2rem;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        border-bottom: 1px solid #ccc;
+        color: #ccc;
+        -webkit-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+        z-index: 2;
     }
 </style>

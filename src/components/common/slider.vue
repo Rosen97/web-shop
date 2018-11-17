@@ -3,7 +3,7 @@
         <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="item in imgUrl" @click="initFocus(item.categoryId)">
                 <router-link tag="a" :to="`/product/${item.categoryId}`">
-                    <img :src="item.imgUrl" class="swiper_img">
+                    <img :src="item.imgUrl" class="swiper_img" ref="slideImg">
                 </router-link>
             </div>
         </div>
@@ -17,8 +17,14 @@
 
     export default {
         props: {
-            imgUrl: Array,
-            default: []
+            imgUrl: {
+                type: Array,
+                default: []
+            },
+            imgHeight: {
+                type: Number,
+                default: 340
+            }
         },
         mounted() {
             this.slider = new Swiper('.swiper-container', {
@@ -32,6 +38,7 @@
                     el: '.swiper-pagination',
                 }
             })
+            // this.$refs.slideImg.style.height = this.imgHeight + 'px'
         },
         methods: {
             initFocus(id) {
@@ -45,8 +52,7 @@
         width: 100%;
         margin-top: 0;
         .swiper_img {
-            width: 100%;
-            height: 340px;
+            width: 100%
         }
     }
 
