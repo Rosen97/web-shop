@@ -1,97 +1,51 @@
 <template>
     <div class="order-wrap">
-        <div class="order-header" ref="orderHeader">
-            <div class="header-top">
-                <i class="iconfont icon-left" @click="goBack"></i>
-                <span>订单配送至</span>
-            </div>
-            <router-link tag="div" to="/user/shipping" class="order-shipping" v-if="shippingId">
-                <p class="user-info" v-text="`${shippingInfo.receiverName}  ${shippingInfo.receiverMobile
-}`"></p>
-                <p class="user-address" v-text="`${shippingInfo.receiverCity} ${shippingInfo.receiverAddress}`"></p>
-                <i class="iconfont icon-right"></i>
+        <header class="order-head">
+            <i class="iconfont icon-left" @click="goBack"></i>
+            <span>购物车</span>
+        </header>
+        <section class="order-shipping" :class="{'fixed' : shippingFixed}">
+            <router-link tag="div" class="shipping-info" to="./shipping">
+                <p>
+                    <span class="name">{{shippingInfo.receiverName}}</span>
+                    <span class="phone">{{shippingInfo.receiverPhone}}</span>
+                </p>
+                <div>
+                    <span>{{shippingInfo.receiverProvince}}{{shippingInfo.receiverCity}}{{shippingInfo.receiverAddress}}</span>
+                    <i class="iconfont icon-right"></i>
+                </div>
             </router-link>
-            <router-link tag="div" to="/user/shipping" class="add-shipping" v-else>
-                新增收货地址
-                <i class="iconfont icon-right"></i>
-            </router-link>
-        </div>
-        <div class="order-content" ref="orderContent">
-            <div class="order-info">
-                <div class="order-item order-images" @click="showCategoryList">
-                    <div class="order-item-left">
-                        <img :src="imageHost+item.productMainImage" v-for="item in orderList" v-if="item.productMainImage" />
+            <img src="../../assets/shipping-bottom.png" />
+        </section>
+        <section class="order-list">
+            <div class="order-item" v-for="item in orderList">
+                <img :src="imageHost+item.productMainImage">
+                <div class="product-info">
+                    <p class="name">{{item.productName}}</p>
+                    <p class="subtitle">{{item.productSubtitle}}</p>
+                    <div>
+                        <span class="price">￥ {{item.productPrice}}</span>
+                        <span class="quantity">X {{item.quantity}}</span>
                     </div>
-                    <div class="order-item-right">
-                        <span v-text="`共${orderList.length}件`"></span>
-                        <i class="iconfont icon-right"></i>
-                    </div>
-                </div>
-                <div class="order-item">
-                    <div class="order-item-left">
-                        商品总价
-                    </div>
-                    <div class="order-item-right" v-text="`￥ ${cartTotalPrice}`"></div>
-                </div>
-                <div class="order-item">
-                    <div class="order-item-left">
-                        运费
-                    </div>
-                    <div class="order-item-right">
-                        包邮
-                    </div>
-                </div>
-                <div class="order-item">
-                    <div class="order-item-left">
-                        优惠券
-                    </div>
-                    <div class="order-item-right">
-                        无可用
-                    </div>
-                </div>
-                <div class="order-item small-total">
-                    <div class="order-item-left">
-                        小计
-                    </div>
-                    <div class="order-item-right" v-text="`￥ ${cartTotalPrice}`"></div>
                 </div>
             </div>
-        </div>
-        <div class="order-footer">
+        </section>
+        <section class="order-payment">
             <div>
-                <span v-text="`共${orderList.length}件，应付金额：`"></span>
-                <i v-text="`￥${cartTotalPrice}`"></i>
+                <p>
+                    <span>商品金额</span>
+                    <span>￥ {{cartTotalPrice}}</span>
+                </p>
+                <p>
+                    <span>运费</span>
+                    <span>+ ￥0.00</span>
+                </p>
             </div>
-            <button @click="goPayment">去付款</button>
-        </div>
-        <transition name="fade-out">
-            <div v-show="categoryWrap" class="order-top-modal" ref="orderTopModal"></div>
-        </transition>
-        <transition name="slide-up">
-            <div class="category-list" ref="orderContent" v-show="categoryWrap">
-                <div class="category-list-top">
-                    <p>商品清单</p>
-                    <span>共2件</span>
-                </div>
-                <div class="category-list-con">
-                    <div class="category-item" v-for="item in orderList">
-                        <img :src="imageHost+item.productMainImage" />
-                        <div class="category-info">
-                            <div class="category-info-top">
-                                <span v-text="item.productName"></span>
-                                <span v-text="`￥${item.productPrice}`"></span>
-
-                            </div>
-                            <div class="category-info-bottom">
-                                <span v-text="item.productSubtitle"></span>
-                                <span v-text="`X ${item.quantity}`"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button @click="closeCategorList">确定</button>
+            <div class="total-price">
+                总价：<span>￥{{cartTotalPrice}}</span>
             </div>
-        </transition>
+            <button @click="goPayment">在线支付</button>
+        </section>
     </div>
 </template>
 
@@ -105,15 +59,18 @@
                 orderList: [],
                 imageHost: '',
                 cartTotalPrice: 0,
+                shippingFixed: false,
                 categoryWrap: false
             }
         },
-        computed: {
+        computed:{
             ...mapState({
                 shippingId: state => state.shippingId
             })
         },
         created(){
+            console.log(111111111)
+            console.log(this.shippingId)
             if(!this.shippingId){
                 this.getShippingId()
             }else{
@@ -122,12 +79,16 @@
             this.getOrderList()
         },
         mounted(){
-            this.setOrderContentHeight()
+            window.addEventListener('scroll',this.pageScroll)
         },
         methods: {
             ...mapMutations([
                 'RECORD_SHIPPINGID'
             ]),
+            pageScroll(){
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+                scrollTop > 0 ? this.shippingFixed = true : this.shippingFixed = false
+            },
             getShippingId(){
                 this.$http('/api/shipping/list.do',{
                     pageNum: 1,
@@ -146,6 +107,7 @@
                     shippingId: this.shippingId
                 },'POST').then((res)=>{
                     this.shippingInfo = res
+                    console.log(res)
                 })
             },
             getOrderList(){
@@ -158,18 +120,6 @@
                         }
                     })
                 })
-            },
-            setOrderContentHeight() {
-                let $screenHeight = document.documentElement.clientHeight,
-                    $orderHeaderHeight = this.$refs.orderHeader.clientHeight
-                this.$refs.orderTopModal.style.height = $orderHeaderHeight + 'px'
-                this.$refs.orderContent.style.height = $screenHeight - $orderHeaderHeight + 'px'
-            },
-            showCategoryList(){
-                this.categoryWrap = true
-            },
-            closeCategorList(){
-                this.categoryWrap = false
             },
             //去付款
             goPayment(){
@@ -189,227 +139,149 @@
 <style lang="scss" type="text/scss" scoped>
     @import '../../common/style/mixin';
     .order-wrap{
-        width: 100%;
-        background: $orange;
-        .order-header{
+        background: #f7f7f7;
+        .order-head{
+            position: relative;
             width: 100%;
-            font-size: 36px;
-            padding: 20px 30px;
-            box-sizing: border-box;
-            .header-top{
-                position: relative;
-                width: 100%;
-                height: 80px;
-                text-align: center;
-                line-height: 80px;
-                color: #fff;
-                font-size: 36px;
-                .iconfont{
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    font-size: 50px;
-                    color: #DADADA;
-                }
-            }
-            .order-shipping{
-                position: relative;
-                width: 100%;
-                padding: 30px 0;
-                color: #fff;
-                .user-address{
-                    padding-top: 10px;
-                    font-size: 30px;
-                }
-                .iconfont{
-                    position: absolute;
-                    right: 0;
-                    top: 60px;
-                    font-size: 30px;
-                    color: #DADADA;
-                }
-            }
-            .add-shipping{
-                height: 40px;
-                padding: 60px 0;
-                line-height: 40px;
-                color: #fff;
-                .iconfont{
-                    font-size: 30px;
-                    color: #DADADA;
-                }
+            height: 88px;
+            text-align: center;
+            line-height: 88px;
+            padding: 0 20px;
+            font-size: 34px;
+            @include boxSizing;
+            background: #f8f8f8;
+            .iconfont {
+                position: absolute;
+                left: 20px;
+                top: 0;
+                font-size: 50px;
+                font-weight: bold;
             }
         }
-        .order-content{
+        .order-shipping{
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            font-size: 34px;
-            background: #eee;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            .order-item{
-                @include fj;
-                width: 100%;
-                padding: 20px 30px;
-                box-sizing: border-box;
-                @include border-1px(#dcdcdc);
+            background: #FFFFFF;
+            &.fixed{
+                position: fixed;
+                left: 0;
+                top: 0;
                 background: #fff;
-                &.order-images{
-                    height: 140px;
-                    line-height: 100px;
-                    .order-item-left{
-                        max-width: 70%;
-                        overflow: hidden;
+                z-index: 10000000;
+            }
+            .shipping-info{
+                width: 100%;
+                padding: 20px;
+                @include boxSizing;
+                p{
+                    font-size: 30px;
+                    font-weight: bold;
+                    .phone{
+                        font-size: 26px;
+                    }
+                }
+                div{
+                    @include fj;
+                    width: 100%;
+                    font-size: 30px;
+                    padding: 10px 0 0 0;
+                    span{
+                        width: 90%;
                     }
                     .iconfont{
                         font-size: 34px;
                         color: #999;
+                        font-weight: bold;
                     }
                 }
-                &.small-total{
-                    color: $orange;
-                    border-bottom: none;
-                }
+            }
+            img{
+                width: 100%;
+                height: 14px;
+            }
+        }
+        .order-list{
+            width: 100%;
+            margin-top: 40px;
+            padding: 20px 0;
+            background: #f7f7f7;
+            .order-item{
+                @include fj;
+                width: 100%;
+                padding: 20px;
+                margin-bottom: 20px;
+                background: #fff;
+                @include boxSizing;
                 img{
-                    display: inline-block;
-                    width: 100px;
-                    height: 100px;
-                    margin: 0 5px;
+                    width: 180px;
+                    height: 180px;
                 }
-            }
-        }
-        .order-footer{
-            @include fj;
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            padding: 0 20px;
-            height: 100px;
-            line-height: 100px;
-            font-size: 34px;
-            z-index: 100;
-            background: #fff;
-            box-sizing: border-box;
-            div i{
-                font-style: normal;
-                color: $orange;
-            }
-            button{
-                width: 200px;
-                height: 70px;
-                margin: 15px 0;
-                color: #fff;
-                font-size: 30px;
-                background: $orange;
-                border-radius: 40px;
-            }
-        }
-        .order-top-modal{
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(0,0,0,.3);
-        }
-        .category-list{
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            background: #fff;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            z-index: 1000;
-            .category-list-top{
-                width: 100%;
-                height: 100px;
-                padding: 20px 0;
-                text-align: center;
-                box-sizing: border-box;
-                p{
-                    font-size: 34px;
-                }
-                span{
-                    padding-top: 10px;
-                    font-size: 26px;
-                    color: #999;
-                }
-            }
-            .category-list-con{
-                width: 100%;
-                height: 70%;
-                margin-top: 40px;
-                overflow-y: scroll;
-                .category-item{
-                    @include fj;
-                    width: 100%;
-                    height: 160px;
-                    padding: 20px;
-                    box-sizing: border-box;
-                    @include border-1px(#dcdcdc);
-                    img{
-                        width: 160px;
-                        height: 100px;
+                .product-info{
+                    position: relative;
+                    width: 70%;
+                    .name{
+                        width: 100%;
+                        height: 80px;
+                        font-size: 30px;
+                        font-weight: bold;
+                        overflow: hidden;
                     }
-                    .category-info{
-                        flex: 4;
-                        display: flex;
-                        flex-direction: column;
-                        padding: 0 0 20px 20px;
-                        box-sizing: border-box;
-                        .category-info-top{
-                            @include fj;
-                            width: 100%;
-                            span{
-                                flex: 3;
-                                height: 40px;
-                                overflow: hidden;
-                            }
-                            span:nth-child(2){
-                                flex: 1;
-                                text-align: right;
-                            }
+                    .subtitle{
+                        padding: 8px 0;
+                        color: #999;
+                    }
+                    div{
+                        @include fj;
+                        position: absolute;
+                        left: 0;
+                        bottom: 0;
+                        width: 100%;
+                        margin-top: 20px;
+                        .price{
+                            font-size: 30px;
+                            color: $red;
                         }
-                        .category-info-bottom{
-                            @include fj;
-                            width: 100%;
-                            padding-top: 20px;
+                        .quantity{
                             color: #999;
-                            font-size: 26px;
-                            span{
-                                flex: 3;
-                                height: 40px;
-                                overflow: hidden;
-                            }
-                            span:nth-child(2){
-                                flex: 1;
-                                text-align: right;
-                            }
                         }
                     }
                 }
             }
+        }
+        .order-payment{
+            width: 100%;
+            padding: 20px;
+            font-size: 30px;
+            @include boxSizing;
+            p{
+                @include fj;
+                width: 100%;
+                margin-bottom: 20px;
+                span:nth-child(2){
+                    color: $red;
+                }
+            }
+            .total-price{
+                width: 100%;
+                text-align: right;
+                font-size: 32px;
+                font-weight: bold;
+                span{
+                    color: $red;
+                    font-size: 34px;
+                    font-weight: normal;
+                }
+            }
             button{
-                position: fixed;
-                left: 0;
-                bottom: 20px;
-                width: 90%;
-                height: 60px;
-                margin: 0 5%;
-                text-align: center;
-                line-height: 60px;
+                width: 100%;
+                height: 92px;
+                margin: 30px 0;
                 color: #fff;
                 font-size: 30px;
-                background: $orange;
-                border-radius: 40px;
+                background: #3884FF;
+                @include borderRadius(10px);
             }
         }
-    }
-    .slide-up-enter-active,.slide-up-leave{
-        transition: all 0.5s;
-    }
-    .slide-up-enter,.slide-up-leave-to{
-        transform: translate3d(0,100%,0);
     }
 </style>

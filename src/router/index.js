@@ -15,6 +15,8 @@ const forgetPassword = r => require.ensure([], () => r(require('@/pages/forget-p
 const shopcart = r => require.ensure([], () => r(require('@/pages/shopcart/shopcart')), 'shopcart')
 const order = r => require.ensure([], () => r(require('@/pages/order/order')), 'order')
 const payment = r => require.ensure([], () => r(require('@/pages/payment/payment')), 'payment')
+const shipping = r => require.ensure([], () => r(require('@/pages/shipping/shipping')), 'shipping')
+const picker = r => require.ensure([], () => r(require('@/pages/picker/picker')), 'picker')
 
 
 Vue.use(Router)
@@ -103,6 +105,20 @@ export default new Router({
                 index: 3
             },
             component: payment
+        },
+        {
+            path: '/shipping',
+            meta: {
+                index: 3
+            },
+            component: shipping
+        },
+        {
+            path: '/picker',
+            meta: {
+                index: 3
+            },
+            component: picker
         }
     ]
 })

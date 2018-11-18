@@ -7,7 +7,7 @@
         </header>
         <section class="shopcart-page">
             <div class="shopcart-list">
-                <div class="shopcart-item" v-for="item in cartProductVoList" data-type="0">
+                <div class="shopcart-item" v-for="item in cartProductVoList" data-type="0" @click="showDetail($event,item.productId)">
                     <div class="shopcart-item-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
                         <div class="shopcart-item-select">
                             <i class="iconfont icon-duigou" data-selected="1" @click="selectProduct($event,item.productId)" v-if="item.productChecked"></i>
@@ -137,6 +137,10 @@
                 updateCartCount(id,num).then((res)=>{
                     this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
                 })
+            },
+            showDetail(e,id){
+                console.log(e.currentTarget.className)
+                console.log(id)
             },
             setConfig(imageHost,cartProductVoList,cartTotalPrice,allChecked){
                 this.imageHost = imageHost

@@ -1,10 +1,23 @@
 <template>
     <div class="product-detail">
         <header class="detail-nav">
-            <i class="iconfont icon-left-circle" @click="goBack"></i>
-            <i class="iconfont icon-more1"></i>
+            <i class="iconfont icon-left" @click="goBack"></i>
+            <div class="nav-list">
+                <span :class="{'active' : navIndex === 0}" data-type="product" @click="scrollToView($event)">
+                    <i class="iconfont icon-location" v-show="navIndex === 0"></i>商品
+                </span>
+                <span data-type="detail" @click="scrollToView($event)" :class="{'active' : navIndex === 1}">
+                    <i class="iconfont icon-location" v-show="navIndex === 1"></i>商品详情
+                </span>
+                <span data-type="recommend" @click="scrollToView($event)" :class="{'active' : navIndex === 2}">
+                    <i class="iconfont icon-location" v-show="navIndex === 2"></i>商品推荐
+                </span>
+            </div>
+            <i class="iconfont icon-More"></i>
         </header>
-        <slider :imgUrl="subImageList" :imgHeight="700" class="detail-slider"></slider>
+        <section class="product-focus">
+            <slider :imgUrl="subImageList" :imgHeight="700" class="detail-slider"></slider>
+        </section>
         <section class="detail-info">
             <p class="detail-info-name" v-text="categoryData.name"></p>
             <p class="detail-info-subtitle" v-text="categoryData.subtitle"></p>
@@ -14,7 +27,7 @@
             </div>
         </section>
         <section>
-            <div class="detail-content">
+            <div class="detail-content" ref="detailContent" id="content">
                 <p class="detail-gap"></p>
                 <ul>
                     <li>概述</li>
@@ -23,6 +36,38 @@
                     <li>常见问题</li>
                 </ul>
                 <div v-html="categoryData.detail"></div>
+            </div>
+            <div ref="detailRecommend" id="recommend">
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
+                规划局是可耻的<br>
             </div>
             <div class="detail-cart">
                 <router-link tag="div" to="/shopcart" class="detail-cart-left">
@@ -51,19 +96,25 @@
             return {
                 subImageList: [],
                 categoryData: {},
-                cartCount: 0
+                cartCount: 0,
+                navIndex: 0    //导航索引
             }
         },
         created(){
             this.getDetail()
             this.getCartCount()
         },
+        mounted(){
+            this.$nextTick(function(){
+                window.addEventListener('scroll',this.pageScroll)
+            })
+        },
         methods: {
             async getDetail(){
                 let subImages = [],
                     imageHost = ''
                 await productDetail(this.$route.params.id).then((res)=>{
-                    console.log(res)
+                    // console.log(res)
                     subImages = res.subImages.split(',')
                     imageHost = res.imageHost
                     this.categoryData = res
@@ -76,15 +127,38 @@
             },
             getCartCount(){
                 cartCount().then((res)=>{
-                    console.log(res)
+                    // console.log(res)
                     this.cartCount = res
                 })
             },
             async addCart(){
                 await addCart(this.categoryData.id,1).then((res)=>{
-                    console.log(res)
+                    // console.log(res)
                 })
                 this.getCartCount()
+            },
+            scrollToView(e){
+                let $type = e.target.getAttribute('data-type')
+                switch($type){
+                    case 'product':
+                        this.navIndex = 0
+                        break
+                    case 'detail':
+                        this.navIndex = 1
+                        break
+                    case 'recommend':
+                        this.navIndex = 2
+                        break
+                }
+                document.documentElement.scrollTop = document.querySelector('#content').offsetTop
+                // console.log($type)
+                // console.log(document.querySelector('#content').offsetTop)
+                // console.log(document.querySelector('#recommend').offsetTop)
+            },
+            //监听页面滚动
+            pageScroll(){
+                // let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+
             },
             goBack(){
                 this.$router.go(-1)
@@ -103,17 +177,36 @@
             left: 0;
             top: 0;
             width: 100%;
-            padding: 30px 20px;
+            height: 88px;
+            padding: 0 20px;
+            line-height: 88px;
             box-sizing: border-box;
             z-index: 1000;
+            color: #252525;
+            background: #fff;
+            border-bottom: 1px solid #dcdcdc;
             i{
                 font-size: 50px;
                 color: #000;
-                opacity: 0.6;
+            }
+            div span{
+                padding: 0 20px;
+                font-size: 28px;
+                &.active{
+                    color: $red;
+                }
+                .iconfont{
+                    padding-right: 8px;
+                    font-size: 28px;
+                    color: $red;
+                }
             }
         }
         .detail-slider img{
             height: 700px;
+        }
+        .product-focus{
+            margin-top: 88px;
         }
         .detail-info{
             width: 100%;
@@ -135,7 +228,7 @@
                 font-size: 32px;
                 color: #999;
                 .detail-info-price{
-                    color: $orange;
+                    color: $red;
                     font-size: 44px;
                 }
             }
@@ -164,13 +257,15 @@
                 }
             }
             div{
+                width: 100%;
+                overflow: hidden;
                 p{
                     width: 100%;
                     font-size: 40px;
                     text-align: center;
-                    img{
-                        width: 100%;
-                    }
+                }
+                img{
+                    width: 100%;
                 }
             }
         }
@@ -182,16 +277,15 @@
             width: 100%;
             height: 100px;
             font-size: 30px;
-            background: #fff;
+            background: #FEFBF9;
             z-index: 1000;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
+            @include boxSizing;
             .detail-cart-left{
                 position: relative;
                 display: flex;
                 flex-direction: column;
                 width: 100px;
+                padding-top: 15px;
                 font-size: 26px;
                 text-align: center;
                 i{
@@ -199,14 +293,14 @@
                 }
                 .cart-num{
                     position: absolute;
-                    top: -4px;
+                    top: 4px;
                     right: 10px;
                     width: 30px;
                     height: 30px;
                     border-radius: 50%;
                     color: #fff;
                     font-size: 24px;
-                    background: $orange;
+                    background: $red;
                     z-index: 100;
                 }
             }

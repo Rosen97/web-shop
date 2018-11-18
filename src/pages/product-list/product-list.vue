@@ -23,14 +23,14 @@
             </div>
         </section>
         <section class="product-list">
-            <router-link tag="div" class="product-item" v-for="item in productList" :to="`./product/${item.id}`">
+            <div tag="div" class="product-item" v-for="item in productList" @click="productDetail(item.id)">
                 <img :src="item.imageHost+item.mainImage">
                 <div class="product-info">
                     <p class="name">{{item.name}}</p>
                     <p class="subtitle">{{item.subtitle}}</p>
                     <span class="price">￥ {{item.price}}</span>
                 </div>
-            </router-link>
+            </div>
         </section>
     </div>
 </template>
@@ -85,6 +85,9 @@
                         this.productList = res.list
                     })
                 }
+            },
+            productDetail(id){
+                this.$router.push('./product/'+id)
             },
             goBack(){
                 console.log(111)
