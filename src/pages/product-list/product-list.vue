@@ -8,7 +8,7 @@
             </div>
             <i class="iconfont icon-More"></i>
         </header>
-        <section class="select-menu">
+        <section class="select-menu" :class="{'isFixed' : seclectActive}">
             <div class="select-item" :class="{'active' : orderBy === 'default'}" data-orderBy="default" @click="selectOrder($event)">
                 默认排序
             </div>
@@ -22,20 +22,25 @@
                 筛选<i class="iconfont icon-shaixuan"></i>
             </div>
         </section>
-        <section class="product-list">
-            <div tag="div" class="product-item" v-for="item in productList" @click="productDetail(item.id)">
+      <section class="product-list">
+        <scroll :on-refresh="onRefresh" :on-infinite="onInfinite" style="top: 220px;">
+            <div>
+              <div class="product-item" v-for="item in productList" @click="productDetail(item.id)">
                 <img :src="item.imageHost+item.mainImage">
                 <div class="product-info">
-                    <p class="name">{{item.name}}</p>
-                    <p class="subtitle">{{item.subtitle}}</p>
-                    <span class="price">￥ {{item.price}}</span>
+                  <p class="name">{{item.name}}</p>
+                  <p class="subtitle">{{item.subtitle}}</p>
+                  <span class="price">￥ {{item.price}}</span>
                 </div>
+              </div>
             </div>
-        </section>
+          </scroll>
+      </section>
     </div>
 </template>
 
 <script>
+    import scroll from '../../components/common/scroll'
     import {getUrlKey} from "../../common/js/util";
     import {productListKeyword,productListCategoryId} from "../../service/getData";
 
@@ -51,7 +56,8 @@
                     pageNum: 1,
                     pageSize: 20,
                     orderBy: 'default'
-                }
+                },
+              seclectActive: false
             }
         },
         created() {
@@ -62,6 +68,9 @@
             this.keyword = keyword
             this.getProductList(this.params)
         },
+      mounted(){
+        window.addEventListener('scroll',this.pageScroll)
+      },
         methods: {
             //价格排序
             selectOrder(e){
@@ -77,23 +86,46 @@
             getProductList(params){
                 if(this.keyword == ''){
                     productListCategoryId(params).then((res)=>{
-                        this.productList = res.list
+                        this.productList = this.productList.concat(res.list)
                     })
                 }else{
                     productListKeyword(params).then((res)=>{
                         console.log(res)
-                        this.productList = res.list
+                        this.productList = this.productList.concat(res.list)
                     })
                 }
             },
             productDetail(id){
                 this.$router.push('./product/'+id)
             },
+          pulldown(){
+              console.log(11111)
+          },
+          //刷拉刷新
+          onRefresh(done) {
+            this.params.pageNum = 1
+            this.productList = []
+            this.getProductList(this.params);
+            done() // call done
+          },
+          //加载更多
+          onInfinite(done) {
+            this.params.pageNum++
+            this.getProductList(this.params);
+            done()
+          },
+          pageScroll(){
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+            scrollTop > 100 ? this.seclectActive = true : this.seclectActive = false
+          },
             goBack(){
                 console.log(111)
                 this.$router.go(-1)
             }
-        }
+        },
+      components: {
+        scroll
+      }
     }
 </script>
 
@@ -145,6 +177,12 @@
         justify-content: space-around;
         width: 100%;
         height: 100px;
+      background: #fff;
+        &.isFixed{
+          position: fixed;
+          left: 0;
+          top: 0;
+        }
         .select-item{
             flex: 1;
             height: 100%;

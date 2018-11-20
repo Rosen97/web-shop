@@ -18,7 +18,7 @@
                     </ul>
                 </list-scroll>
                 <div class="search-content">
-                    <list-scroll style="width: 100%;height: 100%;overflow: hidden;" :scroll-data="categoryData" >
+                    <list-scroll :scroll-data="categoryData" >
                         <div class="swiper-container">
                             <div class="swiper-wrapper">
                                 <transition name="fade-out">

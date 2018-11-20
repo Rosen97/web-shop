@@ -15,7 +15,7 @@
                     <i class="iconfont icon-right"></i>
                 </div>
             </router-link>
-            <img src="../../assets/shipping-bottom.png" />
+            <!--<img src="../../assets/shipping-bottom.png" />-->
         </section>
         <section class="order-list">
             <div class="order-item" v-for="item in orderList">
