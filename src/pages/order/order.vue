@@ -87,7 +87,7 @@
             ]),
             pageScroll(){
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-                scrollTop > 0 ? this.shippingFixed = true : this.shippingFixed = false
+                scrollTop > 100 ? this.shippingFixed = true : this.shippingFixed = false
             },
             getShippingId(){
                 this.$http('/api/shipping/list.do',{
@@ -222,7 +222,7 @@
                     width: 70%;
                     .name{
                         width: 100%;
-                        height: 80px;
+                        max-height: 80px;
                         font-size: 30px;
                         font-weight: bold;
                         overflow: hidden;

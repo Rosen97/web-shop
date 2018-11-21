@@ -38,7 +38,7 @@
     import mHeader from 'components/mHeader'
     import navBar from 'components/navBar'
     import slider from 'components/common/slider'
-    import { homeData } from "../../service/getData";
+    import {homeData} from "../../service/getData";
 
     export default {
         data() {
@@ -49,25 +49,17 @@
                 headerActive: false
             }
         },
-        // mounted() {
-        //     homeData().then((res) => {
-        //       console.log(res)
-        //         this.headList = res.headList
-        //         this.categoryList = res.categoryList
-        //         this.floorList = res.floorList
-        //     })
-        // },
-        mounted(){
-          homeData().then((res) => {
-            console.log(res)
-            this.headList = res.headList
-            this.categoryList = res.categoryList
-            this.floorList = res.floorList
-          })
-            window.addEventListener('scroll',this.pageScroll)
+        mounted() {
+            homeData().then((res) => {
+                console.log(res)
+                this.headList = res.headList
+                this.categoryList = res.categoryList
+                this.floorList = res.floorList
+            })
+            window.addEventListener('scroll', this.pageScroll)
         },
         methods: {
-            pageScroll(){
+            pageScroll() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
                 scrollTop > 100 ? this.headerActive = true : this.headerActive = false
             }
@@ -82,7 +74,8 @@
 
 <style lang="scss" scoped="" type="text/scss">
     @import '../../common/style/mixin';
-    .home-header{
+
+    .home-header {
         position: fixed;
         left: 0;
         top: 0;
@@ -95,13 +88,13 @@
         font-size: 30px;
         color: #fff;
         z-index: 10000;
-        &.active{
+        &.active {
             background: $red;
         }
-        .icon-caidan{
+        .icon-caidan {
             font-size: 50px;
         }
-        .header-search{
+        .header-search {
             display: flex;
             width: 74%;
             height: 40px;
@@ -111,81 +104,84 @@
             color: #232326;
             background: #fff;
             @include borderRadius(40px);
-            .app-name{
+            .app-name {
                 padding: 0 20px;
                 color: $red;
                 font-size: 40px;
                 font-weight: bold;
                 border-right: 1px solid #666;
             }
-            .icon-search{
+            .icon-search {
                 padding: 0 20px;
                 font-size: 34px;
             }
-            .search-title{
+            .search-title {
                 font-size: 24px;
                 color: #666;
             }
         }
     }
-    .swiper-container .swiper_img{
+
+    .swiper-container .swiper_img {
         height: 400px;
     }
-    .category-list{
+
+    .category-list {
         display: flex;
         flex-shrink: 0;
         flex-wrap: wrap;
         width: 100%;
         padding-bottom: 26px;
-        div{
+        div {
             display: flex;
             flex-direction: column;
             width: 20%;
             text-align: center;
-            img{
+            img {
                 width: 80px;
                 height: 80px;
                 margin: 26px auto 16px auto;
             }
         }
     }
-    .floor-list{
+
+    .floor-list {
         width: 100%;
         padding-bottom: 100px;
-        .floor-head{
+        .floor-head {
             width: 100%;
             height: 80px;
             background: #F6F6F6;
         }
-        .floor-content{
+        .floor-content {
             display: flex;
             flex-shrink: 0;
             flex-wrap: wrap;
             width: 100%;
             @include boxSizing;
-            .floor-category{
+            .floor-category {
                 width: 50%;
                 padding: 20px;
                 border-right: 1px solid #dcdcdc;
                 border-bottom: 1px solid #dcdcdc;
                 @include boxSizing;
-                &:nth-child(2n){
+                &:nth-child(2n) {
                     border-right: none;
                 }
-                p{
+                p {
                     font-size: 34px;
                     color: #333;
-                    &:nth-child(2){
+                    &:nth-child(2) {
                         padding: 10px 0;
                         font-size: 26px;
                         color: $red;
                     }
                 }
-                .floor-products{
+                .floor-products {
                     display: flex;
                     justify-content: space-around;
                     width: 100%;
-                    img{
+                    img {
                         width: 130px;
                         height: 130px;
                     }

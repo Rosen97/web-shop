@@ -11,7 +11,7 @@
                         <span v-text="item.receiverName"></span>
                         <span v-text="item.receiverMobile"></span>
                     </div>
-                    <p class="shipping-address" v-text="`${item.receiverCity}${item.receiverAddress}`"></p>
+                    <p class="shipping-address" v-text="`${item.receiverProvince}${item.receiverCity}${item.receiverAddress}`"></p>
                 </div>
                 <div class="shipping-bottom">
                     <div class="user-shipping-default" :class="{'active' : defaultIndex === index}" @click="setDefault(index)">
@@ -41,26 +41,22 @@
                 <div class="new-shipping-content">
                     <div class="new-shipping-item receiver">
                         <span class="shipping-title">收货人</span>
-                        <input class="shipping-content" v-model="shipping.receiverName" />
-                        <i></i>
+                        <input class="shipping-text" v-model="shipping.receiverName" />
                     </div>
                     <div class="new-shipping-item mobile">
                         <span class="shipping-title">联系电话</span>
-                        <input class="shipping-content" v-model="shipping.receiverMobile" />
-                        <i></i>
+                        <input class="shipping-text" v-model="shipping.receiverMobile" />
                     </div>
                     <div class="new-shipping-item area">
                         <span class="shipping-title">所在地区</span>
-                        <input placeholder="请选择" class="shipping-content" v-model="shipping.receiverProvince" />
-                        <i class="iconfont icon-right"></i>
+                        <p class="shipping-text" @click="selectAddress">{{address}}</p>
                     </div>
                     <div class="new-shipping-item street">
                         <span class="shipping-title">邮编</span>
-                        <input placeholder="请选择" class="shipping-content" v-model="shipping.receiverZip" />
-                        <i class="iconfont icon-right"></i>
+                        <input placeholder="请选择" class="shipping-text" v-model="shipping.receiverZip" />
                     </div>
                     <div class="new-shipping-item detail">
-                        <textarea placeholder="请填写详细地址，不少于5个字" v-model="shipping.receiverAddress"></textarea>
+                        <textarea placeholder="请填写详细地址，不少于5个字" v-model="receiverAddress"></textarea>
                     </div>
                 </div>
             </div>
@@ -75,26 +71,22 @@
                 <div class="new-shipping-content">
                     <div class="new-shipping-item receiver">
                         <span class="shipping-title">收货人</span>
-                        <input class="shipping-content" v-model="shipping.receiverName" />
-                        <i></i>
+                        <input class="shipping-text" v-model="shipping.receiverName" />
                     </div>
                     <div class="new-shipping-item mobile">
                         <span class="shipping-title">联系电话</span>
-                        <input class="shipping-content" v-model="shipping.receiverMobile" />
-                        <i></i>
+                        <input class="shipping-text" v-model="shipping.receiverMobile" />
                     </div>
                     <div class="new-shipping-item area">
                         <span class="shipping-title">所在地区</span>
-                        <input placeholder="请选择" class="shipping-content" v-model="shipping.receiverProvince" />
-                        <i class="iconfont icon-right"></i>
+                        <p class="shipping-text" @click="selectAddress">{{address}}</p>
                     </div>
                     <div class="new-shipping-item street">
                         <span class="shipping-title">邮编</span>
-                        <input placeholder="请选择" class="shipping-content" v-model="shipping.receiverZip" />
-                        <i class="iconfont icon-right"></i>
+                        <input placeholder="请选择" class="shipping-text" v-model="shipping.receiverZip" />
                     </div>
                     <div class="new-shipping-item detail">
-                        <textarea placeholder="请填写详细地址，不少于5个字" v-model="shipping.receiverAddress"></textarea>
+                        <textarea placeholder="请填写详细地址，不少于5个字" v-model="receiverAddress"></textarea>
                     </div>
                 </div>
             </div>
@@ -108,13 +100,67 @@
                 </div>
             </div>
         </popup>
+        <div class="picker" v-if="pickerShow" @click="closePicker($event)">
+            <div class="picker-wrapper">
+                <div class="picker-head">
+                    <span>所在区域</span>
+                    <i class="iconfont icon-close" @click="closePicker($event)"></i>
+                </div>
+                <div class="address">
+                    <span :class="{'active' : selectIndex === 0}" data-index="0" @click="changeTag($event)">{{provinceTitle}}</span>
+                    <span :class="{'active' : selectIndex === 1}" data-index="1" @click="changeTag($event)">{{cityTitle}}</span>
+                    <span :class="{'active' : selectIndex === 2}" data-index="2" @click="changeTag($event)">{{areaTitle}}</span>
+                </div>
+                <div class="picker-content">
+                    <div class="picker-item" v-if="selectIndex === 0">
+                        <list-scroll :scroll-data="areaData">
+                            <div class="provinceList">
+                                <span v-for="(item,index) in areaData"
+                                      :class="{'active' : provinceIndex === index}"
+                                      @click="selectProvince(index)">
+                                    <i class="iconfont icon-right" v-if="provinceIndex === index"></i>
+                                    {{item.value}}
+                                </span>
+                            </div>
+                        </list-scroll>
+                    </div>
+                    <div class="picker-item" v-if="selectIndex === 1">
+                        <list-scroll :scroll-data="cityList">
+                            <div class="cityList">
+                                <span v-for="(item,index) in cityList"
+                                      :class="{'active' : cityIndex === index}"
+                                      @click="selectCity(index)">
+                                    <i class="iconfont icon-right" v-if="cityIndex === index"></i>
+                                    {{item.value}}
+                                </span>
+                            </div>
+                        </list-scroll>
+                    </div>
+                    <div class="picker-item" v-if="selectIndex === 2">
+                        <list-scroll :scroll-data="areaList">
+                            <div class=" areaList">
+                                <span v-for="(item,index) in areaList"
+                                      :class="{'active' : areaIndex === index}"
+                                      @click="selectArea(index)">
+                                    <i class="iconfont icon-right" v-if="areaIndex === index"></i>
+                                    {{item.value}}
+                                </span>
+                            </div>
+                        </list-scroll>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+    import listScroll from '../../components/common/list-scroll'
     import popup from 'components/common/popup'
     import {addressList,addAddress,updateAddress} from "../../service/getData";
     import {mapState,mapMutations} from 'vuex'
+    import areaData from './area'
+    import {removeSpace,formValidate} from "../../common/js/util";
     export default {
         data() {
             return {
@@ -130,10 +176,23 @@
                     receiverAddress: '',
                     receiverZip: ''
                 },
+                receiverAddress: '',
+                areaData: [],
+                cityList: [],
+                areaList: [],
+                selectIndex: 0,   //地址标签索引
+                provinceIndex: -1,  //省份索引
+                cityIndex: -1,     //城市索引
+                areaIndex: -1,     //区域索引
                 defaultIndex: 0,
+                address: '请选择所在区域',
+                provinceTitle: '请选择',
+                cityTitle: '请选择',
+                areaTitle: '请选择',
                 addShippingWrap: false,
-                editShippingWrap: true,
-                isDeleteShow: false
+                editShippingWrap: false,
+                isDeleteShow: false,
+                pickerShow: false
             }
         },
         computed: {
@@ -143,6 +202,8 @@
         },
         created(){
             this.getShippingData()
+            this.areaData = areaData
+            console.log(areaData)
         },
         methods: {
             ...mapMutations([
@@ -214,13 +275,57 @@
                 this.resetShipping()
                 this.addShippingWrap = true
             },
+            changeTag(e){
+                let $index = parseInt(e.currentTarget.getAttribute('data-index'))
+                this.selectIndex = $index
+                this.areaData = areaData
+            },
+            selectAddress(){
+                this.pickerShow = true
+            },
+            selectProvince(index){
+                this.cityList = areaData[index].children
+                this.provinceIndex = index
+                this.selectIndex = 1
+                this.provinceTitle = areaData[index].value
+                this.cityTitle = '请选择'
+                this.areaTitle = '请选择'
+                this.areaList = []
+            },
+            selectCity(index){
+                this.areaList = this.cityList[index].children
+                this.cityIndex = index
+                this.selectIndex = 2
+                this.cityTitle = this.cityList[index].value
+                this.areaTitle = '请选择'
+            },
+            selectArea(index){
+                this.areaIndex = index
+                this.areaTitle = this.areaList[index].value
+                this.pickerShow = false
+                this.address = `${this.provinceTitle} ${this.cityTitle} ${this.areaTitle}`
+                this.shipping.receiverProvince = this.provinceTitle
+                this.shipping.receiverCity = this.cityTitle
+            },
+            closePicker(e){
+                let $className = e.target.className
+                if($className == 'picker' || $className == 'iconfont icon-close'){
+                    this.pickerShow = false
+                }
+            },
             //添加新地址 or 更新地址
             saveShipping(e){
-                if(!this.shipping.receiverName || !this.shipping.receiverMobile){
+                if(!this.shipping.receiverName || !this.shipping.receiverMobile || !this.shipping.receiverProvince
+                    || !this.shipping.receiverCity || !this.shipping.receiverZip || !this.receiverAddress){
                     alert('请将表格填写完整')
                     return
                 }
+                if(!formValidate(this.shipping.receiverMobile,'phone')){
+                    alert('手机号格式不正确')
+                    return
+                }
                 let $className = e.currentTarget.className
+                this.shipping.receiverAddress = this.areaTitle + this.receiverAddress
                 if($className === 'add-save'){
                     addAddress(this.shipping).then(()=>{})
                     this.addShippingWrap = false
@@ -245,12 +350,16 @@
                 this.addShippingWrap = false
                 this.editShippingWrap = false
             },
+            removeSpace(value){
+                return removeSpace(value)
+            },
             goBack() {
                 this.$router.go(-1)
             }
         },
         components: {
-            popup
+            popup,
+            listScroll
         }
     }
 </script>
@@ -382,6 +491,9 @@
                             box-sizing: border-box;
                         }
                     }
+                    .shipping-text{
+                        width: 70%;
+                    }
                     .shipping-title{
                         flex: 1;
                     }
@@ -428,6 +540,87 @@
                     box-sizing: border-box;
                     &:first-child{
                         border-right: 1px solid #999;
+                    }
+                }
+            }
+        }
+        .picker{
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,.5);
+            z-index: 10000;
+            .picker-wrapper{
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 800px;
+                background: #fff;
+                .picker-head{
+                    position: relative;
+                    width: 100%;
+                    height: 100px;
+                    text-align: center;
+                    line-height: 100px;
+                    font-size: 34px;
+                    .iconfont{
+                        position: absolute;
+                        right: 40px;
+                        top: 0;
+                        font-size: 38px;
+                    }
+                }
+                .address{
+                    display: flex;
+                    width: 100%;
+                    border-bottom: 1px solid #999;
+                    span{
+                        width: 20%;
+                        height: 100px;
+                        margin: 0 5%;
+                        text-align: center;
+                        line-height: 100px;
+                        font-size: 30px;
+                        &.active{
+                            color: $red;
+                            border-bottom: 1px solid $red;
+                        }
+                    }
+                }
+                .picker-content{
+                    display: flex;
+                    width: 100%;
+                    .picker-item{
+                        display: flex;
+                        flex-direction: column;
+                        flex-wrap: wrap;
+                        width: 50%;
+                        height: 600px;
+                        overflow: hidden;
+                        /*oveflow-y: scroll;*/
+                        span{
+                            position: relative;
+                            display: block;
+                            width: 100%;
+                            height: 100px;
+                            padding-left: 70px;
+                            text-align: left;
+                            line-height: 100px;
+                            font-size: 30px;
+                            @include boxSizing;
+                            &.active{
+                                color: $red;
+                            }
+                            .iconfont{
+                                position: absolute;
+                                left: 30px;
+                                color: $red;
+                                font-size: 30px;
+                            }
+                        }
                     }
                 }
             }

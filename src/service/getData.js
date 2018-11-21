@@ -86,6 +86,11 @@ export const updateInfo = (params) => $http('/api/user/update_information.do', {
 export const categoryData = () => $http('/category/data');
 
 /**
+ * 热搜
+ */
+export const hotData = () => $http('/search/hot');
+
+/**
  * 商品详情
  */
 export const productDetail = (productId) => $http('/api/product/detail.do', {

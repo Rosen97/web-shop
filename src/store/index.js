@@ -8,7 +8,8 @@ Vue.use(Vuex)
 
 const state = {
     isLogin: 0,   //0-未登录  1-登录
-    shippingId: 0
+    shippingId: 0,
+    searchHistory: []
 }
 
 export default new Vuex.Store({

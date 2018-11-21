@@ -1,3 +1,19 @@
+/**
+ * 存储localStorage
+ */
+export const setStore = (name, content) => {
+    if (!name) return;
+    localStorage.setItem(name, JSON.stringify(content))
+}
+
+/**
+ * 获取localStorage
+ */
+export const getStore = name => {
+    if (!name) return;
+    return JSON.parse(localStorage.getItem(name))
+}
+
 export function removeSpace(value){
     return value.replace(/\s+/g,"")
 }
@@ -25,3 +41,9 @@ export function formValidate(val,type){
 export function getUrlKey (name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
 }
+
+//数组去重
+export function dedupe(array){
+    return Array.from(new Set(array))
+}
+

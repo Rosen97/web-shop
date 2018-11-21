@@ -11,46 +11,89 @@
         <div class="search-content">
             <div class="search-list history-list">
                 <p>最近搜索
-                    <i class="iconfont icon-delete"></i>
+                    <i class="iconfont icon-delete" @click="deleteHistory"></i>
                 </p>
                 <div>
-                    <span>哈哈</span>
-                    <span>手机1</span>
+                    <span v-for="item in searchHistory" @click="selectTag(item)">{{item}}</span>
                 </div>
             </div>
             <div class="search-list hot-list">
                 <p>热门搜索</p>
                 <div>
-                    <span class="hot">手环</span>
-                    <span class="hot">外星人电脑</span>
-                    <span class="hot">王亚妮</span>
-                    <span>手环</span>
-                    <span>外星人电脑</span>
-                    <span>王亚妮</span>
-                    <span>手环</span>
-                    <span>外星人电脑</span>
-                    <span>王亚妮</span>
+                    <span v-for="item in hotData" :class="{'hot' : item.hot}" @click="selectTag(item.title)">{{item.title}}</span>
                 </div>
             </div>
         </div>
+        <popup v-show="deleteWrap">
+            <div class="modal">
+                <p>确定要清空吗?</p>
+                <div>
+                    <span @click="deleteCancel">取消</span>
+                    <span @click="deleteConfirm">确定</span>
+                </div>
+            </div>
+        </popup>
     </div>
 </template>
 
 <script>
+    import popup from '../../components/common/popup'
+    import {hotData} from "../../service/getData";
+    import {getStore,dedupe} from "../../common/js/util";
+    import {mapState,mapMutations} from 'vuex'
     export default {
         data() {
             return {
-                searchText: ''
+                searchText: '',
+                hotData: [],
+                deleteWrap: false
             }
         },
+        created(){
+            let searchHistory = getStore('searchHistory')
+            console.log(searchHistory)
+            if(!searchHistory){
+                searchHistory = []
+            }
+            this.ADD_HISTORY(searchHistory)
+            this.getSelectTags()
+        },
+        computed: {
+            ...mapState({
+               searchHistory: state => state.searchHistory
+            })
+        },
         methods: {
+            ...mapMutations([
+                'ADD_HISTORY'
+            ]),
+            getSelectTags(){
+                hotData().then((res)=>{
+                    this.hotData = res
+                })
+            },
             getSearch(){
                 let keyword = this.searchText.replace(/^\s+|\s+$/g,"")   //去除两头空格
                 if(!keyword){
                     alert('请输入搜索内容')
                     return
                 }
+                this.selectTag(keyword)
+            },
+            selectTag(keyword){
+                this.searchHistory.unshift(keyword)
                 this.$router.push('/product-list?keyword='+keyword+'&categoryId=0')
+                this.ADD_HISTORY(dedupe(this.searchHistory))
+            },
+            deleteHistory(){
+                this.deleteWrap = true
+            },
+            deleteCancel(){
+                this.deleteWrap = false
+            },
+            deleteConfirm(){
+                this.deleteWrap = false
+                this.ADD_HISTORY([])
             },
             goBack(){
                 this.$router.go(-1)
@@ -63,6 +106,9 @@
                     el.focus()
                 }
             }
+        },
+        components: {
+            popup
         }
     }
 </script>
@@ -149,6 +195,41 @@
                         &.hot{
                             color: #E93B3D;
                         }
+                    }
+                }
+            }
+        }
+        .modal{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 90%;
+            transform:translate(-50%, -50%);
+            background: #ffffff;
+            @include borderRadius(20px);
+            p{
+                width: 100%;
+                height: 200px;
+                text-align: center;
+                line-height: 200px;
+            }
+            div{
+                display: flex;
+                width: 100%;
+                height: 100px;
+                span{
+                    width: 50%;
+                    height: 100%;
+                    text-align: center;
+                    line-height: 100px;
+                    color: #000;
+                    background: #fff;
+                    border-bottom-left-radius: 20px;
+                    &:nth-child(2){
+                        color: #fff;
+                        background: $red;
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 20px;
                     }
                 }
             }
