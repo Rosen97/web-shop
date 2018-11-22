@@ -100,7 +100,7 @@ export default new Router({
             },
             component: order
         },{
-            path: '/payment',
+            path: '/payment/:orderNo',
             meta: {
                 index: 3
             },

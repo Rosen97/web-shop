@@ -38,46 +38,22 @@
                 <div v-html="categoryData.detail"></div>
             </div>
             <div ref="detailRecommend" id="recommend">
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
-                规划局是可耻的<br>
             </div>
             <div class="detail-cart">
-                <router-link tag="div" to="/shopcart" class="detail-cart-left">
-                    <i class="iconfont icon-gouwuche"></i>
-                    <span>购物车</span>
-                    <span class="cart-num" v-text="cartCount" v-show="cartCount"></span>
-                </router-link>
-                <div>
+                <div class="detail-cart-left">
+                    <div class="like">
+                        <i @click="lightLove" v-if="!isLoved" class="iconfont icon-lovetaoxin"></i>
+                        <i @click="cancelLove" v-else class="iconfont icon-love"></i>
+                        <span>喜欢</span>
+                    </div>
+                    <router-link tag="div" to="/shopcart" class="cart">
+                        <i class="iconfont icon-gouwuche"></i>
+                        <span>购物车</span>
+                        <span class="cart-num" v-text="cartCount" v-show="cartCount"></span>
+                    </router-link>
+                </div>
+                <div class="detail-cart-right">
                     <button @click="addCart">加入购物车</button>
-                    <button>立即购买</button>
                 </div>
             </div>
         </section>
@@ -97,7 +73,8 @@
                 subImageList: [],
                 categoryData: {},
                 cartCount: 0,
-                navIndex: 0    //导航索引
+                navIndex: 0,    //导航索引
+                isLoved: false
             }
         },
         created(){
@@ -159,6 +136,12 @@
             pageScroll(){
                 // let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 
+            },
+            lightLove(){
+                this.isLoved = true
+            },
+            cancelLove(){
+                this.isLoved = false
             },
             goBack(){
                 this.$router.go(-1)
@@ -276,37 +259,61 @@
             bottom: 0;
             width: 100%;
             height: 100px;
+            line-height: 100px;
             font-size: 30px;
             background: #FEFBF9;
             z-index: 1000;
             @include boxSizing;
             .detail-cart-left{
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                width: 100px;
-                padding-top: 15px;
-                font-size: 26px;
-                text-align: center;
-                i{
-                    font-size: 40px;
+                @include fj;
+                width: 46%;
+                padding: 0 30px;
+                @include boxSizing;
+                .like{
+                    width: 40%;
+                    display: flex;
+                    flex-direction: column;
+                    text-align: center;
+                    .iconfont{
+                        font-size: 34px;
+                        line-height: 60px;
+                        color: #000000;
+                        font-weight: bold;
+                        &.icon-love{
+                            color: $red;
+                        }
+                    }
+                    span{
+                        line-height: 30px;
+                        font-size: 26px;
+                    }
                 }
-                .cart-num{
-                    position: absolute;
-                    top: 4px;
-                    right: 10px;
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 50%;
-                    color: #fff;
-                    font-size: 24px;
-                    background: $red;
-                    z-index: 100;
+                .cart{
+                    @extend .like;
+                    position: relative;
+                    .cart-num{
+                        position: absolute;
+                        right: 20px;
+                        top: 0;
+                        width: 30px;
+                        height: 30px;
+                        text-align: center;
+                        line-height: 30px;
+                        color: #fff;
+                        font-size: 22px;
+                        background: $red;
+                        @include borderRadius(50%);
+                    }
+                    .iconfont{
+                        font-size: 40px;
+                        font-weight: normal;
+                    }
                 }
             }
-            div{
+            .detail-cart-right{
+                width: 54%;
                 button{
-                    width: 260px;
+                    width:100%;
                     height: 100px;
                     color: #fff;
                     font-size: 30px;

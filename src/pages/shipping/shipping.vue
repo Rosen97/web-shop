@@ -11,7 +11,8 @@
                         <span v-text="item.receiverName"></span>
                         <span v-text="item.receiverMobile"></span>
                     </div>
-                    <p class="shipping-address" v-text="`${item.receiverProvince}${item.receiverCity}${item.receiverAddress}`"></p>
+                    <p class="shipping-address">{{item.receiverProvince}} {{item.receiverCity}}</p>
+                    <p class="shipping-address">{{item.receiverAddress}}</p>
                 </div>
                 <div class="shipping-bottom">
                     <div class="user-shipping-default" :class="{'active' : defaultIndex === index}" @click="setDefault(index)">
@@ -41,11 +42,11 @@
                 <div class="new-shipping-content">
                     <div class="new-shipping-item receiver">
                         <span class="shipping-title">收货人</span>
-                        <input class="shipping-text" v-model="shipping.receiverName" />
+                        <input placeholder="请填写收货人" class="shipping-text" v-model="shipping.receiverName" />
                     </div>
                     <div class="new-shipping-item mobile">
                         <span class="shipping-title">联系电话</span>
-                        <input class="shipping-text" v-model="shipping.receiverMobile" />
+                        <input placeholder="请填写联系电话" class="shipping-text" v-model="shipping.receiverMobile" />
                     </div>
                     <div class="new-shipping-item area">
                         <span class="shipping-title">所在地区</span>
@@ -53,7 +54,7 @@
                     </div>
                     <div class="new-shipping-item street">
                         <span class="shipping-title">邮编</span>
-                        <input placeholder="请选择" class="shipping-text" v-model="shipping.receiverZip" />
+                        <input placeholder="请填写邮编" class="shipping-text" v-model="shipping.receiverZip" />
                     </div>
                     <div class="new-shipping-item detail">
                         <textarea placeholder="请填写详细地址，不少于5个字" v-model="receiverAddress"></textarea>
@@ -71,11 +72,11 @@
                 <div class="new-shipping-content">
                     <div class="new-shipping-item receiver">
                         <span class="shipping-title">收货人</span>
-                        <input class="shipping-text" v-model="shipping.receiverName" />
+                        <input placeholder="请填写收货人" class="shipping-text" v-model="shipping.receiverName" />
                     </div>
                     <div class="new-shipping-item mobile">
                         <span class="shipping-title">联系电话</span>
-                        <input class="shipping-text" v-model="shipping.receiverMobile" />
+                        <input placeholder="请填写联系电话" class="shipping-text" v-model="shipping.receiverMobile" />
                     </div>
                     <div class="new-shipping-item area">
                         <span class="shipping-title">所在地区</span>
@@ -83,7 +84,7 @@
                     </div>
                     <div class="new-shipping-item street">
                         <span class="shipping-title">邮编</span>
-                        <input placeholder="请选择" class="shipping-text" v-model="shipping.receiverZip" />
+                        <input placeholder="请填写邮编" class="shipping-text" v-model="shipping.receiverZip" />
                     </div>
                     <div class="new-shipping-item detail">
                         <textarea placeholder="请填写详细地址，不少于5个字" v-model="receiverAddress"></textarea>
@@ -151,6 +152,7 @@
                 </div>
             </div>
         </div>
+        <div class="shipping-empty" v-show="shippingList.length === 0">你还没有添加收货地址</div>
     </div>
 </template>
 
@@ -215,14 +217,18 @@
                 await addressList(pageNum,pageSize).then((res)=>{
                     if(res.list.length > 0){
                         this.shipping.userId = res.list[0].userId
+                    }else{
+                        this.RECORD_SHIPPINGID(0)
                     }
                     this.shippingList = res.list
                 })
                 //shippingId为0   默认为第一个地址
-                if(!this.shippingId && this.shippingList){
-                    this.RECORD_SHIPPINGID(this.shippingList[0].id)
+                if(this.shippingList.length > 0){
+                    if(!this.shippingId && this.shippingList){
+                        this.RECORD_SHIPPINGID(this.shippingList[0].id)
+                    }
+                    this.setShippingIndex()
                 }
-                this.setShippingIndex()
             },
             //设置默认地址
             setShippingIndex(){
@@ -240,15 +246,39 @@
                 this.defaultIndex = index
                 this.RECORD_SHIPPINGID(this.shippingList[index].id)
             },
-            editShipping(id){
+            async editShipping(id){
                 this.resetShipping()
                 this.shipping.id = id
                 this.editShippingWrap = true
-                this.$http('/api/shipping/select.do',{
+                await this.$http('/api/shipping/select.do',{
                     shippingId: id
                 },'POST').then((res)=>{
                     this.shipping = res
+                    this.receiverAddress = this.shipping.receiverAddress
                 })
+                this.initPicker()
+            },
+            initPicker(){
+                console.log(this.shipping.receiverProvince)
+                console.log(this.shipping.receiverCity)
+                areaData.forEach((item,index)=>{
+                    if(item.value === this.shipping.receiverProvince){
+                        this.provinceIndex = index
+                        this.provinceTitle = this.shipping.receiverProvince
+                        this.selectProvince(index)
+                    }
+                })
+                areaData[this.provinceIndex].children.forEach((item,index)=>{
+                    if(item.value === this.shipping.receiverCity){
+                        this.cityIndex = index
+                        this.cityTitle = this.shipping.receiverCity
+                        this.selectCity(index)
+                    }
+                })
+                this.areaIndex = 0
+                this.areaTitle = areaData[this.provinceIndex].children[0].value
+                this.selectArea(0)
+                this.address = this.provinceTitle + this.cityTitle + this.areaTitle
             },
             deleteShipping(id){
                 let deleteCancel = this.$el.querySelector('.delete-cancel'),
@@ -268,6 +298,16 @@
                         _this.getShippingData()
                     })
                     ModalHelper.beforeClose()
+
+                    if(id === _this.shippingId){  //如果删除的是默认地址，第一个为默认地址
+                        addressList(1,10).then((res)=>{
+                            if(res.list.length > 0){
+                                _this.RECORD_SHIPPINGID(res.list[0].id)
+                            }else{
+                                _this.RECORD_SHIPPINGID(0)
+                            }
+                        })
+                    }
                 })
 
             },
@@ -315,8 +355,10 @@
             },
             //添加新地址 or 更新地址
             saveShipping(e){
-                if(!this.shipping.receiverName || !this.shipping.receiverMobile || !this.shipping.receiverProvince
-                    || !this.shipping.receiverCity || !this.shipping.receiverZip || !this.receiverAddress){
+                console.log(e.currentTarget.className)
+                console.log(this.receiverAddress)
+                if(!this.shipping.receiverName || !this.shipping.receiverMobile || this.provinceIndex === -1
+                    || this.cityIndex === -1 || this.areaIndex === -1 || !this.shipping.receiverZip || !this.receiverAddress){
                     alert('请将表格填写完整')
                     return
                 }
@@ -325,11 +367,12 @@
                     return
                 }
                 let $className = e.currentTarget.className
-                this.shipping.receiverAddress = this.areaTitle + this.receiverAddress
                 if($className === 'add-save'){
+                    this.shipping.receiverAddress = this.areaTitle + this.receiverAddress
                     addAddress(this.shipping).then(()=>{})
                     this.addShippingWrap = false
                 }else{
+                    this.shipping.receiverAddress = this.receiverAddress
                     updateAddress(this.shipping).then(()=>{})
                     this.editShippingWrap = false
                 }
@@ -345,6 +388,18 @@
                 this.shipping.receiverCity = ''
                 this.shipping.receiverAddress = ''
                 this.shipping.receiverZip = ''
+                this.receiverAddress = ''
+                this.cityList = []
+                this.areaList = []
+                this.selectIndex = 0
+                this.provinceIndex = -1
+                this.cityIndex = -1
+                this.areaIndex = -1
+                this.address = '请选择所在区域'
+                this.provinceTitle = '请选择'
+                this.provinceTitle = '请选择'
+                this.cityTitle = '请选择'
+                this.areaTitle =  '请选择'
             },
             hideShippingWrap(){
                 this.addShippingWrap = false
@@ -367,6 +422,7 @@
 <style lang="scss" scoped="" type="text/scss">
     @import '../../common/style/mixin';
     .user-shipping{
+        position: relative;
         background: #eee;
         .user-reset-header{
             position: relative;
@@ -406,9 +462,15 @@
                     @include border-1px(#999);
                     div{
                         @include fj;
+                        span:first-child{
+                            color: $red;
+                        }
                     }
                     p{
                         padding: 20px 0;
+                        &:last-child{
+                            padding: 0 0 20px 0;
+                        }
                     }
                 }
                 .shipping-bottom{
@@ -493,6 +555,7 @@
                     }
                     .shipping-text{
                         width: 70%;
+                        font-size: 30px;
                     }
                     .shipping-title{
                         flex: 1;
@@ -624,6 +687,13 @@
                     }
                 }
             }
+        }
+        .shipping-empty{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            font-size: 34px;
+            transform: translate(-50%,-50%);
         }
         .slide-enter-active,.slide-leave-active{
             transition: all 0.5s;

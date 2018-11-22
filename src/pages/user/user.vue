@@ -1,7 +1,7 @@
 <template>
     <div class="user-box">
         <header class="user-head">
-            <i class="iconfont icon-left"></i>
+            <i class="iconfont icon-left" @click="goBack"></i>
             <span>我的京东</span>
             <i class="iconfont icon-More"></i>
         </header>
@@ -53,27 +53,12 @@
             </div>
             <p class="recommend-title">为你推荐</p>
             <div class="recommend-list">
-                <div class="recommend-item">
-                    <img/>
-                    <span>数据库是小类型扩散系数</span>
-                    <i>￥ 1988</i>
+                <div class="recommend-item" v-for="item in recommendList" @click="productDetail(item.id)">
+                    <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage" />
+                    <img src="../../assets/product_default.jpg" v-else />
+                    <p>{{item.name}}</p>
+                    <i>￥ {{item.price}}</i>
                 </div>
-                <div class="recommend-item">
-                    <img/>
-                    <span>数据库是小类型扩散系数</span>
-                    <i>￥ 1988</i>
-                </div>
-                <div class="recommend-item">
-                    <img/>
-                    <span>数据库是小类型扩散系数</span>
-                    <i>￥ 1988</i>
-                </div>
-                <div class="recommend-item">
-                    <img/>
-                    <span>数据库是小类型扩散系数</span>
-                    <i>￥ 1988</i>
-                </div>
-
             </div>
         </section>
         <nav-bar></nav-bar>
@@ -82,14 +67,13 @@
 
 <script>
     import navBar from '../../components/navBar'
-    import {checkLogin} from "../../service/getData";
+    import {checkLogin,productListKeyword} from "../../service/getData";
 
     export default {
         data(){
             return{
-                userInfo: {
-
-                }
+                userInfo: {},
+                recommendList: []
             }
         },
         beforeCreate(){
@@ -103,7 +87,26 @@
             })
         },
         created() {
-            console.log('我是父路由')
+            this.getRecommendList()
+        },
+        methods: {
+            getRecommendList(){
+                let params = {
+                    keyword: '1',
+                    pageNum: 1,
+                    pageSize: 6,
+                    orderBy: 'default'
+                }
+                productListKeyword(params).then((res)=>{
+                    this.recommendList = res.list
+                })
+            },
+            productDetail(id) {
+                this.$router.push('./product/' + id)
+            },
+            goBack(){
+                this.$router.go(-1)
+            }
         },
         components: {
             navBar
@@ -257,14 +260,17 @@
                     border-right: 1px solid #dcdcdc;
                 }
                 img{
-                    width: 274px;
-                    height: 274px;
+                    width: 100%;
+                    height: 290px;
+                    margin: 0 auto;
                 }
-                span{
-                    padding: 15px 0;
+                p{
+                    height: 60px;
+                    padding: 20px 0;
                     font-size: 26px;
-                    line-height: 30px;
+                    line-height: 40px;
                     color: #333;
+                    overflow: hidden;
                 }
                 i{
                     font-style: normal;

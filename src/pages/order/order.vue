@@ -6,16 +6,21 @@
         </header>
         <section class="order-shipping" :class="{'fixed' : shippingFixed}">
             <router-link tag="div" class="shipping-info" to="./shipping">
-                <p>
-                    <span class="name">{{shippingInfo.receiverName}}</span>
-                    <span class="phone">{{shippingInfo.receiverPhone}}</span>
-                </p>
-                <div>
-                    <span>{{shippingInfo.receiverProvince}}{{shippingInfo.receiverCity}}{{shippingInfo.receiverAddress}}</span>
-                    <i class="iconfont icon-right"></i>
+                <div class="info" v-if="!shippingEmpty">
+                    <p>
+                        <span class="name">{{shippingInfo.receiverName}}</span>
+                        <span class="phone">{{shippingInfo.receiverMobile}}</span>
+                    </p>
+                    <div>
+                        <span>{{shippingInfo.receiverProvince}}{{shippingInfo.receiverCity}}{{shippingInfo.receiverAddress}}</span>
+                        <i class="iconfont icon-right"></i>
+                    </div>
+                </div>
+                <div class="empty" v-else>
+                    新增收货地址<i class="iconfont icon-right"></i>
                 </div>
             </router-link>
-            <!--<img src="../../assets/shipping-bottom.png" />-->
+            <img src="../../assets/shipping-bottom.png" />
         </section>
         <section class="order-list">
             <div class="order-item" v-for="item in orderList">
@@ -60,7 +65,8 @@
                 imageHost: '',
                 cartTotalPrice: 0,
                 shippingFixed: false,
-                categoryWrap: false
+                categoryWrap: false,
+                shippingEmpty: false
             }
         },
         computed:{
@@ -95,9 +101,12 @@
                     pageSize: 10
                 },'POST').then((res)=>{
                     if(res.list.length){
+                        this.shippingEmpty = false
                         this.shippingList = res.list
                         this.RECORD_SHIPPINGID(res.list[0].id)
                         this.getAddress()
+                    }else{
+                        this.shippingEmpty = true
                     }
                 })
             },
@@ -174,25 +183,39 @@
                 width: 100%;
                 padding: 20px;
                 @include boxSizing;
-                p{
-                    font-size: 30px;
-                    font-weight: bold;
-                    .phone{
-                        font-size: 26px;
+                .empty{
+                    display: block;
+                    font-size: 40px;
+                    padding: 10px 0;
+                    .iconfont{
+                        padding-left: 20px;
                     }
                 }
-                div{
-                    @include fj;
+                .info{
+                    display: flex;
+                    flex-direction: column;
                     width: 100%;
                     font-size: 30px;
                     padding: 10px 0 0 0;
-                    span{
-                        width: 90%;
-                    }
-                    .iconfont{
-                        font-size: 34px;
-                        color: #999;
+                    p{
+                        display: flex;
+                        width: 100%;
+                        padding-bottom: 20px;
                         font-weight: bold;
+                        span:last-child{
+                            padding-left: 20px;
+                        }
+                    }
+                    div{
+                        @include fj;
+                        span{
+                            width: 90%;
+                        }
+                        .iconfont{
+                            font-size: 34px;
+                            color: #999;
+                            font-weight: bold;
+                        }
                     }
                 }
             }

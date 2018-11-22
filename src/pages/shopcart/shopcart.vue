@@ -31,7 +31,7 @@
                     <div class="delete" @click="deleteShopcart(item.productId)">删除</div>
                 </div>
             </div>
-            <div class="shopcart-footer">
+            <div class="shopcart-footer" v-if="cartProductVoList.length > 0">
                 <div class="shopcart-item-select" @click="selectAll">
                     <i class="iconfont icon-duigou" v-if="allChecked === true && cartProductVoList.length"></i>
                     <i class="iconfont icon-weibiaoti38" v-else></i>
@@ -40,6 +40,30 @@
                 <div class="shopcart-accounts">
                     <span>合计：<i v-text="`￥${cartTotalPrice}`"></i></span>
                     <button @click="settleAccounts" :class="{'active' : cartTotalPrice > 0}">结算</button>
+                </div>
+            </div>
+            <div v-else>
+                <div class="shopcart-empty">
+                    <img src="//img11.360buyimg.com/jdphoto/s180x180_jfs/t18163/292/540553659/74408/adeb7463/5a93c51cN3bb5e37b.png">
+                    <p>购物车空空如也，去逛逛吧~</p>
+                </div>
+            </div>
+            <div class="recommend-title">
+                <span></span>
+                <i>可能你还想要</i>
+                <span></span>
+            </div>
+            <div class="shopcart-recommend">
+                <div class="recommend-list">
+                    <div class="recommend-item" v-for="item in recommendList" @click="productDetail($event,item.id)">
+                        <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage" />
+                        <img src="../../assets/product_default.jpg" v-else />
+                        <p>{{item.name}}</p>
+                        <div>
+                            <span class="price">￥{{item.price}}</span>
+                            <i class="iconfont icon-gouwuche"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -57,7 +81,9 @@
         selectAll,
         unSelectAll,
         deleteProduct,
-        updateCartCount
+        updateCartCount,
+        productListKeyword,
+        addCart
     } from "../../service/getData";
 
     export default {
@@ -68,6 +94,7 @@
             return {
                 imageHost: '',
                 cartProductVoList: [],
+                recommendList: [],
                 cartTotalPrice: 0,
                 allChecked: false,
                 startX: 0,
@@ -91,6 +118,7 @@
                     console.log(res)
                     this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
                 })
+                this.getRecommendList()
             },
             //取消/选中商品
             async selectProduct($event,id){
@@ -105,6 +133,17 @@
                     })
                 }
                 this.getCartList()
+            },
+            getRecommendList(){
+                let params = {
+                    keyword: '1',
+                    pageNum: 1,
+                    pageSize: 6,
+                    orderBy: 'default'
+                }
+                productListKeyword(params).then((res)=>{
+                    this.recommendList = res.list
+                })
             },
             selectAll(){
                 if(this.allChecked){
@@ -189,6 +228,16 @@
                     return
                 }
                 this.$router.push('/order')
+            },
+            async productDetail(e,id) {
+                if(e.target.tagName === 'I'){
+                    await addCart(id,1).then(()=>{
+                        // do nothing
+                    })
+                    this.getCartList()
+                    return
+                }
+                this.$router.push('./product/' + id)
             },
             goBack(){
                 this.$router.go(-1)
@@ -364,6 +413,79 @@
                 }
                 button.active{
                     background: $red;
+                }
+            }
+        }
+        .shopcart-empty{
+            width: 100%;
+            padding: 60px 0;
+            text-align: center;
+            background: #F7F7F7;
+            p{
+                font-size: 30px;
+                padding-top: 20px;
+                color: rgba(51,51,51,.66);
+            }
+        }
+        .recommend-title{
+            @include fj;
+            width: 100%;
+            padding: 30px;
+            @include boxSizing;
+            color: #ccc;
+            span{
+                flex: 3;
+                height: 1px;
+                margin-top: 14px;
+                background: #ccc;
+            }
+            i{
+                flex: 2;
+                font-style: normal;
+                text-align: center;
+                color: #999;
+            }
+        }
+        .shopcart-recommend{
+            width: 100%;
+            background: #fff;
+            margin-bottom: 200px;
+            .recommend-list{
+                display: flex;
+                flex-shrink: 0;
+                flex-wrap: wrap;
+                .recommend-item{
+                    display: flex;
+                    flex-direction: column;
+                    width: 50%;
+                    padding: 20px 30px;
+                    @include boxSizing;
+                    border-bottom: 1px solid #dcdcdc;
+                    &:nth-child(2n-1){
+                        border-right: 1px solid #dcdcdc;
+                    }
+                    img{
+                        width: 314px;
+                        height: 314px;
+                    }
+                    p{
+                        margin: 30px 0 10px 0;
+                        height: 80px;
+                        line-height: 40px;
+                        overflow: hidden;
+                    }
+                    div{
+                        @include fj;
+                        width: 100%;
+                        font-size: 30px;
+                        span{
+                            color: $red;
+                        }
+                        .iconfont{
+                            font-size: 34px;
+                            color: $red;
+                        }
+                    }
                 }
             }
         }

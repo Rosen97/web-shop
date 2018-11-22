@@ -1,13 +1,16 @@
 <template>
     <div>
         <header class="home-header wrap" :class="{'active' : headerActive}">
-            <i class="iconfont icon-caidan"></i>
+            <router-link tag="i" to="./category" class="iconfont icon-caidan"></router-link>
             <div class="header-search">
                 <span class="app-name">JD</span>
                 <i class="iconfont icon-search"></i>
                 <router-link tag="span" class="search-title" to="./search">家电返场同价11.11</router-link>
             </div>
-            <span>登录</span>
+            <span v-if="!isLogin">登录</span>
+            <router-link tag="span" to="./user" v-else>
+                <i class="iconfont icon-iconyonghu"></i>
+            </router-link>
         </header>
         <nav-bar></nav-bar>
         <slider :imgUrl="headList"></slider>
@@ -38,7 +41,7 @@
     import mHeader from 'components/mHeader'
     import navBar from 'components/navBar'
     import slider from 'components/common/slider'
-    import {homeData} from "../../service/getData";
+    import {homeData,checkLogin} from "../../service/getData";
 
     export default {
         data() {
@@ -46,8 +49,15 @@
                 headList: [],
                 categoryList: [],
                 floorList: [],
-                headerActive: false
+                headerActive: false,
+                isLogin: false
             }
+        },
+        beforeCreate(){
+            checkLogin().then((res)=>{
+                console.log(res)
+                this.isLogin = true
+            })
         },
         mounted() {
             homeData().then((res) => {
@@ -119,6 +129,9 @@
                 font-size: 24px;
                 color: #666;
             }
+        }
+        .icon-iconyonghu{
+            font-size: 44px;
         }
     }
 
