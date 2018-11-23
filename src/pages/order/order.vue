@@ -93,7 +93,7 @@
             ]),
             pageScroll(){
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-                scrollTop > 100 ? this.shippingFixed = true : this.shippingFixed = false
+                scrollTop > 300 ? this.shippingFixed = true : this.shippingFixed = false
             },
             getShippingId(){
                 this.$http('/api/shipping/list.do',{
@@ -189,6 +189,7 @@
                     padding: 10px 0;
                     .iconfont{
                         padding-left: 20px;
+                        font-size: 30px;
                     }
                 }
                 .info{

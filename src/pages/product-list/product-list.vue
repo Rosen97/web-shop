@@ -87,6 +87,7 @@
                 this.productList = []    //重置list
                 this.orderBy = orderBy
                 this.params.orderBy = orderBy
+                this.params.pageNum = 1
                 this.getProductList(this.params)
             },
             getProductList(params) {

@@ -7,7 +7,7 @@
                 <i class="iconfont icon-search"></i>
                 <router-link tag="span" class="search-title" to="./search">家电返场同价11.11</router-link>
             </div>
-            <span v-if="!isLogin">登录</span>
+            <router-link tag="span" to="./login" v-if="!isLogin">登录</router-link>
             <router-link tag="span" to="./user" v-else>
                 <i class="iconfont icon-iconyonghu"></i>
             </router-link>
@@ -55,8 +55,7 @@
         },
         beforeCreate(){
             checkLogin().then((res)=>{
-                console.log(res)
-                this.isLogin = true
+              res.status == 1 ? this.isLogin = false : this.isLogin = true
             })
         },
         mounted() {
