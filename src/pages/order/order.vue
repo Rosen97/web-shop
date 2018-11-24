@@ -100,10 +100,10 @@
                     pageNum: 1,
                     pageSize: 10
                 },'POST').then((res)=>{
-                    if(res.list.length){
+                    if(res.data.list.length){
                         this.shippingEmpty = false
-                        this.shippingList = res.list
-                        this.RECORD_SHIPPINGID(res.list[0].id)
+                        this.shippingList = res.data.list
+                        this.RECORD_SHIPPINGID(res.data.list[0].id)
                         this.getAddress()
                     }else{
                         this.shippingEmpty = true
@@ -115,15 +115,15 @@
                 this.$http('/api/shipping/select.do',{
                     shippingId: this.shippingId
                 },'POST').then((res)=>{
-                    this.shippingInfo = res
+                    this.shippingInfo = res.data
                     console.log(res)
                 })
             },
             getOrderList(){
                 this.$http('/api/cart/list.do',{},'POST').then((res)=>{
-                    this.imageHost = res.imageHost
-                    this.cartTotalPrice = res.cartTotalPrice
-                    res.cartProductVoList.forEach((item)=>{
+                    this.imageHost = res.data.imageHost
+                    this.cartTotalPrice = res.data.cartTotalPrice
+                    res.data.cartProductVoList.forEach((item)=>{
                         if(item.productChecked){
                             this.orderList.push(item)
                         }
@@ -135,7 +135,7 @@
                 this.$http('/api/order/create.do',{
                     shippingId: this.shippingId
                 },'POST').then((res)=>{
-                    this.$router.push('/payment/'+res.orderNo)
+                    this.$router.push('/payment/'+res.data.orderNo)
                 })
             },
             goBack(){

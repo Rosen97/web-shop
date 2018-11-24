@@ -65,9 +65,6 @@
                 passwordType: 0
             }
         },
-        computed(){
-
-        },
         methods: {
             focusText(e){
                 let $className = e.currentTarget.className

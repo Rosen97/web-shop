@@ -64,10 +64,9 @@ export const forgetResetPassword = (params) => $http('/api/user/forget_reset_pas
 /**
  * 登陆下 密码重置
  */
-export const resetPassword = (params) => $http('/api/user/reset_password.do', {
-    username: params.username,
-    passwordNew: params.passwordNew,
-    forgetToken: params.forgetToken
+export const updatePassword = (passwordOld,passwordNew) => $http('/api/user/reset_password.do',{
+    passwordOld,
+    passwordNew
 });
 
 /**
@@ -79,6 +78,11 @@ export const updateInfo = (params) => $http('/api/user/update_information.do', {
     question: params.question,
     answer: params.answer
 });
+
+/**
+ * 退出登录
+ */
+export const logout = () => $http('/api/user/logout.do');
 
 /**
  * 分类数据

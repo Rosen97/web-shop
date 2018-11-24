@@ -67,17 +67,29 @@
             }
         },
         created() {
-            let keyword = getUrlKey('keyword'),
-                categoryId = getUrlKey('categoryId')
-            this.params.categoryId = categoryId
-            this.params.keyword = keyword
-            this.keyword = keyword
-            this.getProductList(this.params)
+            this.init()
         },
         mounted() {
             window.addEventListener('scroll', this.pageScroll)
         },
+        activated(){
+            let keyword = getUrlKey('keyword'),
+                categoryId = getUrlKey('categoryId')
+            if(this.params.categoryId != categoryId || this.params.keyword != keyword){
+                this.init()
+            }
+        },
         methods: {
+            init(){
+                console.log('执行1次')
+                let keyword = getUrlKey('keyword'),
+                    categoryId = getUrlKey('categoryId')
+                this.productList = []
+                this.params.categoryId = categoryId
+                this.params.keyword = keyword
+                this.keyword = keyword
+                this.getProductList(this.params)
+            },
             //价格排序
             selectOrder(e) {
                 let orderBy = e.currentTarget.getAttribute('data-orderBy')
@@ -93,21 +105,21 @@
             getProductList(params) {
                 if (this.keyword == '') {
                     productListCategoryId(params).then((res) => {
-                        if(res.list.length === 0){
+                        if(res.data.list.length === 0){
                             this.$el.querySelector('.loading_text').style.display = 'none';
                             alert('暂无更多数据！')
                             return
                         }
-                        this.productList = this.productList.concat(res.list)
+                        this.productList = this.productList.concat(res.data.list)
                     })
                 } else {
                     productListKeyword(params).then((res) => {
-                        if(res.list.length === 0){
+                        if(res.data.list.length === 0){
                             this.$el.querySelector('.loading_text').style.display = 'none';
                             alert('暂无更多数据！')
                             return
                         }
-                        this.productList = this.productList.concat(res.list)
+                        this.productList = this.productList.concat(res.data.list)
                     })
                 }
             },
@@ -262,12 +274,13 @@
             padding: 20px 0;
             border-bottom: 1px solid #dcdcdc;
             img {
-                width: 240px;
+                width: 280px;
                 height: 240px;
                 padding: 0 20px;
+                @include boxSizing;
             }
             .product-info {
-                width: 64%;
+                width: 56%;
                 height: 240px;
                 padding: 10px;
                 @include boxSizing;

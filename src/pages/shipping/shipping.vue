@@ -28,7 +28,6 @@
                         </span>
                     </div>
                 </div>
-                <p class="user-shipping-gap"></p>
             </li>
         </ul>
         <p class="add-shipping" @click="addShipping">新增收货地址</p>
@@ -215,12 +214,12 @@
                 let pageNum = 1,
                     pageSize = 10
                 await addressList(pageNum,pageSize).then((res)=>{
-                    if(res.list.length > 0){
-                        this.shipping.userId = res.list[0].userId
+                    if(res.data.list.length > 0){
+                        this.shipping.userId = res.data.list[0].userId
                     }else{
                         this.RECORD_SHIPPINGID(0)
                     }
-                    this.shippingList = res.list
+                    this.shippingList = res.data.list
                 })
                 //shippingId为0   默认为第一个地址
                 if(this.shippingList.length > 0){
@@ -253,7 +252,7 @@
                 await this.$http('/api/shipping/select.do',{
                     shippingId: id
                 },'POST').then((res)=>{
-                    this.shipping = res
+                    this.shipping = res.data
                     this.receiverAddress = this.shipping.receiverAddress
                 })
                 this.initPicker()
@@ -301,8 +300,8 @@
 
                     if(id === _this.shippingId){  //如果删除的是默认地址，第一个为默认地址
                         addressList(1,10).then((res)=>{
-                            if(res.list.length > 0){
-                                _this.RECORD_SHIPPINGID(res.list[0].id)
+                            if(res.data.list.length > 0){
+                                _this.RECORD_SHIPPINGID(res.data.list[0].id)
                             }else{
                                 _this.RECORD_SHIPPINGID(0)
                             }
@@ -427,13 +426,13 @@
         .user-reset-header{
             position: relative;
             width: 100%;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             font-size: 36px;
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
-            background: #eee;
+            background: #fff;
             i{
                 position: absolute;
                 left: 20px;
@@ -452,6 +451,7 @@
             .user-shipping-item{
                 width: 100%;
                 font-size: 30px;
+                margin-top: 20px;
                 background: #fff;
                 .shipping-top{
                     width: 100%;

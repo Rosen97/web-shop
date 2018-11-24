@@ -14,9 +14,9 @@
                         <span class="name">用户名：{{userInfo.username}}</span>
                         <span>{{userInfo.phone}}</span>
                     </div>
-                    <span class="account-management">
+                    <router-link to="./profile" class="account-management">
                         <i class="iconfont icon-shezhi"></i>账号管理
-                    </span>
+                    </router-link>
                 </div>
             </div>
             <div class="user-menu">
@@ -82,7 +82,7 @@
                     this.$router.push('./login')
                     return
                 }
-                this.userInfo = res
+                this.userInfo = res.data
                 console.log(res)
             })
         },
@@ -98,7 +98,7 @@
                     orderBy: 'default'
                 }
                 productListKeyword(params).then((res)=>{
-                    this.recommendList = res.list
+                    this.recommendList = res.data.list
                 })
             },
             productDetail(id) {

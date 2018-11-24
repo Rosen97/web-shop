@@ -74,7 +74,7 @@
             async getCategoryData() {
                 await categoryData().then((res) => {
                   console.log(res)
-                    this.categoryData = res
+                    this.categoryData = res.data
                 })
             },
             //动态设置searc-wrap的高

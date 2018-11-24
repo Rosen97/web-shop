@@ -92,9 +92,9 @@
                     imageHost = ''
                 await productDetail(this.$route.params.id).then((res)=>{
                     // console.log(res)
-                    subImages = res.subImages.split(',')
-                    imageHost = res.imageHost
-                    this.categoryData = res
+                    subImages = res.data.subImages.split(',')
+                    imageHost = res.data.imageHost
+                    this.categoryData = res.data
                 })
                 subImages.forEach((item)=>{
                     this.subImageList.push({
@@ -105,7 +105,7 @@
             getCartCount(){
                 cartCount().then((res)=>{
                     // console.log(res)
-                    this.cartCount = res
+                    this.cartCount = res.data
                 })
             },
             async addCart(){

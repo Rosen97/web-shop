@@ -51,7 +51,7 @@
                 getQuestion(this.username).then((res)=>{
                     this.usernameShow = false
                     this.answerShow = true
-                    this.questionText = res
+                    this.questionText = res.data
                 })
             },
             answerNext(){
@@ -64,7 +64,7 @@
                     answer: this.answer
                 }
                 submitAnswer(params).then((res)=>{
-                    this.forgetToken = res
+                    this.forgetToken = res.data
                     this.usernameShow = false
                     this.answerShow = false
                     this.passwordShow = true

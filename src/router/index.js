@@ -12,6 +12,8 @@ const profile = r => require.ensure([], () => r(require('@/pages/profile/profile
 const login = r => require.ensure([], () => r(require('@/pages/login/login')), 'login')
 const register = r => require.ensure([], () => r(require('@/pages/register/register')), 'register')
 const forgetPassword = r => require.ensure([], () => r(require('@/pages/forget-password/forget-password')), 'forget-password')
+const updatePassword = r => require.ensure([], () => r(require('@/pages/update-password/update-password')), 'update-password')
+const updateInfo = r => require.ensure([], () => r(require('@/pages/update-info/update-info')), 'update-info')
 const shopcart = r => require.ensure([], () => r(require('@/pages/shopcart/shopcart')), 'shopcart')
 const order = r => require.ensure([], () => r(require('@/pages/order/order')), 'order')
 const payment = r => require.ensure([], () => r(require('@/pages/payment/payment')), 'payment')
@@ -87,6 +89,18 @@ export default new Router({
                 index: 3
             },
             component: forgetPassword
+        },{
+            path: '/update-password',
+            meta: {
+                index: 3
+            },
+            component: updatePassword
+        },{
+            path: '/update-info',
+            meta: {
+                index: 3
+            },
+            component: updateInfo
         },{
             path: '/shopcart',
             meta: {

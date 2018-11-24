@@ -69,7 +69,7 @@
             ]),
             getSelectTags(){
                 hotData().then((res)=>{
-                    this.hotData = res
+                    this.hotData = res.data
                 })
             },
             getSearch(){

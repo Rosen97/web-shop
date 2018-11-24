@@ -115,8 +115,7 @@
         methods: {
             async getCartList(){
                 await cartList().then((res)=>{
-                    console.log(res)
-                    this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                 })
                 this.getRecommendList()
             },
@@ -125,11 +124,11 @@
                 let $selected = parseInt($event.currentTarget.getAttribute('data-selected'))
                 if(!$selected){
                     await selectProduct(id).then((res)=>{
-                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                        this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                     })
                 }else{
                     await unSelectProduct(id).then((res)=>{
-                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                        this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                     })
                 }
                 this.getCartList()
@@ -142,17 +141,17 @@
                     orderBy: 'default'
                 }
                 productListKeyword(params).then((res)=>{
-                    this.recommendList = res.list
+                    this.recommendList = res.data.list
                 })
             },
             selectAll(){
                 if(this.allChecked){
                     unSelectAll().then((res)=>{
-                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                        this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                     })
                 }else{
                     selectAll().then((res)=>{
-                        this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                        this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                     })
                 }
             },
@@ -164,7 +163,7 @@
                 }
                 num ++
                 updateCartCount(id,num).then((res)=>{
-                    this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                 })
             },
             reduceCount(id,num){
@@ -174,7 +173,7 @@
                 }
                 num --
                 updateCartCount(id,num).then((res)=>{
-                    this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                 })
             },
             showDetail(e,id){
@@ -213,12 +212,12 @@
                 let listItems = document.querySelectorAll('.shopcart-item');
                 // 复位
                 for( let i = 0 ; i < listItems.length ; i++){
-                    listItems[i].dataset.type = 0;
+                    listItems[i].dataset.type = 0
                 }
             },
             deleteShopcart(id){
                 deleteProduct(id).then((res)=>{
-                    this.setConfig(res.imageHost,res.cartProductVoList,res.cartTotalPrice,res.allChecked)
+                    this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
                 })
                 this.resetSlide()
             },

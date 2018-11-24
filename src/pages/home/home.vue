@@ -61,9 +61,9 @@
         mounted() {
             homeData().then((res) => {
                 console.log(res)
-                this.headList = res.headList
-                this.categoryList = res.categoryList
-                this.floorList = res.floorList
+                this.headList = res.data.headList
+                this.categoryList = res.data.categoryList
+                this.floorList = res.data.floorList
             })
             window.addEventListener('scroll', this.pageScroll)
         },
