@@ -2,7 +2,7 @@
     <div class="user-box">
         <header class="user-head">
             <i class="iconfont icon-left" @click="goBack"></i>
-            <span>我的京东</span>
+            <span>我的MMall</span>
             <i class="iconfont icon-More"></i>
         </header>
         <section class="user-page">
@@ -20,22 +20,22 @@
                 </div>
             </div>
             <div class="user-menu">
-                <div class="menu-item">
+                <router-link tag="div" to="./order-list?orderType=2" class="menu-item">
                     <i class="iconfont icon-daifukuan1"></i>
                     <span>待付款</span>
-                </div>
-                <div class="menu-item">
+                </router-link>
+                <router-link tag="div" to="./order-list?orderType=3" class="menu-item">
                     <i class="iconfont icon-daishouhuo1"></i>
                     <span>待收货</span>
-                </div>
-                <div class="menu-item">
+                </router-link>
+                <router-link tag="div" to="./order-list?orderType=4" class="menu-item">
                     <i class="iconfont icon-money"></i>
-                    <span>退换/售后</span>
-                </div>
-                <div class="menu-item">
+                    <span>已完成</span>
+                </router-link>
+                <router-link tag="div" to="./order-list?orderType=1" class="menu-item">
                     <i class="iconfont icon-icon1"></i>
                     <span>全部订单</span>
-                </div>
+                </router-link>
             </div>
             <div class="user-fork">
                 <div class="fork-item">

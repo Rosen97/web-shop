@@ -9,6 +9,8 @@ Vue.use(Vuex)
 const state = {
     isLogin: 0,   //0-未登录  1-登录
     shippingId: 0,
+    followList: [],    //关注列表
+    footprintList: [], //足迹
     searchHistory: []
 }
 

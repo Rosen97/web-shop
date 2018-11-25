@@ -3,7 +3,7 @@
         <header class="home-header wrap" :class="{'active' : headerActive}">
             <router-link tag="i" to="./category" class="iconfont icon-caidan"></router-link>
             <div class="header-search">
-                <span class="app-name">JD</span>
+                <span class="app-name">M</span>
                 <i class="iconfont icon-search"></i>
                 <router-link tag="span" class="search-title" to="./search">家电返场同价11.11</router-link>
             </div>
@@ -15,7 +15,7 @@
         <nav-bar></nav-bar>
         <slider :imgUrl="headList"></slider>
         <section class="category-list">
-            <div v-for="item in categoryList">
+            <div v-for="item in categoryList" @click="selectCategory()">
                 <img :src="item.imgUrl">
                 <span>{{item.name}}</span>
             </div>
@@ -28,7 +28,7 @@
                         <p>{{category.title}}</p>
                         <p>{{category.desc}}</p>
                         <div class="floor-products">
-                            <img :src="product.imgUrl" v-for="product in category.products">
+                            <img :src="product.imgUrl" v-for="product in category.products" @click="selectCategory()">
                         </div>
                     </div>
                 </div>
@@ -42,6 +42,7 @@
     import navBar from 'components/navBar'
     import slider from 'components/common/slider'
     import {homeData,checkLogin} from "../../service/getData";
+    import {getStore,setStore} from "../../common/js/util";
 
     export default {
         data() {
@@ -58,9 +59,18 @@
               res.status == 1 ? this.isLogin = false : this.isLogin = true
             })
         },
+        created(){
+            let followList = getStore('followList'),
+                footprintList = getStore('footprintList')
+            if(!followList){
+                setStore('followList',[])
+            }
+            if(!footprintList){
+                setStore('footprintList',[])
+            }
+        },
         mounted() {
             homeData().then((res) => {
-                console.log(res)
                 this.headList = res.data.headList
                 this.categoryList = res.data.categoryList
                 this.floorList = res.data.floorList
@@ -71,6 +81,9 @@
             pageScroll() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
                 scrollTop > 100 ? this.headerActive = true : this.headerActive = false
+            },
+            selectCategory(){
+                this.$router.push('./product-list?categoryId='+100002)
             }
         },
         components: {

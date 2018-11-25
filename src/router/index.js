@@ -16,6 +16,8 @@ const updatePassword = r => require.ensure([], () => r(require('@/pages/update-p
 const updateInfo = r => require.ensure([], () => r(require('@/pages/update-info/update-info')), 'update-info')
 const shopcart = r => require.ensure([], () => r(require('@/pages/shopcart/shopcart')), 'shopcart')
 const order = r => require.ensure([], () => r(require('@/pages/order/order')), 'order')
+const orderList = r => require.ensure([], () => r(require('@/pages/order-list/order-list')), 'order-list')
+const orderDetail = r => require.ensure([], () => r(require('@/pages/order-detail/order-detail')), 'order-detail')
 const payment = r => require.ensure([], () => r(require('@/pages/payment/payment')), 'payment')
 const shipping = r => require.ensure([], () => r(require('@/pages/shipping/shipping')), 'shipping')
 const picker = r => require.ensure([], () => r(require('@/pages/picker/picker')), 'picker')
@@ -114,9 +116,21 @@ export default new Router({
             },
             component: order
         },{
-            path: '/payment/:orderNo',
+            path: '/order-list',
             meta: {
                 index: 3
+            },
+            component: orderList
+        },{
+            path: '/order-detail',
+            meta: {
+                index: 4
+            },
+            component: orderDetail
+        },{
+            path: '/payment',
+            meta: {
+                index: 5
             },
             component: payment
         },

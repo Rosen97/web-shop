@@ -13,6 +13,8 @@
 </template>
 
 <script>
+    import {getUrlKey} from "../../common/js/util";
+
     export default {
         data() {
             return {
@@ -21,7 +23,7 @@
             }
         },
         created(){
-            let $orderNo = this.$route.params.orderNo
+            let $orderNo = getUrlKey('orderNo')
             this.orderNo = $orderNo
             this.getPaymentImg()
         },
@@ -30,7 +32,7 @@
                 this.$http('/api/order/pay.do',{
                     orderNo: this.orderNo
                 },'POST').then((res)=>{
-                    this.paymentImg = res.qrUrl
+                    this.paymentImg = res.data.qrUrl
                 })
             },
             goBack(){

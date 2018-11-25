@@ -2,7 +2,8 @@
     <div class="order-wrap">
         <header class="order-head">
             <i class="iconfont icon-left" @click="goBack"></i>
-            <span>购物车</span>
+            <span>提交订单
+            </span>
         </header>
         <section class="order-shipping" :class="{'fixed' : shippingFixed}">
             <router-link tag="div" class="shipping-info" to="./shipping">
@@ -135,7 +136,7 @@
                 this.$http('/api/order/create.do',{
                     shippingId: this.shippingId
                 },'POST').then((res)=>{
-                    this.$router.push('/payment/'+res.data.orderNo)
+                    this.$router.push('/payment?orderNo='+res.data.orderNo)
                 })
             },
             goBack(){

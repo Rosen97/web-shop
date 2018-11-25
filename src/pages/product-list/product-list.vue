@@ -72,13 +72,6 @@
         mounted() {
             window.addEventListener('scroll', this.pageScroll)
         },
-        activated(){
-            let keyword = getUrlKey('keyword'),
-                categoryId = getUrlKey('categoryId')
-            if(this.params.categoryId != categoryId || this.params.keyword != keyword){
-                this.init()
-            }
-        },
         methods: {
             init(){
                 console.log('执行1次')
@@ -103,7 +96,7 @@
                 this.getProductList(this.params)
             },
             getProductList(params) {
-                if (this.keyword == '') {
+                if (!this.keyword) {
                     productListCategoryId(params).then((res) => {
                         if(res.data.list.length === 0){
                             this.$el.querySelector('.loading_text').style.display = 'none';
