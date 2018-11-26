@@ -46,10 +46,10 @@
                     <i>0</i>
                     <span>关注的店铺</span>
                 </div>
-                <div class="fork-item">
+                <router-link tag="div" to="./profile-product" class="fork-item">
                     <i>0</i>
                     <span>我的足迹</span>
-                </div>
+                </router-link>
             </div>
             <p class="recommend-title">为你推荐</p>
             <div class="recommend-list">

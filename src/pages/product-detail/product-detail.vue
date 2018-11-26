@@ -263,6 +263,8 @@
             font-size: 30px;
             background: #FEFBF9;
             z-index: 1000;
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
             @include boxSizing;
             .detail-cart-left{
                 @include fj;

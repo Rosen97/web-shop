@@ -29,7 +29,7 @@
         <section class="product-list">
             <refresh :on-refresh="onRefresh" :on-infinite="onInfinite" style="top: 220px;">
                 <div>
-                    <div class="product-item" v-for="item in productList" @click="productDetail(item.id)">
+                    <div class="product-item" v-for="(item,index) in productList" @click="productDetail(index)">
                         <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage">
                         <img src="../../assets/product_default.jpg" v-else />
                         <div class="product-info">
@@ -46,8 +46,9 @@
 
 <script>
     import refresh from '../../components/common/refresh'
-    import {getUrlKey} from "../../common/js/util";
+    import {getUrlKey,getStore,dedupe} from "../../common/js/util";
     import {productListKeyword, productListCategoryId} from "../../service/getData";
+    import {mapMutations} from 'vuex'
 
     export default {
         data() {
@@ -73,6 +74,9 @@
             window.addEventListener('scroll', this.pageScroll)
         },
         methods: {
+          ...mapMutations([
+            'RECORE_FOOT'
+          ]),
             init(){
                 console.log('执行1次')
                 let keyword = getUrlKey('keyword'),
@@ -124,8 +128,11 @@
                 this.productList = []
                 this.getProductList(this.params)
             },
-            productDetail(id) {
-                this.$router.push('./product/' + id)
+            productDetail(index) {
+                let footprintList = getStore('footprintList')
+                footprintList.unshift(this.productList[index])
+                this.RECORE_FOOT(footprintList)
+                this.$router.push('./product/' + this.productList[index].id)
             },
             //刷新
             onRefresh(done) {

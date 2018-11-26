@@ -39,6 +39,8 @@
         padding: 10px 0;
         z-index: 1000;
         background: #fff;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
         .nav-list{
             width: 100%;
             @include fj;

@@ -9,6 +9,7 @@ const productList = r => require.ensure([], () => r(require('@/pages/product-lis
 const productDetail = r => require.ensure([], () => r(require('@/pages/product-detail/product-detail')), 'productDetail')
 const user = r => require.ensure([], () => r(require('@/pages/user/user')), 'user')
 const profile = r => require.ensure([], () => r(require('@/pages/profile/profile')), 'profile')
+const profileProduct = r => require.ensure([], () => r(require('@/pages/profile-product/profile-product')), 'profile-product')
 const login = r => require.ensure([], () => r(require('@/pages/login/login')), 'login')
 const register = r => require.ensure([], () => r(require('@/pages/register/register')), 'register')
 const forgetPassword = r => require.ensure([], () => r(require('@/pages/forget-password/forget-password')), 'forget-password')
@@ -74,6 +75,12 @@ export default new Router({
             },
             component: profile
         },{
+        path: '/profile-product',
+        meta: {
+          index: 3
+        },
+        component: profileProduct
+      },{
             path: '/login',
             meta: {
                 index: 2
