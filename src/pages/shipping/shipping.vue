@@ -91,15 +91,11 @@
                 </div>
             </div>
         </transition>
-        <popup v-show="isDeleteShow">
-            <div class="delete-shipping-con">
-                <p>确认要删除改地址吗</p>
-                <div>
-                    <span class="delete-cancel">取消</span>
-                    <span class="delete-confirm">确定</span>
-                </div>
-            </div>
-        </popup>
+
+        <popup :popup-title="popupTitle"
+               :popup-show="popupShow"
+               @cancelPopup="cancelPopup"
+               @confirmPopup="confirmPopup"></popup>
         <div class="picker" v-if="pickerShow" @click="closePicker($event)">
             <div class="picker-wrapper">
                 <div class="picker-head">
@@ -190,9 +186,11 @@
                 provinceTitle: '请选择',
                 cityTitle: '请选择',
                 areaTitle: '请选择',
+                deleteShippingId: 0,
                 addShippingWrap: false,
                 editShippingWrap: false,
-                isDeleteShow: false,
+                popupTitle: '',
+                popupShow: false,
                 pickerShow: false
             }
         },
@@ -226,25 +224,22 @@
                     if(!this.shippingId && this.shippingList){
                         this.RECORD_SHIPPINGID(this.shippingList[0].id)
                     }
-                    this.setShippingIndex()
-                }
-            },
-            //设置默认地址
-            setShippingIndex(){
-                if(!this.shippingList){  //没有收获地址 return
+                  if(!this.shippingList){  //没有收获地址 return
                     return
-                }
-                this.shippingList.forEach((item,index)=>{
+                  }
+                  this.shippingList.forEach((item,index)=>{
                     if(item.id === this.shippingId){
-                        this.defaultIndex = index
+                      this.defaultIndex = index
                     }
-                })
+                  })
+                }
             },
-            //选择地址
+            //默认收获地址
             setDefault(index){
                 this.defaultIndex = index
                 this.RECORD_SHIPPINGID(this.shippingList[index].id)
             },
+          //编辑地址
             async editShipping(id){
                 this.resetShipping()
                 this.shipping.id = id
@@ -279,37 +274,35 @@
                 this.selectArea(0)
                 this.address = this.provinceTitle + this.cityTitle + this.areaTitle
             },
+          //删除地址
             deleteShipping(id){
-                let deleteCancel = this.$el.querySelector('.delete-cancel'),
-                    deleteConfirm = this.$el.querySelector('.delete-confirm'),
-                    _this = this
-                this.isDeleteShow = true
-                ModalHelper.afterOpen()
-                deleteCancel.addEventListener('click',function(){
-                    _this.isDeleteShow = false
-                    ModalHelper.beforeClose()
-                })
-                deleteConfirm.addEventListener('click',function(){
-                    _this.isDeleteShow = false
-                    _this.$http('/api/shipping/del.do',{
-                        shippingId: id
-                    },'POST').then(()=>{
-                        _this.getShippingData()
-                    })
-                    ModalHelper.beforeClose()
-
-                    if(id === _this.shippingId){  //如果删除的是默认地址，第一个为默认地址
-                        addressList(1,10).then((res)=>{
-                            if(res.data.list.length > 0){
-                                _this.RECORD_SHIPPINGID(res.data.list[0].id)
-                            }else{
-                                _this.RECORD_SHIPPINGID(0)
-                            }
-                        })
-                    }
-                })
-
+              ModalHelper.afterOpen()
+              this.popupTitle = '确定删除改地址吗？'
+              this.popupShow = true
+              this.deleteShippingId = id
             },
+          confirmPopup(){
+            this.$http('/api/shipping/del.do',{
+              shippingId: this.deleteShippingId
+            },'POST').then(()=>{
+              this.getShippingData()
+            })
+            if(this.deleteShippingId === this.shippingId){  //如果删除的是默认地址，第一个为默认地址
+              addressList(1,10).then((res)=>{
+                if(res.data.list.length > 0){
+                  this.RECORD_SHIPPINGID(res.data.list[0].id)
+                }else{
+                  this.RECORD_SHIPPINGID(0)
+                }
+              })
+            }
+            this.cancelPopup()
+          },
+          cancelPopup(){
+              ModalHelper.beforeClose()
+              this.popupShow = false
+          },
+          //添加地址
             addShipping(){
                 this.resetShipping()
                 this.addShippingWrap = true

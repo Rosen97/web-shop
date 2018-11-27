@@ -1,14 +1,10 @@
-/**
- * 存储localStorage
- */
+//存储localStorage
 export const setStore = (name, content) => {
     if (!name) return;
     localStorage.setItem(name, JSON.stringify(content))
 }
 
-/**
- * 获取localStorage
- */
+//获取localStorage
 export const getStore = name => {
     if (!name) return;
     return JSON.parse(localStorage.getItem(name))
@@ -45,5 +41,28 @@ export function getUrlKey (name) {
 //数组去重
 export function dedupe(array){
     return Array.from(new Set(array))
+}
+
+//去除重复对象
+export function dedupeObject(obj) {
+  var uniques = [];
+  var stringify = {};
+  for (var i = 0; i < obj.length; i++) {
+    var keys = Object.keys(obj[i]);
+    keys.sort(function(a, b) {
+      return (Number(a) - Number(b));
+    });
+    var str = '';
+    for (var j = 0; j < keys.length; j++) {
+      str += JSON.stringify(keys[j]);
+      str += JSON.stringify(obj[i][keys[j]]);
+    }
+    if (!stringify.hasOwnProperty(str)) {
+      uniques.push(obj[i]);
+      stringify[str] = true;
+    }
+  }
+  uniques = uniques;
+  return uniques;
 }
 

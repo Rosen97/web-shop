@@ -2,20 +2,12 @@
     <div class="profile-product">
       <header class="user-head">
         <i class="iconfont icon-left" @click="goBack"></i>
-        <span>我的足迹</span>
+        <span>{{title}}</span>
         <i class="iconfont icon-More"></i>
       </header>
       <section class="product-wrap">
         <list-scroll :scroll-data="productList" v-if="productList.length > 0">
           <div class="product-list">
-            <div class="product-item">
-              <img>
-              <div class="product-info">
-                <span class="name">我是name</span>
-                <span class="subtitle">我是subtitle</span>
-                <span class="price">￥1344</span>
-              </div>
-            </div>
             <div class="product-item" v-for="item in productList">
               <img :src="item.imageHost + item.mainImage">
               <div class="product-info">
@@ -33,17 +25,31 @@
 
 <script>
   import listScroll from '../../components/common/list-scroll'
-  import {getStore} from "../../common/js/util";
+  import {getStore,getUrlKey} from "../../common/js/util";
+  import {mapState} from 'vuex'
 
   export default {
         data(){
           return {
+            title: '',
             productList: []
           }
         },
+        computed: {
+          ...mapState({
+            followList: state => state.followList
+          })
+        },
         created(){
-          let productList = getStore('footprintList')
-          this.productList = productList ? productList : []
+          let $type = parseInt(getUrlKey('type')),   //0-关注  1-足迹
+              productList = getStore('footprintList')
+          if(!$type){
+            this.title = '我关注的商品'
+            this.productList = this.followList
+          }else{
+            this.title = '我的足迹'
+            this.productList = productList ? productList : []
+          }
         },
         methods: {
           goBack(){

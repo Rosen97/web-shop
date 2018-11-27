@@ -1,31 +1,33 @@
 <template>
     <div class="product-list-wrap">
-        <header class="category-header wrap">
+        <div style="position: fixed;left: 0;top: 0;width: 100%;z-index: 1000;background: #fff;">
+          <header class="category-header wrap">
             <i class="iconfont icon-left" @click="goBack"></i>
             <div class="header-search">
-                <i class="iconfont icon-search"></i>
-                <input type="text" class="search-title" @mouseenter="textEnter" @mouseleave="textLeave" v-model="keyword"/>
+              <i class="iconfont icon-search"></i>
+              <input type="text" class="search-title" @mouseenter="textEnter" @mouseleave="textLeave" v-model="keyword"/>
             </div>
             <i class="iconfont icon-More" v-if="!searchBtn"></i>
             <span class="search-btn" @click="getSearch" v-else>搜索</span>
-        </header>
-        <section class="select-menu" :class="{'isFixed' : seclectActive}">
+          </header>
+          <section class="select-menu" :class="{'isFixed' : seclectActive}">
             <div class="select-item" :class="{'active' : orderBy === 'default'}" data-orderBy="default"
                  @click="selectOrder($event)">
-                默认排序
+              默认排序
             </div>
             <div class="select-item" :class="{'active' : orderBy === 'price_asc'}" data-orderBy="price_asc"
                  @click="selectOrder($event)">
-                升序<i class="iconfont icon-up1" :class="{'active' : orderBy === 'price_asc'}"></i>
+              升序<i class="iconfont icon-up1" :class="{'active' : orderBy === 'price_asc'}"></i>
             </div>
             <div class="select-item" :class="{'active' : orderBy === 'price_desc'}" data-orderBy="price_desc"
                  @click="selectOrder($event)">
-                降序<i class="iconfont icon-down1" :class="{'active' : orderBy === 'price_desc'}"></i>
+              降序<i class="iconfont icon-down1" :class="{'active' : orderBy === 'price_desc'}"></i>
             </div>
             <div class="select-item">
-                筛选<i class="iconfont icon-shaixuan"></i>
+              筛选<i class="iconfont icon-shaixuan"></i>
             </div>
-        </section>
+          </section>
+        </div>
         <section class="product-list">
             <refresh :on-refresh="onRefresh" :on-infinite="onInfinite" style="top: 220px;">
                 <div>
@@ -41,12 +43,16 @@
                 </div>
             </refresh>
         </section>
+        <transition name="fade">
+          <message v-show="isMessage" :message-text="messageText"></message>
+        </transition>
     </div>
 </template>
 
 <script>
     import refresh from '../../components/common/refresh'
-    import {getUrlKey,getStore,dedupe} from "../../common/js/util";
+    import message from '../../components/common/message'
+    import {getUrlKey,getStore,dedupeObject} from "../../common/js/util";
     import {productListKeyword, productListCategoryId} from "../../service/getData";
     import {mapMutations} from 'vuex'
 
@@ -64,7 +70,9 @@
                     orderBy: 'default'
                 },
                 seclectActive: false,
-                searchBtn: false
+                searchBtn: false,
+              messageText: '',
+              isMessage: false
             }
         },
         created() {
@@ -104,7 +112,7 @@
                     productListCategoryId(params).then((res) => {
                         if(res.data.list.length === 0){
                             this.$el.querySelector('.loading_text').style.display = 'none';
-                            alert('暂无更多数据！')
+                          this.showMessage()
                             return
                         }
                         this.productList = this.productList.concat(res.data.list)
@@ -113,13 +121,21 @@
                     productListKeyword(params).then((res) => {
                         if(res.data.list.length === 0){
                             this.$el.querySelector('.loading_text').style.display = 'none';
-                            alert('暂无更多数据！')
+                            // alert('暂无更多数据！')
+                            this.showMessage()
                             return
                         }
                         this.productList = this.productList.concat(res.data.list)
                     })
                 }
             },
+          showMessage(){
+            this.isMessage = true
+            this.messageText = '没有更多的商品啦！'
+            setTimeout(()=>{
+              this.isMessage = false
+            },2000)
+          },
             getSearch(){
                 this.$router.push('/product-list?keyword='+this.keyword+'&categoryId=0')
                 // // console.log(1111)
@@ -131,7 +147,7 @@
             productDetail(index) {
                 let footprintList = getStore('footprintList')
                 footprintList.unshift(this.productList[index])
-                this.RECORE_FOOT(footprintList)
+                this.RECORE_FOOT(dedupeObject(footprintList))
                 this.$router.push('./product/' + this.productList[index].id)
             },
             //刷新
@@ -163,7 +179,8 @@
             }
         },
         components: {
-            refresh
+            refresh,
+          message
         }
     }
 </script>
@@ -307,5 +324,11 @@
                 }
             }
         }
+    }
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to{
+      opacity: 0;
     }
 </style>

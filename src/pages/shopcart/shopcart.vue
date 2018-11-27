@@ -55,7 +55,7 @@
             </div>
             <div class="shopcart-recommend">
                 <div class="recommend-list">
-                    <div class="recommend-item" v-for="item in recommendList" @click="productDetail($event,item.id)">
+                    <div class="recommend-item" v-for="(item,index) in recommendList" @click="productDetail($event,index)">
                         <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage" />
                         <img src="../../assets/product_default.jpg" v-else />
                         <p>{{item.name}}</p>
@@ -68,11 +68,17 @@
             </div>
         </section>
         <nav-bar></nav-bar>
+      <popup :popup-title="popupTitle"
+             :popup-show="popupShow"
+             @cancelPopup="cancelPopup"
+             @confirmPopup="confirmPopup"></popup>
     </div>
 </template>
 
 <script>
     import navBar from '../../components/navBar'
+    import popup from '../../components/common/popup'
+    import {getStore,dedupeObject} from "../../common/js/util";
     import {
         checkLogin,
         cartList,
@@ -85,11 +91,9 @@
         productListKeyword,
         addCart
     } from "../../service/getData";
+    import {mapMutations} from 'vuex'
 
     export default {
-        components: {
-            navBar
-        },
         data() {
             return {
                 imageHost: '',
@@ -98,7 +102,10 @@
                 cartTotalPrice: 0,
                 allChecked: false,
                 startX: 0,
-                endX: 0
+                endX: 0,
+              deleteProductId: 0,
+              popupTitle: '',
+              popupShow: false
             }
         },
         beforeCreate(){
@@ -113,6 +120,9 @@
             this.getCartList()
         },
         methods: {
+          ...mapMutations([
+            'RECORE_FOOT'
+          ]),
             async getCartList(){
                 await cartList().then((res)=>{
                     this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
@@ -216,10 +226,10 @@
                 }
             },
             deleteShopcart(id){
-                deleteProduct(id).then((res)=>{
-                    this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
-                })
-                this.resetSlide()
+              this.deleteProductId = id
+              this.popupTitle = '确定删除该商品吗？'
+              this.popupShow = true
+              ModalHelper.afterOpen()
             },
             //结算
             settleAccounts(){
@@ -228,19 +238,37 @@
                 }
                 this.$router.push('/order')
             },
-            async productDetail(e,id) {
+            async productDetail(e,index) {
+                let footprintList = getStore('footprintList')
                 if(e.target.tagName === 'I'){
-                    await addCart(id,1).then(()=>{
+                    await addCart(this.recommendList[index].id,1).then(()=>{
                         // do nothing
                     })
                     this.getCartList()
                     return
                 }
-                this.$router.push('./product/' + id)
+                footprintList.unshift(this.recommendList[index])
+                this.RECORE_FOOT(dedupeObject(footprintList))
+                this.$router.push('./product/' + this.recommendList[index].id)
             },
+          confirmPopup(){
+            deleteProduct(this.deleteProductId).then((res)=>{
+              this.setConfig(res.data.imageHost,res.data.cartProductVoList,res.data.cartTotalPrice,res.data.allChecked)
+            })
+            this.cancelPopup()
+          },
+          cancelPopup(){
+            ModalHelper.beforeClose()
+            this.popupShow = false
+            this.resetSlide()
+          },
             goBack(){
                 this.$router.go(-1)
             }
+        },
+        components: {
+          navBar,
+          popup
         }
     }
 </script>

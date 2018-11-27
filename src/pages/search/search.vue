@@ -24,15 +24,10 @@
                 </div>
             </div>
         </div>
-        <popup v-show="deleteWrap">
-            <div class="modal">
-                <p>确定要清空吗?</p>
-                <div>
-                    <span @click="deleteCancel">取消</span>
-                    <span @click="deleteConfirm">确定</span>
-                </div>
-            </div>
-        </popup>
+      <popup :popup-title="popupTitle"
+             :popup-show="popupShow"
+             @cancelPopup="cancelPopup"
+             @confirmPopup="confirmPopup"></popup>
     </div>
 </template>
 
@@ -46,7 +41,8 @@
             return {
                 searchText: '',
                 hotData: [],
-                deleteWrap: false
+                popupTitle: '',
+                popupShow: false
             }
         },
         created(){
@@ -86,15 +82,17 @@
                 this.ADD_HISTORY(dedupe(this.searchHistory))
             },
             deleteHistory(){
-                this.deleteWrap = true
+              this.popupTitle = '确定删除搜索历史吗？'
+                this.popupShow = true
             },
-            deleteCancel(){
-                this.deleteWrap = false
-            },
-            deleteConfirm(){
-                this.deleteWrap = false
-                this.ADD_HISTORY([])
-            },
+          confirmPopup(){
+            this.ADD_HISTORY([])
+            this.cancelPopup()
+          },
+          cancelPopup(){
+            ModalHelper.beforeClose()
+            this.popupShow = false
+          },
             goBack(){
                 this.$router.go(-1)
             }
@@ -146,7 +144,6 @@
                     padding-right: 20px;
                 }
                 input{
-                    height: 100%;
                     font-size: 24px;
                     background: #F7F7F7;
                 }

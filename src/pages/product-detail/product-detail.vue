@@ -19,11 +19,11 @@
             <slider :imgUrl="subImageList" :imgHeight="700" class="detail-slider"></slider>
         </section>
         <section class="detail-info">
-            <p class="detail-info-name" v-text="categoryData.name"></p>
-            <p class="detail-info-subtitle" v-text="categoryData.subtitle"></p>
+            <p class="detail-info-name" v-text="productData.name"></p>
+            <p class="detail-info-subtitle" v-text="productData.subtitle"></p>
             <div>
-                <span class="detail-info-price" v-text="`￥${categoryData.price}`"></span>
-                <span class="detail-info-stock" v-text="`库存${categoryData.stock}`"></span>
+                <span class="detail-info-price" v-text="`￥${productData.price}`"></span>
+                <span class="detail-info-stock" v-text="`库存${productData.stock}`"></span>
             </div>
         </section>
         <section>
@@ -35,7 +35,7 @@
                     <li>安装服务</li>
                     <li>常见问题</li>
                 </ul>
-                <div v-html="categoryData.detail"></div>
+                <div v-html="productData.detail"></div>
             </div>
             <div ref="detailRecommend" id="recommend">
             </div>
@@ -57,12 +57,42 @@
                 </div>
             </div>
         </section>
+      <transition name="slide-up">
+        <section class="cart-wrap" v-show="cartShow">
+            <div class="cart-content">
+              <div class="cart-head">
+                <img :src="subImageList[0].imgUrl" v-if="subImageList.length > 0">
+                <div>
+                  <span class="price">￥{{productData.price}}</span>
+                  <p>{{productData.name}}</p>
+                </div>
+                <i class="iconfont icon-close" @click="closeCart"></i>
+              </div>
+              <div class="cart-config">
+                <div class="subtitle">
+                  <span>商品介绍</span>
+                  <span>{{productData.subtitle}}</span>
+                </div>
+              </div>
+              <div class="cart-count">
+                <span>数量</span>
+                <div class="cart-quantity">
+                  <i>-</i>
+                  <span>3</span>
+                  <i >+</i>
+                </div>
+              </div>
+              <button class="add-cart">确认</button>
+            </div>
+        </section>
+      </transition>
     </div>
 </template>
 
 <script>
     import slider from 'components/common/slider'
     import { productDetail,cartCount,addCart } from "../../service/getData";
+    import {mapState,mapMutations} from 'vuex'
 
     export default {
         components: {
@@ -71,12 +101,18 @@
         data() {
             return {
                 subImageList: [],
-                categoryData: {},
+                productData: {},
                 cartCount: 0,
                 navIndex: 0,    //导航索引
-                isLoved: false
+                isLoved: false,
+                cartShow: false
             }
         },
+      computed: {
+          ...mapState({
+            followList: state => state.followList
+          })
+      },
         created(){
             this.getDetail()
             this.getCartCount()
@@ -87,6 +123,10 @@
             })
         },
         methods: {
+          ...mapMutations([
+            'ADD_FOLLOW',
+            'REDUCE_FOLLOW'
+          ]),
             async getDetail(){
                 let subImages = [],
                     imageHost = ''
@@ -94,7 +134,7 @@
                     // console.log(res)
                     subImages = res.data.subImages.split(',')
                     imageHost = res.data.imageHost
-                    this.categoryData = res.data
+                    this.productData = res.data
                 })
                 subImages.forEach((item)=>{
                     this.subImageList.push({
@@ -108,12 +148,18 @@
                     this.cartCount = res.data
                 })
             },
-            async addCart(){
-                await addCart(this.categoryData.id,1).then((res)=>{
-                    // console.log(res)
-                })
-                this.getCartCount()
-            },
+          addCart(){
+            this.cartShow = true
+          },
+          closeCart(){
+            this.cartShow = false
+          },
+            // async addCart(){
+            //     await addCart(this.productData.id,1).then((res)=>{
+            //         // console.log(res)
+            //     })
+            //     this.getCartCount()
+            // },
             scrollToView(e){
                 let $type = e.target.getAttribute('data-type')
                 switch($type){
@@ -139,9 +185,12 @@
             },
             lightLove(){
                 this.isLoved = true
+              this.followList.unshift(this.productData)
+                this.ADD_FOLLOW(this.followList)
             },
             cancelLove(){
                 this.isLoved = false
+                this.REDUCE_FOLLOW('reduce',this.productData.id)
             },
             goBack(){
                 this.$router.go(-1)
@@ -154,6 +203,9 @@
     @import '../../common/style/mixin';
     .product-detail{
         width: 100%;
+        &.active{
+          background: rgba(0,0,0,.6);
+        }
         .detail-nav{
             @include fj;
             position: fixed;
@@ -327,5 +379,124 @@
                 }
             }
         }
+      .cart-wrap{
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 99999999;
+        .cart-content{
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          height: 60%;
+          font-size: 30px;
+          background: #fff;
+          .cart-head{
+            display: flex;
+            width: 100%;
+            padding: 30px;
+            @include boxSizing;
+            img{
+              width: 180px;
+              height: 180px;
+              margin-top: -60px;
+              border: 1px solid #999;
+            }
+            div{
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              width: 64%;
+              margin-left: 20px;
+              .price{
+                display: block;
+                font-size: 34px;
+                color: $red;
+                padding-bottom: 10px;
+              }
+              p{
+                max-height: 40px;
+                overflow: hidden;
+              }
+            }
+            .iconfont{
+              position: absolute;
+              top: 30px;
+              right: 30px;
+              font-size: 28px;
+              color: #dcdcdc;
+            }
+          }
+          .cart-config{
+            @extend .cart-head;
+            padding: 0 30px 30px 30px;
+            .subtitle{
+              width: 100%;
+              margin-left: 0;
+              padding: 20px 0;
+              span{
+                &:first-child{
+                  color: #999;
+                  padding-bottom: 20px;
+                }
+              }
+            }
+          }
+          .cart-count{
+            @include fj;
+            width: 100%;
+            padding: 0 30px 30px 30px;
+            @include boxSizing;
+            .cart-quantity{
+              @include fj;
+              width: 210px;
+              height: 60px;
+              line-height: 60px;
+              color: #999;
+              background: #fff;
+              span{
+                width: 80px;
+                height: 100%;
+                text-align: center;
+                line-height: 60px;
+                background: #F7F7F7;
+              }
+              i{
+                width: 60px;
+                height: 100%;
+                text-align: center;
+                line-height: 60px;
+                font-style: normal;
+                font-size: 50px;
+                background: #F7F7F7;
+                &.active{
+                  color: #dcdcdc;
+                }
+              }
+            }
+          }
+          .add-cart{
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            color: #fff;
+            font-size: 30px;
+            background: $red;
+          }
+        }
+      }
+      .slide-up-enter-active,.slide-up-leave-active{
+        transition: all 0.5s;
+      }
+      .slide-up-enter,.slide-up-leave-to{
+        transform: translate3d(0,100%,0);
+      }
     }
 </style>

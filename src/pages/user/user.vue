@@ -38,22 +38,22 @@
                 </router-link>
             </div>
             <div class="user-fork">
-                <div class="fork-item">
-                    <i>0</i>
+                <router-link tag="div" to="./profile-product?type=0" class="fork-item">
+                    <i>{{followCount}}</i>
                     <span>关注的商品</span>
-                </div>
+                </router-link>
                 <div class="fork-item">
                     <i>0</i>
                     <span>关注的店铺</span>
                 </div>
-                <router-link tag="div" to="./profile-product" class="fork-item">
-                    <i>0</i>
+                <router-link tag="div" to="./profile-product?type=1" class="fork-item">
+                    <i>{{footCount}}</i>
                     <span>我的足迹</span>
                 </router-link>
             </div>
             <p class="recommend-title">为你推荐</p>
             <div class="recommend-list">
-                <div class="recommend-item" v-for="item in recommendList" @click="productDetail(item.id)">
+                <div class="recommend-item" v-for="(item,index) in recommendList" @click="productDetail(index)">
                     <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage" />
                     <img src="../../assets/product_default.jpg" v-else />
                     <p>{{item.name}}</p>
@@ -67,15 +67,24 @@
 
 <script>
     import navBar from '../../components/navBar'
+    import {dedupeObject,getStore} from "../../common/js/util";
     import {checkLogin,productListKeyword} from "../../service/getData";
+    import {mapState,mapMutations} from 'vuex'
 
     export default {
         data(){
             return{
                 userInfo: {},
-                recommendList: []
+                recommendList: [],
+              followCount: 0,
+                footCount: 0
             }
         },
+      computed: {
+        ...mapState({
+          followList: state => state.followList
+        })
+      },
         beforeCreate(){
             checkLogin().then((res)=>{
                 if(res.status === 1){   //未登录跳转
@@ -87,9 +96,19 @@
             })
         },
         created() {
-            this.getRecommendList()
+          let footCount = getStore('footprintList').length
+          this.footCount = footCount ? footCount : 0
+          this.getRecommendList()
         },
+      mounted(){
+          console.log(111)
+          console.log(this.followList)
+          this.followCount = this.followList.length
+      },
         methods: {
+          ...mapMutations([
+            'RECORE_FOOT'
+          ]),
             getRecommendList(){
                 let params = {
                     keyword: '1',
@@ -101,8 +120,11 @@
                     this.recommendList = res.data.list
                 })
             },
-            productDetail(id) {
-                this.$router.push('./product/' + id)
+            productDetail(index) {
+                let footprintList = getStore('footprintList')
+                footprintList.unshift(this.recommendList[index])
+                this.RECORE_FOOT(dedupeObject(footprintList))
+                this.$router.push('./product/' + this.recommendList[index].id)
             },
             goBack(){
                 this.$router.go(-1)
