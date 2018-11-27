@@ -1,39 +1,41 @@
 <template>
     <div class="product-list-wrap">
         <div style="position: fixed;left: 0;top: 0;width: 100%;z-index: 1000;background: #fff;">
-          <header class="category-header wrap">
-            <i class="iconfont icon-left" @click="goBack"></i>
-            <div class="header-search">
-              <i class="iconfont icon-search"></i>
-              <input type="text" class="search-title" @mouseenter="textEnter" @mouseleave="textLeave" v-model="keyword"/>
-            </div>
-            <i class="iconfont icon-More" v-if="!searchBtn"></i>
-            <span class="search-btn" @click="getSearch" v-else>搜索</span>
-          </header>
-          <section class="select-menu" :class="{'isFixed' : seclectActive}">
-            <div class="select-item" :class="{'active' : orderBy === 'default'}" data-orderBy="default"
-                 @click="selectOrder($event)">
-              默认排序
-            </div>
-            <div class="select-item" :class="{'active' : orderBy === 'price_asc'}" data-orderBy="price_asc"
-                 @click="selectOrder($event)">
-              升序<i class="iconfont icon-up1" :class="{'active' : orderBy === 'price_asc'}"></i>
-            </div>
-            <div class="select-item" :class="{'active' : orderBy === 'price_desc'}" data-orderBy="price_desc"
-                 @click="selectOrder($event)">
-              降序<i class="iconfont icon-down1" :class="{'active' : orderBy === 'price_desc'}"></i>
-            </div>
-            <div class="select-item">
-              筛选<i class="iconfont icon-shaixuan"></i>
-            </div>
-          </section>
+            <header class="category-header wrap">
+                <i class="iconfont icon-left" @click="goBack"></i>
+                <div class="header-search">
+                    <i class="iconfont icon-search"></i>
+                    <input type="text" class="search-title" @mouseenter="textEnter" @mouseleave="textLeave"
+                           v-model="keyword"/>
+                </div>
+                <i class="iconfont icon-More" v-if="!searchBtn"></i>
+                <span class="search-btn" @click="getSearch" v-else>搜索</span>
+            </header>
+            <section class="select-menu" :class="{'isFixed' : seclectActive}">
+                <div class="select-item" :class="{'active' : orderBy === 'default'}" data-orderBy="default"
+                     @click="selectOrder($event)">
+                    默认排序
+                </div>
+                <div class="select-item" :class="{'active' : orderBy === 'price_asc'}" data-orderBy="price_asc"
+                     @click="selectOrder($event)">
+                    升序<i class="iconfont icon-up1" :class="{'active' : orderBy === 'price_asc'}"></i>
+                </div>
+                <div class="select-item" :class="{'active' : orderBy === 'price_desc'}" data-orderBy="price_desc"
+                     @click="selectOrder($event)">
+                    降序<i class="iconfont icon-down1" :class="{'active' : orderBy === 'price_desc'}"></i>
+                </div>
+                <div class="select-item">
+                    筛选<i class="iconfont icon-shaixuan"></i>
+                </div>
+            </section>
         </div>
-        <section class="product-list">
+        <loading v-show="isLoading" :loading-type="2"></loading>
+        <section class="product-list" v-show="!isLoading">
             <refresh :on-refresh="onRefresh" :on-infinite="onInfinite" style="top: 220px;">
                 <div>
                     <div class="product-item" v-for="(item,index) in productList" @click="productDetail(index)">
                         <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage">
-                        <img src="../../assets/product_default.jpg" v-else />
+                        <img src="../../assets/product_default.jpg" v-else/>
                         <div class="product-info">
                             <p class="name">{{item.name}}</p>
                             <p class="subtitle">{{item.subtitle}}</p>
@@ -43,16 +45,15 @@
                 </div>
             </refresh>
         </section>
-        <transition name="fade">
-          <message v-show="isMessage" :message-text="messageText"></message>
-        </transition>
+        <message v-show="isMessage" :message-text="messageText"></message>
     </div>
 </template>
 
 <script>
+    import loading from '../../components/common/loading'
     import refresh from '../../components/common/refresh'
     import message from '../../components/common/message'
-    import {getUrlKey,getStore,dedupeObject} from "../../common/js/util";
+    import {getUrlKey, getStore, dedupeObject} from "../../common/js/util";
     import {productListKeyword, productListCategoryId} from "../../service/getData";
     import {mapMutations} from 'vuex'
 
@@ -69,10 +70,11 @@
                     pageSize: 20,
                     orderBy: 'default'
                 },
+                isLoading: true,
                 seclectActive: false,
                 searchBtn: false,
-              messageText: '',
-              isMessage: false
+                messageText: '',
+                isMessage: false
             }
         },
         created() {
@@ -80,12 +82,17 @@
         },
         mounted() {
             window.addEventListener('scroll', this.pageScroll)
+            this.$nextTick(()=>{
+                setTimeout(()=>{
+                    this.isLoading = false
+                },500)
+            })
         },
         methods: {
-          ...mapMutations([
-            'RECORE_FOOT'
-          ]),
-            init(){
+            ...mapMutations([
+                'RECORE_FOOT'
+            ]),
+            init() {
                 console.log('执行1次')
                 let keyword = getUrlKey('keyword'),
                     categoryId = getUrlKey('categoryId')
@@ -110,16 +117,16 @@
             getProductList(params) {
                 if (!this.keyword) {
                     productListCategoryId(params).then((res) => {
-                        if(res.data.list.length === 0){
+                        if (res.data.list.length === 0) {
                             this.$el.querySelector('.loading_text').style.display = 'none';
-                          this.showMessage()
+                            this.showMessage()
                             return
                         }
                         this.productList = this.productList.concat(res.data.list)
                     })
                 } else {
                     productListKeyword(params).then((res) => {
-                        if(res.data.list.length === 0){
+                        if (res.data.list.length === 0) {
                             this.$el.querySelector('.loading_text').style.display = 'none';
                             // alert('暂无更多数据！')
                             this.showMessage()
@@ -129,15 +136,15 @@
                     })
                 }
             },
-          showMessage(){
-            this.isMessage = true
-            this.messageText = '没有更多的商品啦！'
-            setTimeout(()=>{
-              this.isMessage = false
-            },2000)
-          },
-            getSearch(){
-                this.$router.push('/product-list?keyword='+this.keyword+'&categoryId=0')
+            showMessage() {
+                this.isMessage = true
+                this.messageText = '没有更多的商品啦！'
+                setTimeout(() => {
+                    this.isMessage = false
+                }, 1200)
+            },
+            getSearch() {
+                this.$router.push('/product-list?keyword=' + this.keyword + '&categoryId=0')
                 // // console.log(1111)
                 this.params.keyword = this.keyword
                 this.params.pageNum = 1
@@ -167,10 +174,10 @@
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
                 scrollTop > 100 ? this.seclectActive = true : this.seclectActive = false
             },
-            textEnter(){
+            textEnter() {
                 this.searchBtn = true
             },
-            textLeave(){
+            textLeave() {
                 this.searchBtn = false
             },
             goBack() {
@@ -179,8 +186,9 @@
             }
         },
         components: {
+            loading,
             refresh,
-          message
+            message
         }
     }
 </script>
@@ -228,7 +236,7 @@
         .icon-More {
             font-size: 40px;
         }
-        .search-btn{
+        .search-btn {
             height: 70px;
             margin: 15px 0;
             line-height: 70px;
@@ -282,6 +290,20 @@
         }
     }
 
+    .loading {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100px;
+            height: 100px;
+            transform: translate(-50%, -50%);
+        }
+    }
+
     .product-list {
         width: 100%;
         .product-item {
@@ -325,10 +347,12 @@
             }
         }
     }
+
     .fade-enter-active, .fade-leave-active {
-      transition: opacity .5s;
+        transition: opacity .5s;
     }
-    .fade-enter, .fade-leave-to{
-      opacity: 0;
+
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 </style>

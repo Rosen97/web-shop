@@ -21,6 +21,7 @@ const orderList = r => require.ensure([], () => r(require('@/pages/order-list/or
 const orderDetail = r => require.ensure([], () => r(require('@/pages/order-detail/order-detail')), 'order-detail')
 const payment = r => require.ensure([], () => r(require('@/pages/payment/payment')), 'payment')
 const shipping = r => require.ensure([], () => r(require('@/pages/shipping/shipping')), 'shipping')
+const frame = r => require.ensure([], () => r(require('@/components/common/frame')), 'frame')
 
 
 Vue.use(Router)
@@ -49,91 +50,91 @@ export default new Router({
                 index: 1
             },
             component: search
-        },{
+        }, {
             path: '/product-list',
             meta: {
                 index: 3
             },
             component: productList
-        },{
+        }, {
             path: '/product/:id',
             meta: {
                 index: 4
             },
             component: productDetail
-        },{
+        }, {
             path: '/user',
             meta: {
                 index: 1
             },
             component: user
-        },{
+        }, {
             path: '/profile',
             meta: {
                 index: 2
             },
             component: profile
-        },{
-        path: '/profile-product',
-        meta: {
-          index: 3
-        },
-        component: profileProduct
-      },{
+        }, {
+            path: '/profile-product',
+            meta: {
+                index: 3
+            },
+            component: profileProduct
+        }, {
             path: '/login',
             meta: {
                 index: 2
             },
             component: login
-        },{
+        }, {
             path: '/register',
             meta: {
                 index: 3
             },
             component: register
-        },{
+        }, {
             path: '/forget-password',
             meta: {
                 index: 3
             },
             component: forgetPassword
-        },{
+        }, {
             path: '/update-password',
             meta: {
                 index: 3
             },
             component: updatePassword
-        },{
+        }, {
             path: '/update-info',
             meta: {
                 index: 3
             },
             component: updateInfo
-        },{
+        }, {
             path: '/shopcart',
             meta: {
                 index: 1
             },
             component: shopcart
-        },{
+        }, {
             path: '/order',
             meta: {
                 index: 2
             },
             component: order
-        },{
+        }, {
             path: '/order-list',
             meta: {
                 index: 3
             },
             component: orderList
-        },{
+        }, {
             path: '/order-detail',
             meta: {
                 index: 4
             },
             component: orderDetail
-        },{
+        }, {
             path: '/payment',
             meta: {
                 index: 5
@@ -146,6 +147,13 @@ export default new Router({
                 index: 3
             },
             component: shipping
+        },
+        {
+            path: '/frame',
+            meta: {
+                index: 3
+            },
+            component: frame
         }
     ]
 })

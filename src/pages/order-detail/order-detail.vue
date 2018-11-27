@@ -33,10 +33,15 @@
                 </span>
             </div>
         </section>
+        <popup :popup-title="popupTitle"
+               :popup-show="popupShow"
+               @cancelPopup="cancelPopup"
+               @confirmPopup="confirmPopup"></popup>
     </div>
 </template>
 
 <script>
+    import popup from '../../components/common/popup'
     import {getUrlKey} from "../../common/js/util";
     import {orderDetail,cancelOrder} from "../../service/getData";
 
@@ -44,7 +49,9 @@
         data() {
             return {
                 orderNo: '',
-                orderInfo: {}
+                orderInfo: {},
+                popupTitle: '',
+                popupShow: false
             }
         },
         created() {
@@ -65,16 +72,33 @@
             },
             //取消订单
             cancelOrder(){
-                if(confirm('确定取消订单吗？')){
-                    cancelOrder(this.orderNo).then((res)=>{
-                        console.log(res)
-                    })
-                    this.init()
-                }
+                ModalHelper.afterOpen()
+                this.popupTitle = '确认删除改订单吗？'
+                this.popupShow = true
+                // if(confirm('确定取消订单吗？')){
+                //     cancelOrder(this.orderNo).then((res)=>{
+                //         console.log(res)
+                //     })
+                //     this.init()
+                // }
+            },
+            confirmPopup(){
+                cancelOrder(this.orderNo).then((res)=>{
+                    // do nothing
+                })
+                this.init()
+                this.cancelPopup()
+            },
+            cancelPopup(){
+                ModalHelper.beforeClose()
+                this.popupShow = false
             },
             goBack(){
                 this.$router.go(-1)
             }
+        },
+        components: {
+            popup
         }
     }
 </script>

@@ -18,7 +18,8 @@
             <span :class="{'active' : orderType===4}" data-type="4" @click="selectTag">已完成</span>
         </section>
         <section>
-            <div class="order-list">
+            <loading v-show="isLoading"></loading>
+            <div class="order-list" v-show="!isLoading">
                 <div class="order-item" v-for="order in orderList" :data-orderNo="order.orderNo" @click="viewDetail">
                     <p class="order-num">订单号：<span>{{order.orderNo}}</span></p>
                     <div class="status">
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+    import loading from '../../components/common/loading'
     import {getUrlKey} from "../../common/js/util";
     import {orderList} from "../../service/getData";
 
@@ -54,7 +56,8 @@
             return {
                 orderList: [], //所有订单
                 orderType: 1,  //1-全部  2-待付款  3-待收货  4-已完成  5-售后
-                emptyMsg: ''
+                emptyMsg: '',
+                isLoading: true
             }
         },
         created() {
@@ -72,6 +75,7 @@
                         return
                     }
                     this.initOrderList(res.data.list)
+                    this.isLoading = false
                 })
             },
             initOrderList(orderList){
@@ -101,8 +105,10 @@
             selectTag(e){
                 let $type = parseInt(e.currentTarget.getAttribute('data-type'))
                 this.orderType = $type
+                this.$router.replace('./order-list?orderType='+$type)
                 this.orderList = []
                 this.emptyMsg = ''
+                this.isLoading = true
                 this.getOrderList()
             },
             viewDetail(e){
@@ -118,6 +124,9 @@
             goBack(){
                 this.$router.push('./user')
             }
+        },
+        components: {
+            loading
         }
     }
 </script>

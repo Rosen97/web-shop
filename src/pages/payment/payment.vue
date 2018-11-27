@@ -36,7 +36,7 @@
                 })
             },
             goBack(){
-                this.$router.go(-1)
+                this.$router.push('./order-list?orderType=1')
             }
         }
     }

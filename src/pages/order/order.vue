@@ -5,57 +5,61 @@
             <span>提交订单
             </span>
         </header>
-        <section class="order-shipping" :class="{'fixed' : shippingFixed}">
-            <router-link tag="div" class="shipping-info" to="./shipping">
-                <div class="info" v-if="!shippingEmpty">
+        <loading v-show="isLoading"></loading>
+        <section v-show="!isLoading">
+            <div class="order-shipping" :class="{'fixed' : shippingFixed}">
+                <router-link tag="div" class="shipping-info" to="./shipping">
+                    <div class="info" v-if="!shippingEmpty">
+                        <p>
+                            <span class="name">{{shippingInfo.receiverName}}</span>
+                            <span class="phone">{{shippingInfo.receiverMobile}}</span>
+                        </p>
+                        <div>
+                            <span>{{shippingInfo.receiverProvince}}{{shippingInfo.receiverCity}}{{shippingInfo.receiverAddress}}</span>
+                            <i class="iconfont icon-right"></i>
+                        </div>
+                    </div>
+                    <div class="empty" v-else>
+                        新增收货地址<i class="iconfont icon-right"></i>
+                    </div>
+                </router-link>
+                <img src="../../assets/shipping-bottom.png" />
+            </div>
+            <div class="order-list">
+                <div class="order-item" v-for="item in orderList">
+                    <img :src="imageHost+item.productMainImage">
+                    <div class="product-info">
+                        <p class="name">{{item.productName}}</p>
+                        <p class="subtitle">{{item.productSubtitle}}</p>
+                        <div>
+                            <span class="price">￥ {{item.productPrice}}</span>
+                            <span class="quantity">X {{item.quantity}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="order-payment">
+                <div>
                     <p>
-                        <span class="name">{{shippingInfo.receiverName}}</span>
-                        <span class="phone">{{shippingInfo.receiverMobile}}</span>
+                        <span>商品金额</span>
+                        <span>￥ {{cartTotalPrice}}</span>
                     </p>
-                    <div>
-                        <span>{{shippingInfo.receiverProvince}}{{shippingInfo.receiverCity}}{{shippingInfo.receiverAddress}}</span>
-                        <i class="iconfont icon-right"></i>
-                    </div>
+                    <p>
+                        <span>运费</span>
+                        <span>+ ￥0.00</span>
+                    </p>
                 </div>
-                <div class="empty" v-else>
-                    新增收货地址<i class="iconfont icon-right"></i>
+                <div class="total-price">
+                    总价：<span>￥{{cartTotalPrice}}</span>
                 </div>
-            </router-link>
-            <img src="../../assets/shipping-bottom.png" />
-        </section>
-        <section class="order-list">
-            <div class="order-item" v-for="item in orderList">
-                <img :src="imageHost+item.productMainImage">
-                <div class="product-info">
-                    <p class="name">{{item.productName}}</p>
-                    <p class="subtitle">{{item.productSubtitle}}</p>
-                    <div>
-                        <span class="price">￥ {{item.productPrice}}</span>
-                        <span class="quantity">X {{item.quantity}}</span>
-                    </div>
-                </div>
+                <button class="payment" @click="goPayment" ref="submitButton">在线支付</button>
             </div>
-        </section>
-        <section class="order-payment">
-            <div>
-                <p>
-                    <span>商品金额</span>
-                    <span>￥ {{cartTotalPrice}}</span>
-                </p>
-                <p>
-                    <span>运费</span>
-                    <span>+ ￥0.00</span>
-                </p>
-            </div>
-            <div class="total-price">
-                总价：<span>￥{{cartTotalPrice}}</span>
-            </div>
-            <button @click="goPayment">在线支付</button>
         </section>
     </div>
 </template>
 
 <script>
+    import loading from '../../components/common/loading'
     import {mapState, mapMutations} from 'vuex'
     export default {
         data() {
@@ -67,7 +71,8 @@
                 cartTotalPrice: 0,
                 shippingFixed: false,
                 categoryWrap: false,
-                shippingEmpty: false
+                shippingEmpty: false,
+                isLoading: true
             }
         },
         computed:{
@@ -76,8 +81,6 @@
             })
         },
         created(){
-            console.log(111111111)
-            console.log(this.shippingId)
             if(!this.shippingId){
                 this.getShippingId()
             }else{
@@ -86,15 +89,23 @@
             this.getOrderList()
         },
         mounted(){
-            window.addEventListener('scroll',this.pageScroll)
+            this.$nextTick(()=>{
+                this.calculateHeight()
+                setTimeout(()=>{
+                    this.isLoading = false
+                },500)
+            })
         },
         methods: {
             ...mapMutations([
                 'RECORD_SHIPPINGID'
             ]),
-            pageScroll(){
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-                scrollTop > 300 ? this.shippingFixed = true : this.shippingFixed = false
+            calculateHeight(){
+                let screenHeight = document.documentElement.clientHeight,
+                    wrapHeight = document.querySelector('.order-wrap').clientHeight
+                console.log(111)
+                console.log(screenHeight)
+                console.log(wrapHeight)
             },
             getShippingId(){
                 this.$http('/api/shipping/list.do',{
@@ -142,6 +153,9 @@
             goBack(){
                 this.$router.go(-1)
             }
+        },
+        components: {
+            loading
         }
     }
 </script>
@@ -229,7 +243,7 @@
         .order-list{
             width: 100%;
             margin-top: 40px;
-            padding: 20px 0;
+            padding: 20px 0 360px 0;
             background: #f7f7f7;
             .order-item{
                 @include fj;
@@ -275,10 +289,15 @@
             }
         }
         .order-payment{
+            position: fixed;
+            left: 0;
+            bottom: 0;
             width: 100%;
             padding: 20px;
             font-size: 30px;
             @include boxSizing;
+            z-index: 10000;
+            background: #fff;
             p{
                 @include fj;
                 width: 100%;

@@ -31,10 +31,12 @@
             <p class="err-msg">{{errMsg}}</p>
             <button class="password-submit" :class="{'active' : removeSpace(oldPassword)&&removeSpace(newPassword)}" @click="submitPassword">确认</button>
         </section>
+        <message v-show="isMessage" :message-text="messageText"></message>
     </div>
 </template>
 
 <script>
+    import message from '../../components/common/message'
     import {removeSpace} from "../../common/js/util";
     import {updatePassword,logout} from "../../service/getData";
 
@@ -46,7 +48,9 @@
                 oldClose: false,
                 newClose: false,
                 errMsg: '',
-                passwordType: 0
+                passwordType: 0,
+                messageText: '',
+                isMessage: false
             }
         },
         methods: {
@@ -88,15 +92,27 @@
                 }
                 this.errMsg = ''
                 updatePassword(this.oldPassword,this.newPassword).then((res)=>{
-                    alert('更新密码成功')
-                    logout().then(()=>{
-                        this.$router.push('./user')
-                    })
+                    this.showMessage()
+                    setTimeout(()=>{
+                        logout().then(()=>{
+                            this.$router.push('./user')
+                        })
+                    },1300)
                 })
+            },
+            showMessage() {
+                this.isMessage = true
+                this.messageText = '更新密码成功！'
+                setTimeout(() => {
+                    this.isMessage = false
+                }, 1200)
             },
             goBack(){
                 this.$router.go(-1)
             }
+        },
+        components: {
+            message
         }
     }
 </script>

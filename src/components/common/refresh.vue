@@ -11,8 +11,8 @@
                     <span class="up-tip">
                         <i class="iconfont icon-up"></i>松开刷新数据
                     </span>
-                    <span class="refresh-tip">
-                        <img src="../../assets/Load.gif" style="width: 80px;height: 80px;margin: 0 auto;"/>
+                    <span class="refresh-tip" style="padding-top: 30px;">
+                        <img src="../../assets/loading/5-121204194032.gif" style="width: 40px;height: 40px;margin: 0 auto;"/>
                         <!--<i class="iconfont icon-loading"></i>加载中……-->
                     </span>
                 </slot>
@@ -25,7 +25,7 @@
                         <i class="iconfont icon-up"></i>上拉加载更多
                     </span>
                     <span v-show="downFlag===true" class="up_loading loading_text">
-                        <img src="../../assets/loading_more.gif" style="width: 80px;height: 80px;margin: 0 auto;" />
+                        <img src="../../assets/loading/5-121204194032-50.gif" style="width: 80px;height: 80px;margin: 0 auto;" />
                     </span>
                 </slot>
             </footer>

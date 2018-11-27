@@ -1,7 +1,9 @@
 <template>
-    <div class="message-wrap">
-        <p class="message-text">{{messageText}}</p>
-    </div>
+    <transition name="fade">
+        <div class="message-wrap">
+            <p class="message-text">{{messageText}}</p>
+        </div>
+    </transition>
 </template>
 
 <script>
@@ -37,5 +39,11 @@
         @include borderRadius(20px);
         background: #EDF2FC;
       }
+    }
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 </style>

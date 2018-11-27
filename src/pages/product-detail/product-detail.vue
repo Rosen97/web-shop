@@ -57,112 +57,137 @@
                 </div>
             </div>
         </section>
-      <transition name="slide-up">
-        <section class="cart-wrap" v-show="cartShow">
-            <div class="cart-content">
-              <div class="cart-head">
-                <img :src="subImageList[0].imgUrl" v-if="subImageList.length > 0">
-                <div>
-                  <span class="price">￥{{productData.price}}</span>
-                  <p>{{productData.name}}</p>
+        <transition name="fade">
+            <div class="modal" @click="closeCart" v-show="cartShow"></div>
+        </transition>
+        <transition name="slide-up">
+            <section class="cart-wrap" v-show="cartShow">
+                <div class="cart-content">
+                    <div class="cart-head">
+                        <img :src="subImageList[0].imgUrl" v-if="subImageList.length > 0">
+                        <div>
+                            <span class="price">￥{{productData.price}}</span>
+                            <p>{{productData.name}}</p>
+                        </div>
+                        <i class="iconfont icon-close" @click="closeCart"></i>
+                    </div>
+                    <div class="cart-config">
+                        <div class="subtitle">
+                            <span>商品介绍</span>
+                            <span>{{productData.subtitle}}</span>
+                        </div>
+                    </div>
+                    <div class="cart-count">
+                        <span>数量</span>
+                        <div class="cart-quantity">
+                            <i @click="reduceCount" :class="{'active' : productCount === 1}">-</i>
+                            <span>{{productCount}}</span>
+                            <i @click="addCount" :class="{'active' : productCount === productData.stock}">+</i>
+                        </div>
+                    </div>
+                    <button class="add-cart" @click="confirmCart">确认</button>
                 </div>
-                <i class="iconfont icon-close" @click="closeCart"></i>
-              </div>
-              <div class="cart-config">
-                <div class="subtitle">
-                  <span>商品介绍</span>
-                  <span>{{productData.subtitle}}</span>
-                </div>
-              </div>
-              <div class="cart-count">
-                <span>数量</span>
-                <div class="cart-quantity">
-                  <i>-</i>
-                  <span>3</span>
-                  <i >+</i>
-                </div>
-              </div>
-              <button class="add-cart">确认</button>
-            </div>
-        </section>
-      </transition>
+            </section>
+        </transition>
+        <framework v-show="frameShow"></framework>
     </div>
 </template>
 
 <script>
+    import framework from 'components/common/frame'
     import slider from 'components/common/slider'
-    import { productDetail,cartCount,addCart } from "../../service/getData";
-    import {mapState,mapMutations} from 'vuex'
+    import {productDetail, cartCount, addCart} from "../../service/getData";
+    import {mapState, mapMutations} from 'vuex'
 
     export default {
-        components: {
-            slider
-        },
         data() {
             return {
                 subImageList: [],
                 productData: {},
+                productCount:1,
                 cartCount: 0,
                 navIndex: 0,    //导航索引
                 isLoved: false,
-                cartShow: false
+                cartShow: false,
+                frameShow: true
             }
         },
-      computed: {
-          ...mapState({
-            followList: state => state.followList
-          })
-      },
-        created(){
+        computed: {
+            ...mapState({
+                followList: state => state.followList
+            })
+        },
+        created() {
             this.getDetail()
             this.getCartCount()
         },
-        mounted(){
-            this.$nextTick(function(){
-                window.addEventListener('scroll',this.pageScroll)
+        mounted() {
+            this.$nextTick(function () {
+                window.addEventListener('scroll', this.pageScroll)
+                setTimeout(()=>{
+                    this.frameShow = false
+                },800)
             })
         },
         methods: {
-          ...mapMutations([
-            'ADD_FOLLOW',
-            'REDUCE_FOLLOW'
-          ]),
-            async getDetail(){
+            ...mapMutations([
+                'ADD_FOLLOW',
+                'REDUCE_FOLLOW'
+            ]),
+            //商品详情
+            async getDetail() {
                 let subImages = [],
                     imageHost = ''
-                await productDetail(this.$route.params.id).then((res)=>{
-                    // console.log(res)
+                await productDetail(this.$route.params.id).then((res) => {
+                    console.log(res)
                     subImages = res.data.subImages.split(',')
                     imageHost = res.data.imageHost
                     this.productData = res.data
                 })
-                subImages.forEach((item)=>{
+                subImages.forEach((item) => {
                     this.subImageList.push({
                         imgUrl: imageHost + item
                     })
                 })
             },
-            getCartCount(){
-                cartCount().then((res)=>{
+            getCartCount() {
+                cartCount().then((res) => {
                     // console.log(res)
                     this.cartCount = res.data
                 })
             },
-          addCart(){
-            this.cartShow = true
-          },
-          closeCart(){
-            this.cartShow = false
-          },
-            // async addCart(){
-            //     await addCart(this.productData.id,1).then((res)=>{
-            //         // console.log(res)
-            //     })
-            //     this.getCartCount()
-            // },
-            scrollToView(e){
+            addCart() {
+                this.cartShow = true
+                ModalHelper.afterOpen()
+            },
+            addCount(){
+                if(this.productCount === this.productData.stock){
+                    return
+                }
+                this.productCount ++
+
+            },
+            reduceCount(){
+                if(this.productCount === 1){
+                    return
+                }
+                this.productCount --
+            },
+            //加入购物车
+            async confirmCart(){
+                await addCart(this.productData.id,this.productCount).then((res)=>{
+                    // do nothing
+                })
+                this.getCartCount()
+                this.closeCart()
+            },
+            closeCart() {
+                this.cartShow = false
+                ModalHelper.beforeClose()
+            },
+            scrollToView(e) {
                 let $type = e.target.getAttribute('data-type')
-                switch($type){
+                switch ($type) {
                     case 'product':
                         this.navIndex = 0
                         break
@@ -179,34 +204,41 @@
                 // console.log(document.querySelector('#recommend').offsetTop)
             },
             //监听页面滚动
-            pageScroll(){
+            pageScroll() {
                 // let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 
             },
-            lightLove(){
+            //喜欢
+            lightLove() {
                 this.isLoved = true
-              this.followList.unshift(this.productData)
+                this.followList.unshift(this.productData)
                 this.ADD_FOLLOW(this.followList)
             },
-            cancelLove(){
+            //取消喜欢
+            cancelLove() {
                 this.isLoved = false
-                this.REDUCE_FOLLOW('reduce',this.productData.id)
+                this.REDUCE_FOLLOW('reduce', this.productData.id)
             },
-            goBack(){
+            goBack() {
                 this.$router.go(-1)
             }
-        }
+        },
+        components: {
+            framework,
+            slider
+        },
     }
 </script>
 
 <style lang="scss" type="text/scss">
     @import '../../common/style/mixin';
-    .product-detail{
+
+    .product-detail {
         width: 100%;
-        &.active{
-          background: rgba(0,0,0,.6);
+        &.active {
+            background: rgba(0, 0, 0, .6);
         }
-        .detail-nav{
+        .detail-nav {
             @include fj;
             position: fixed;
             left: 0;
@@ -220,91 +252,91 @@
             color: #252525;
             background: #fff;
             border-bottom: 1px solid #dcdcdc;
-            i{
+            i {
                 font-size: 50px;
                 color: #000;
             }
-            div span{
+            div span {
                 padding: 0 20px;
                 font-size: 28px;
-                &.active{
+                &.active {
                     color: $red;
                 }
-                .iconfont{
+                .iconfont {
                     padding-right: 8px;
                     font-size: 28px;
                     color: $red;
                 }
             }
         }
-        .detail-slider img{
+        .detail-slider img {
             height: 700px;
         }
-        .product-focus{
+        .product-focus {
             margin-top: 88px;
         }
-        .detail-info{
+        .detail-info {
             width: 100%;
             padding: 20px 30px;
             font-size: 30px;
             box-sizing: border-box;
-            .detail-info-name{
+            .detail-info-name {
                 font-size: 40px;
                 color: #333;
             }
-            .detail-info-subtitle{
+            .detail-info-subtitle {
                 padding: 10px 0;
                 font-size: 28px;
                 color: #999;
             }
-            div{
+            div {
                 @include fj;
                 padding: 10px 0;
                 font-size: 32px;
                 color: #999;
-                .detail-info-price{
+                .detail-info-price {
                     color: $red;
                     font-size: 44px;
                 }
             }
         }
-        .detail-content{
+        .detail-content {
             width: 100%;
-            .detail-gap{
+            .detail-gap {
                 width: 100%;
                 height: 20px;
                 background: #eee;
             }
-            ul{
+            ul {
                 @include fj;
                 width: 100%;
                 margin: 20px 0;
-                li{
+                li {
                     flex: 1;
                     padding: 10px 0;
                     text-align: center;
                     font-size: 30px;
                     border-right: 1px solid #999;
                     box-sizing: border-box;
-                    &:last-child{
+                    &:last-child {
                         border-right: none;
                     }
                 }
             }
-            div{
+            div {
                 width: 100%;
                 overflow: hidden;
-                p{
+                p {
                     width: 100%;
                     font-size: 40px;
                     text-align: center;
                 }
-                img{
+                img {
                     width: 100%;
                 }
             }
         }
-        .detail-cart{
+        .detail-cart {
             @include fj;
             position: fixed;
             left: 0;
@@ -315,37 +347,37 @@
             font-size: 30px;
             background: #FEFBF9;
             z-index: 1000;
-          transform: translateZ(0);
-          -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
             @include boxSizing;
-            .detail-cart-left{
+            .detail-cart-left {
                 @include fj;
                 width: 46%;
                 padding: 0 30px;
                 @include boxSizing;
-                .like{
+                .like {
                     width: 40%;
                     display: flex;
                     flex-direction: column;
                     text-align: center;
-                    .iconfont{
+                    .iconfont {
                         font-size: 34px;
                         line-height: 60px;
                         color: #000000;
                         font-weight: bold;
-                        &.icon-love{
+                        &.icon-love {
                             color: $red;
                         }
                     }
-                    span{
+                    span {
                         line-height: 30px;
                         font-size: 26px;
                     }
                 }
-                .cart{
+                .cart {
                     @extend .like;
                     position: relative;
-                    .cart-num{
+                    .cart-num {
                         position: absolute;
                         right: 20px;
                         top: 0;
@@ -358,145 +390,154 @@
                         background: $red;
                         @include borderRadius(50%);
                     }
-                    .iconfont{
+                    .iconfont {
                         font-size: 40px;
                         font-weight: normal;
                     }
                 }
             }
-            .detail-cart-right{
+            .detail-cart-right {
                 width: 54%;
-                button{
-                    width:100%;
+                button {
+                    width: 100%;
                     height: 100px;
                     color: #fff;
                     font-size: 30px;
                     background: $red;
-                    &:nth-child(1){
+                    &:nth-child(1) {
                         margin-right: -10px;
-                        background: $orange;
+                        background: rgba(246,53,21,.9);
                     }
                 }
             }
         }
-      .cart-wrap{
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 99999999;
-        .cart-content{
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          width: 100%;
-          height: 60%;
-          font-size: 30px;
-          background: #fff;
-          .cart-head{
-            display: flex;
+        .modal{
+            position: fixed;
+            left: 0;
+            top: 0;
             width: 100%;
-            padding: 30px;
-            @include boxSizing;
-            img{
-              width: 180px;
-              height: 180px;
-              margin-top: -60px;
-              border: 1px solid #999;
-            }
-            div{
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-              width: 64%;
-              margin-left: 20px;
-              .price{
-                display: block;
-                font-size: 34px;
-                color: $red;
-                padding-bottom: 10px;
-              }
-              p{
-                max-height: 40px;
-                overflow: hidden;
-              }
-            }
-            .iconfont{
-              position: absolute;
-              top: 30px;
-              right: 30px;
-              font-size: 28px;
-              color: #dcdcdc;
-            }
-          }
-          .cart-config{
-            @extend .cart-head;
-            padding: 0 30px 30px 30px;
-            .subtitle{
-              width: 100%;
-              margin-left: 0;
-              padding: 20px 0;
-              span{
-                &:first-child{
-                  color: #999;
-                  padding-bottom: 20px;
-                }
-              }
-            }
-          }
-          .cart-count{
-            @include fj;
-            width: 100%;
-            padding: 0 30px 30px 30px;
-            @include boxSizing;
-            .cart-quantity{
-              @include fj;
-              width: 210px;
-              height: 60px;
-              line-height: 60px;
-              color: #999;
-              background: #fff;
-              span{
-                width: 80px;
-                height: 100%;
-                text-align: center;
-                line-height: 60px;
-                background: #F7F7F7;
-              }
-              i{
-                width: 60px;
-                height: 100%;
-                text-align: center;
-                line-height: 60px;
-                font-style: normal;
-                font-size: 50px;
-                background: #F7F7F7;
-                &.active{
-                  color: #dcdcdc;
-                }
-              }
-            }
-          }
-          .add-cart{
-            position: absolute;
+            height: 100%;
+            z-index: 1000;
+            background: rgba(0,0,0,.6);
+        }
+        .cart-wrap {
+            position: fixed;
             left: 0;
             bottom: 0;
             width: 100%;
-            height: 100px;
-            text-align: center;
-            line-height: 100px;
-            color: #fff;
-            font-size: 30px;
-            background: $red;
-          }
+            height: 60%;
+            z-index: 99999999;
+            .cart-content {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                font-size: 30px;
+                background: #fff;
+                .cart-head {
+                    display: flex;
+                    width: 100%;
+                    padding: 30px;
+                    @include boxSizing;
+                    img {
+                        width: 180px;
+                        height: 180px;
+                        margin-top: -60px;
+                        border: 1px solid #999;
+                    }
+                    div {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        width: 64%;
+                        margin-left: 20px;
+                        .price {
+                            display: block;
+                            font-size: 34px;
+                            color: $red;
+                            padding-bottom: 10px;
+                        }
+                        p {
+                            max-height: 40px;
+                            overflow: hidden;
+                        }
+                    }
+                    .iconfont {
+                        position: absolute;
+                        top: 30px;
+                        right: 30px;
+                        font-size: 28px;
+                        color: #dcdcdc;
+                    }
+                }
+                .cart-config {
+                    @extend .cart-head;
+                    padding: 0 30px 30px 30px;
+                    .subtitle {
+                        width: 100%;
+                        margin-left: 0;
+                        padding: 20px 0;
+                        span {
+                            &:first-child {
+                                color: #999;
+                                padding-bottom: 20px;
+                            }
+                        }
+                    }
+                }
+                .cart-count {
+                    @include fj;
+                    width: 100%;
+                    padding: 0 30px 30px 30px;
+                    @include boxSizing;
+                    .cart-quantity {
+                        @include fj;
+                        width: 210px;
+                        height: 60px;
+                        line-height: 60px;
+                        color: #999;
+                        background: #fff;
+                        span {
+                            width: 80px;
+                            height: 100%;
+                            text-align: center;
+                            line-height: 60px;
+                            background: #F7F7F7;
+                        }
+                        i {
+                            width: 60px;
+                            height: 100%;
+                            text-align: center;
+                            line-height: 60px;
+                            font-style: normal;
+                            font-size: 50px;
+                            background: #F7F7F7;
+                            &.active {
+                                color: #dcdcdc;
+                            }
+                        }
+                    }
+                }
+                .add-cart {
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    width: 100%;
+                    height: 100px;
+                    text-align: center;
+                    line-height: 100px;
+                    color: #fff;
+                    font-size: 30px;
+                    background: $red;
+                }
+            }
         }
-      }
-      .slide-up-enter-active,.slide-up-leave-active{
-        transition: all 0.5s;
-      }
-      .slide-up-enter,.slide-up-leave-to{
-        transform: translate3d(0,100%,0);
-      }
+        .slide-up-enter-active, .slide-up-leave-active {
+            transition: all 0.5s;
+        }
+        .slide-up-enter, .slide-up-leave-to {
+            transform: translate3d(0, 100%, 0);
+        }
     }
 </style>
