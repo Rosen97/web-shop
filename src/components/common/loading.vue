@@ -1,7 +1,7 @@
 <template>
     <div class="loading">
-        <img src="../../assets/loading/5-121204194032-50.gif" class="image-top" v-if="loadingType === 1">
-        <img src="../../assets/loading/5-121204194032-50.gif" class="image-center" v-else>
+        <img src="../../assets/loading/loading-0.gif" class="image-top" v-if="loadingType === 1">
+        <img src="../../assets/loading/loading-0.gif" class="image-center" v-else>
     </div>
 </template>
 
@@ -22,13 +22,12 @@
         width: 100%;
         height: 100%;
         img {
-            width: 100px;
-            height: 100px;
+            width: 120px;
             &.image-top{
                 position: absolute;
                 left: 50%;
                 top: 100px;
-                margin-left: -50px;
+                margin-left: -60px;
             }
             &.image-center{
                 position: absolute;

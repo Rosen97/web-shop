@@ -82,11 +82,9 @@
         },
         mounted() {
             window.addEventListener('scroll', this.pageScroll)
-            this.$nextTick(()=>{
                 setTimeout(()=>{
                     this.isLoading = false
                 },500)
-            })
         },
         methods: {
             ...mapMutations([

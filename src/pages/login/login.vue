@@ -1,6 +1,6 @@
 <template>
     <div>
-        <m-header :mTitle="'京东登录'"></m-header>
+        <m-header :mTitle="'MMall登录'"></m-header>
         <section class="page">
             <div class="login-page">
                 <div class="login-wrap">
@@ -41,7 +41,7 @@
                             <span>微信</span>
                         </div>
                     </div>
-                    <p>登录即代表您已同意<a>京东隐私政策</a></p>
+                    <p>登录即代表您已同意<a>MMall隐私政策</a></p>
                 </div>
             </div>
         </section>
@@ -96,7 +96,7 @@
                 }
                 userLogin(this.username,this.password).then((res)=>{
                         this.errMsg = ''
-                        this.$router.go(-1)
+                        this.$router.push('./user')
                 })
             }
         },

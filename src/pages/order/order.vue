@@ -5,7 +5,7 @@
             <span>提交订单
             </span>
         </header>
-        <loading v-show="isLoading"></loading>
+        <loading v-show="isLoading" :loading-type="2"></loading>
         <section v-show="!isLoading">
             <div class="order-shipping" :class="{'fixed' : shippingFixed}">
                 <router-link tag="div" class="shipping-info" to="./shipping">

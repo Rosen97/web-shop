@@ -5,76 +5,78 @@
             <span>购物车</span>
             <i class="iconfont icon-More"></i>
         </header>
-        <loading v-show="isLoading"></loading>
-        <section class="shopcart-page" v-show="!isLoading">
+        <loading v-show="isLoading" :loading-type="2"></loading>
+        <section v-show="!isLoading">
+          <section class="shopcart-page">
             <div class="shopcart-list">
-                <div class="shopcart-item" v-for="item in cartProductVoList" data-type="0"
-                     @click="showDetail($event,item.productId)">
-                    <div class="shopcart-item-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
-                        <div class="shopcart-item-select">
-                            <i class="iconfont icon-duigou" data-selected="1"
-                               @click="selectProduct($event,item.productId)" v-if="item.productChecked"></i>
-                            <i class="iconfont icon-weibiaoti38" data-selected="0"
-                               @click="selectProduct($event,item.productId)" v-else></i>
-                        </div>
-                        <img :src="imageHost + item.productMainImage" v-if="item.productMainImage"/>
-                        <img src="../../assets/product_default.jpg" v-else/>
-                        <div class="shopcart-item-info">
-                            <p class="shopcart-name" v-text="item.productName"></p>
-                            <p class="shopcart-subtitle" v-text="item.productSubtitle"></p>
-                            <div class="shopcart-num">
-                                <span class="shopcart-price" v-text="`￥${item.productPrice}`"></span>
-                                <div class="shopcart-quantity">
-                                    <i @click="reduceCount(item.productId,item.quantity,item.productStock)"
-                                       :class="{'active' : item.quantity === 1}">-</i>
-                                    <span>{{item.quantity}}</span>
-                                    <i @click="addCount(item.productId,item.quantity)"
-                                       :class="{'active' : item.quantity === item.productStock}">+</i>
-                                </div>
-                            </div>
-                        </div>
+              <div class="shopcart-item" v-for="item in cartProductVoList" data-type="0"
+                   @click="showDetail($event,item.productId)">
+                <div class="shopcart-item-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
+                  <div class="shopcart-item-select">
+                    <i class="iconfont icon-duigou" data-selected="1"
+                       @click="selectProduct($event,item.productId)" v-if="item.productChecked"></i>
+                    <i class="iconfont icon-weibiaoti38" data-selected="0"
+                       @click="selectProduct($event,item.productId)" v-else></i>
+                  </div>
+                  <img :src="imageHost + item.productMainImage" v-if="item.productMainImage"/>
+                  <img src="../../assets/product_default.jpg" v-else/>
+                  <div class="shopcart-item-info">
+                    <p class="shopcart-name" v-text="item.productName"></p>
+                    <p class="shopcart-subtitle" v-text="item.productSubtitle"></p>
+                    <div class="shopcart-num">
+                      <span class="shopcart-price" v-text="`￥${item.productPrice}`"></span>
+                      <div class="shopcart-quantity">
+                        <i @click="reduceCount(item.productId,item.quantity,item.productStock)"
+                           :class="{'active' : item.quantity === 1}">-</i>
+                        <span>{{item.quantity}}</span>
+                        <i @click="addCount(item.productId,item.quantity)"
+                           :class="{'active' : item.quantity === item.productStock}">+</i>
+                      </div>
                     </div>
-                    <div class="delete" @click="deleteShopcart(item.productId)">删除</div>
+                  </div>
                 </div>
+                <div class="delete" @click="deleteShopcart(item.productId)">删除</div>
+              </div>
             </div>
             <div class="shopcart-footer" v-if="cartProductVoList.length > 0">
-                <div class="shopcart-item-select" @click="selectAll">
-                    <i class="iconfont icon-duigou" v-if="allChecked === true && cartProductVoList.length"></i>
-                    <i class="iconfont icon-weibiaoti38" v-else></i>
-                    <span>全选</span>
-                </div>
-                <div class="shopcart-accounts">
-                    <span>合计：<i v-text="`￥${cartTotalPrice}`"></i></span>
-                    <button @click="settleAccounts" :class="{'active' : cartTotalPrice > 0}">结算</button>
-                </div>
+              <div class="shopcart-item-select" @click="selectAll">
+                <i class="iconfont icon-duigou" v-if="allChecked === true && cartProductVoList.length"></i>
+                <i class="iconfont icon-weibiaoti38" v-else></i>
+                <span>全选</span>
+              </div>
+              <div class="shopcart-accounts">
+                <span>合计：<i v-text="`￥${cartTotalPrice}`"></i></span>
+                <button @click="settleAccounts" :class="{'active' : cartTotalPrice > 0}">结算</button>
+              </div>
             </div>
             <div v-else>
-                <div class="shopcart-empty">
-                    <img src="//img11.360buyimg.com/jdphoto/s180x180_jfs/t18163/292/540553659/74408/adeb7463/5a93c51cN3bb5e37b.png">
-                    <p>购物车空空如也，去逛逛吧~</p>
-                </div>
+              <div class="shopcart-empty">
+                <img src="//img11.360buyimg.com/jdphoto/s180x180_jfs/t18163/292/540553659/74408/adeb7463/5a93c51cN3bb5e37b.png">
+                <p>购物车空空如也，去逛逛吧~</p>
+              </div>
             </div>
             <div class="recommend-title">
-                <span></span>
-                <i>可能你还想要</i>
-                <span></span>
+              <span></span>
+              <i>可能你还想要</i>
+              <span></span>
             </div>
             <div class="shopcart-recommend">
-                <div class="recommend-list">
-                    <div class="recommend-item" v-for="(item,index) in recommendList"
-                         @click="productDetail($event,index)">
-                        <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage"/>
-                        <img src="../../assets/product_default.jpg" v-else/>
-                        <p>{{item.name}}</p>
-                        <div>
-                            <span class="price">￥{{item.price}}</span>
-                            <i class="iconfont icon-gouwuche"></i>
-                        </div>
-                    </div>
+              <div class="recommend-list">
+                <div class="recommend-item" v-for="(item,index) in recommendList"
+                     @click="productDetail($event,index)">
+                  <img :src="item.imageHost+item.mainImage" v-if="item.imageHost && item.mainImage"/>
+                  <img src="../../assets/product_default.jpg" v-else/>
+                  <p>{{item.name}}</p>
+                  <div>
+                    <span class="price">￥{{item.price}}</span>
+                    <i class="iconfont icon-gouwuche"></i>
+                  </div>
                 </div>
+              </div>
             </div>
+          </section>
+          <nav-bar></nav-bar>
         </section>
-        <nav-bar></nav-bar>
         <popup :popup-title="popupTitle"
                :popup-show="popupShow"
                @cancelPopup="cancelPopup"

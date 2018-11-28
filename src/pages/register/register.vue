@@ -1,6 +1,6 @@
 <template>
     <div>
-        <m-header :mTitle="'京东注册'"></m-header>
+        <m-header :mTitle="'MMall注册'"></m-header>
         <section class="page">
             <div class="register-page">
                 <div class="register-wrap">

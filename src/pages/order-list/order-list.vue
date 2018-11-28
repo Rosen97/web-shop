@@ -17,8 +17,8 @@
             <span :class="{'active' : orderType===3}" data-type="3" @click="selectTag">待收货</span>
             <span :class="{'active' : orderType===4}" data-type="4" @click="selectTag">已完成</span>
         </section>
+      <loading v-show="isLoading"></loading>
         <section>
-            <loading v-show="isLoading"></loading>
             <div class="order-list" v-show="!isLoading">
                 <div class="order-item" v-for="order in orderList" :data-orderNo="order.orderNo" @click="viewDetail">
                     <p class="order-num">订单号：<span>{{order.orderNo}}</span></p>
@@ -65,24 +65,30 @@
             this.orderType = parseInt($orderType)
             this.getOrderList()
         },
+      mounted(){
+          this.$nextTick(()=>{
+            setTimeout(()=>{
+              this.isLoading = false
+            },500)
+          })
+      },
         methods: {
             getOrderList(){
                 let pageNum = 1,
                     pageSize = 20
                 orderList(pageSize,pageNum).then((res)=>{
                     console.log(res)
-                    if(!res.data.list.length){
-                        return
-                    }
+                    // if(!res.data.list.length){
+                    //     return
+                    // }
                     this.initOrderList(res.data.list)
-                    this.isLoading = false
                 })
             },
             initOrderList(orderList){
                 switch(this.orderType){
                     case 1:
                         this.orderList = orderList
-                        this.emptyMsg = '你暂时没有订单'
+                        this.emptyMsg = '你暂时没有订单!'
                         break
                     case 2:
                         orderList.forEach((order)=>{  //待付款
@@ -90,15 +96,15 @@
                                 this.orderList.push(order)
                             }
                         })
-                        this.emptyMsg = '你暂时没有要付款的订单'
+                        this.emptyMsg = '你暂时没有要付款的订单!'
                         break
                     case 3:
                         this.orderList = []
-                        this.emptyMsg = '你暂时没有待收货的订单'
+                        this.emptyMsg = '你暂时没有待收货的订单!'
                         break
                     case 4:
                         this.orderList = []
-                        this.emptyMsg = '你暂时没有已完成的订单'
+                        this.emptyMsg = '你暂时没有已完成的订单!'
                         break
                 }
             },
@@ -108,7 +114,6 @@
                 this.$router.replace('./order-list?orderType='+$type)
                 this.orderList = []
                 this.emptyMsg = ''
-                this.isLoading = true
                 this.getOrderList()
             },
             viewDetail(e){
@@ -262,7 +267,7 @@
         }
         .order-empty{
             width: 100%;
-            margin: 24px 0;
+          margin-top: 60px;
             text-align: center;
             font-size: 28px;
             color: #999;
