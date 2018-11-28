@@ -28,7 +28,7 @@
                                                                         v-if="category.mainImgUrl"/>
                                         <div class="category-list" v-for="products in category.list">
                                             <p class="catogory-title">{{products.title}}</p>
-                                            <div class="product-item" v-for="product in products.productList">
+                                            <div class="product-item" v-for="product in products.productList" @click="selectProduct(product.title)">
                                                 <img :src="product.imgUrl" class="product-img"/>
                                                 <p v-text="product.title" class="product-title"></p>
                                             </div>
@@ -85,6 +85,9 @@
             //左侧菜单和右侧区域联动
             selectMenu($index) {
                 this.currentIndex = $index
+            },
+            selectProduct(title){
+                this.$router.push('./product-list?keyword='+title)
             },
             goHome(){
               console.log(11111)

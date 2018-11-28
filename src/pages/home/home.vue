@@ -15,7 +15,7 @@
         <nav-bar></nav-bar>
         <slider :imgUrl="headList"></slider>
         <section class="category-list">
-            <div v-for="item in categoryList" @click="selectCategory()">
+            <div v-for="item in categoryList" @click="selectCategory(item.categoryId)">
                 <img :src="item.imgUrl">
                 <span>{{item.name}}</span>
             </div>
@@ -28,7 +28,7 @@
                         <p>{{category.title}}</p>
                         <p>{{category.desc}}</p>
                         <div class="floor-products">
-                            <img :src="product.imgUrl" v-for="product in category.products" @click="selectCategory()">
+                            <img :src="product.imgUrl" v-for="product in category.products" @click="selectCategory(product.categoryId)">
                         </div>
                     </div>
                 </div>
@@ -82,8 +82,8 @@
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
                 scrollTop > 100 ? this.headerActive = true : this.headerActive = false
             },
-            selectCategory(){
-                this.$router.push('./product-list?categoryId='+100002)
+            selectCategory(categoryId){
+                this.$router.push('./product-list?categoryId='+categoryId)
             }
         },
         components: {
