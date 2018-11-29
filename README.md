@@ -11,7 +11,13 @@ vue2 + vuex + vue-router + webpack + ES6/7 + axios + sass(关于数据请求用�
 在这里使用的是慕课网提供的接口：[接口文档](https://gitee.com/imooccode/happymmallwiki/wikis/Home)，相关的教程推荐：[电商项目实战](https://coding.imooc.com/class/109.html)
 
 # 项目演示
+
+![查看demo请戳这里](http://47.105.169.110:8080/#/home)（请用chrome手机模式预览）
+
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user.gif)
+![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user2.gif)
+![](https://github.com/Rosen97/web-shop/blob/master/src/assets/product.gif)
+![](https://github.com/Rosen97/web-shop/blob/master/src/assets/order.gif)
 
 # 项目运行
 
