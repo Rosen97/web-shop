@@ -8,9 +8,9 @@ vue2 + vuex + vue-router + webpack + ES6/7 + axios + sass(关于数据请求用�
 
 # 项目数据接口
 
-在这里使用的是慕课网提供的接口：[接口文档](https://gitee.com/imooccode/happymmallwiki/wikis/Home)
+在这里使用的是慕课网提供的接口：[接口文档](https://gitee.com/imooccode/happymmallwiki/wikis/Home)，相关的教程推荐：[电商项目实战](https://coding.imooc.com/class/109.html)
 
-## Build Setup
+#项目运行
 
 ``` bash
 # install dependencies
@@ -26,4 +26,3 @@ npm run build
 npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
