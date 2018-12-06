@@ -55,7 +55,7 @@ proxyTable: {
 
 # 项目演示
 
-[查看demo请戳这里](http://47.105.169.110:8080/#/home)（请用chrome手机模式预览）
+[查看demo请戳这里](http://www.rosenwang.xyz:8080/#/home)（请用chrome手机模式预览）
 
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user.gif)
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user2.gif)
