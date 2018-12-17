@@ -31,9 +31,14 @@
 
 <style lang="scss" type="text/scss">
     @import './common/style/base';
+    body{
+       max-width: 800px;
+    }
     #app {
         width: 100%;
+        max-width: 800px;
         height: 100%;
+        margin: 0 auto;
         background: #fff;
         -webkit-overflow-scrolling: touch;
         position: absolute;

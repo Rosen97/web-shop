@@ -4,11 +4,37 @@ $red: #F63515;
 $bc: #F7F7F7;
 $fc:#fff;
 
-// 背景图片地址和大小
-@mixin bis($url) {
-  background-image: url($url);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+@mixin border-top-1px($color){
+  &:before{
+    border-top: 1px solid $color;
+  }
+}
+@mixin border-right-1px($color){
+  &:before{
+    border-right: 1px solid $color;
+  }
+}
+@mixin border-bottom-1px($color){
+  &:before{
+    border-bottom: 1px solid $color;
+  }
+}
+@mixin border-left-1px($color){
+  &:before{
+    border-left: 1px solid $color;
+  }
+}
+@mixin border-1px($color){
+  position: relative;
+  &:after{
+    content: '';
+    pointer-events: none;   //解决iphone上的点击无效Bug
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    border: 1px solid $color;
+  }
 }
 
 //圆角

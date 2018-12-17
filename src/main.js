@@ -7,7 +7,9 @@ import store from './store/'
 import 'lib-flexible'   //rem布局
 import http from './service/ajax'
 import fastclick from 'fastclick'
+import VueScroller from 'vue-scroller'
 
+Vue.use(VueScroller)
 fastclick.attach(document.body) //解决移动端点击300ms延时
 Vue.config.productionTip = false
 

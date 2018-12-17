@@ -89,7 +89,7 @@
                 </div>
             </section>
         </transition>
-        <framework v-show="frameShow"></framework>
+        <!--<framework v-show="frameShow"></framework>-->
     </div>
 </template>
 
