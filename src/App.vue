@@ -33,6 +33,7 @@
     @import './common/style/base';
     body{
        max-width: 800px;
+        margin: 0 auto;
     }
     #app {
         width: 100%;
