@@ -52,10 +52,6 @@ proxyTable: {
 
 # 项目演示
 
-[查看demo请戳这里](http://www.rosenwang.xyz:8080/#/home)（请用chrome手机模式预览）
-
-![](https://user-gold-cdn.xitu.io/2018/12/24/167df0e230722440?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
-
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user.gif)
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user2.gif)
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/product.gif)
