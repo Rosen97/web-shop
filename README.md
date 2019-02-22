@@ -8,7 +8,7 @@ vue2 + vuex + vue-router + webpack + ES6/7 + axios + sass
 
 css预处理器：目前流行的css预处理主要是stylus，less，sass，个人感觉less和sass差别不大，stylus缩进式语法有点不太习惯，综上选择了sass进行样式的编写，通过预处理器可以以编程的方式书写css代码，添加变量，函数，样式继承等。
 
-后台接口：在这里使用的是慕课网提供的接口：[接口文档](https://gitee.com/imooccode/happymmallwiki/wikis/Home)，相关的教程推荐：[电商项目实战](https://coding.imooc.com/class/109.html)
+后台接口：在这里使用的是慕课网提供的接口：[接口文档](https://gitee.com/imooccode/happymmallwiki/wikis/Home)
 
 跨域处理：由于使用的外部接口，前端项目运行地址与接口访问地址不同，浏览器的同源策略使得我们不得不处理跨域，因此需要对跨域进行简单处理。
 1. 开发模式下：需要在config下的index.js进行配置
