@@ -52,6 +52,8 @@ proxyTable: {
 
 # 项目演示
 
+[项目演示](http://www.rosenwang.xyz:8080/#/home)
+
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user.gif)
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/user2.gif)
 ![](https://github.com/Rosen97/web-shop/blob/master/src/assets/product.gif)
