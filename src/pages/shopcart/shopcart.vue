@@ -120,12 +120,12 @@
             }
         },
         beforeCreate() {
-            checkLogin().then((res) => {
-                if (res.status === 1) {
-                    this.$router.push('./login')
-                    return
-                }
-            })
+            // checkLogin().then((res) => {
+            //     if (res.status === 1) {
+            //         this.$router.push('./login')
+            //         return
+            //     }
+            // })
         },
         created() {
             this.getCartList()

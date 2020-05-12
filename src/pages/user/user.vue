@@ -91,14 +91,14 @@
             })
         },
         beforeCreate() {
-            checkLogin().then((res) => {
-                if (res.status === 1) {   //未登录跳转
-                    this.$router.push('./login')
-                    return
-                }
-                this.userInfo = res.data
-                console.log(res)
-            })
+            // checkLogin().then((res) => {
+            //     if (res.status === 1) {   //未登录跳转
+            //         this.$router.push('./login')
+            //         return
+            //     }
+            //     this.userInfo = res.data
+            //     console.log(res)
+            // })
         },
         created() {
             let footCount = getStore('footprintList').length

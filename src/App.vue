@@ -1,31 +1,31 @@
 <template>
     <div id="app">
-        <transition :name="transitionName">
+        <!-- <transition :name="transitionName"> -->
             <router-view class="router-view"/>
-        </transition>
+        <!-- </transition> -->
     </div>
 </template>
 
 <script>
     export default {
         // 监听路由的路径，可以通过不同的路径去选择不同的切换效果
-        data(){
-            return{
-                transitionName: 'slide-left'
-            }
-        },
-        // 监听路由的路径，可以通过不同的路径去选择不同的切换效果
-        watch: {
-            $route(to, from) {
-                if (to.meta.index > from.meta.index) {  //外---》内
-                    this.transitionName = 'slide-left'
-                } else if (to.meta.index < from.meta.index) {   //内---》外
-                    this.transitionName = 'slide-right'
-                } else {
-                    this.transitionName = ''   //同级 无过渡效果
-                }
-            }
-        }
+        // data(){
+        //     return{
+        //         transitionName: 'slide-left'
+        //     }
+        // },
+        // // 监听路由的路径，可以通过不同的路径去选择不同的切换效果
+        // watch: {
+        //     $route(to, from) {
+        //         if (to.meta.index > from.meta.index) {  //外---》内
+        //             this.transitionName = 'slide-left'
+        //         } else if (to.meta.index < from.meta.index) {   //内---》外
+        //             this.transitionName = 'slide-right'
+        //         } else {
+        //             this.transitionName = ''   //同级 无过渡效果
+        //         }
+        //     }
+        // }
     }
 </script>
 

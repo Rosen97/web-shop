@@ -13,7 +13,7 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     let responseStatus = response.data.status
     if(responseStatus === 10){
-        window.location.href = '/#/login'
+        // window.location.href = '/#/login'
     }else if(responseStatus === 1){
         if(response.request.responseURL.indexOf('get_user_info.do') != -1){  //检查用户名 返回response
             return response
