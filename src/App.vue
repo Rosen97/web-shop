@@ -1,86 +1,53 @@
 <template>
-    <div id="app">
-        <!-- <transition :name="transitionName"> -->
-            <router-view class="router-view"/>
-        <!-- </transition> -->
-    </div>
+  <div id="app">
+    <PageHead
+      :title="$route.meta.title"
+      :className="$route.meta.headColor"
+      v-show="!$route.meta.isHidden"
+    />
+    <main class="page-container" :key="$route.fullPath">
+      <router-view />
+    </main>
+    <Menu v-if="menuShow"></Menu>
+    <Modal v-show="loginShow">
+      <Confirm title="用户未登录或已超时，请先登录！" @handleClick="handleClick"></Confirm>
+    </Modal>
+  </div>
 </template>
 
-<script>
-    export default {
-        // 监听路由的路径，可以通过不同的路径去选择不同的切换效果
-        // data(){
-        //     return{
-        //         transitionName: 'slide-left'
-        //     }
-        // },
-        // // 监听路由的路径，可以通过不同的路径去选择不同的切换效果
-        // watch: {
-        //     $route(to, from) {
-        //         if (to.meta.index > from.meta.index) {  //外---》内
-        //             this.transitionName = 'slide-left'
-        //         } else if (to.meta.index < from.meta.index) {   //内---》外
-        //             this.transitionName = 'slide-right'
-        //         } else {
-        //             this.transitionName = ''   //同级 无过渡效果
-        //         }
-        //     }
-        // }
-    }
-</script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import PageHead from "./components/page-head/index.vue";
+import Menu from "./components/menu/index.vue";
+import Modal from "./components/modal/index.vue";
+import Confirm from "./components/confirm/index.vue";
 
-<style lang="scss" type="text/scss">
-    @import './common/style/base';
-    body{
-       max-width: 800px;
-        margin: 0 auto;
-    }
-    #app {
-        width: 100%;
-        max-width: 800px;
-        height: 100%;
-        margin: 0 auto;
-        background: #fff;
-        -webkit-overflow-scrolling: touch;
-        position: absolute;
-        left:0;
-        top:0;
-    }
-    /*切换样式出错处理*/
-    .router-view{
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        margin: 0 auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    /*切换动画*/
-    .slide-right-enter-active,
-    .slide-right-leave-active,
-    .slide-left-enter-active,
-    .slide-left-leave-active{
-        height: 100%;
-        will-change: transform;
-        transition: all 500ms;
-        position: absolute;
-        backface-visibility: hidden;
-    }
-    .slide-right-enter{
-        opacity: 0;
-        transform: translate3d(-100%, 0, 0);
-    }
-    .slide-right-leave-active{
-        opacity: 0;
-        transform: translate3d(100%, 0, 0);
-    }
-    .slide-left-enter{
-        opacity: 0;
-        transform: translate3d(100%, 0, 0);
-    }
-    .slide-left-leave-active{
-        opacity: 0;
-        transform: translate3d(-100%, 0, 0);
-    }
-</style>
+@Component({
+  components: {
+    PageHead,
+    Menu,
+    Modal,
+    Confirm
+  }
+})
+export default class App extends Vue {
+  menuList: string[] = ["Home", "ShopBar", "User"];
+  loginShow = false;
+
+  get menuShow() {
+    return this.menuList.includes(this.$route.name || "");
+  }
+
+  created() {
+    window.toLogin = () => {
+      this.loginShow = true;
+    };
+    window.router = this.$router
+  }
+
+  handleClick(bool: boolean) {
+    this.loginShow = false;
+    bool && this.$router.push({ name: "Login" });
+  }
+}
+</script>

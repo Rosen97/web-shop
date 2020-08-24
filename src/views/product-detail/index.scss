@@ -1,0 +1,367 @@
+.product-detail {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 20;
+    overflow: hidden;
+
+    .detail-nav {
+        @include fj;
+        width: 100%;
+        height: 88px;
+        padding: 0 20px;
+        line-height: 88px;
+        box-sizing: border-box;
+        z-index: 1000;
+        color: #252525;
+        background: #fff;
+        border-bottom: 1px solid #dcdcdc;
+
+        i {
+            font-size: 50px;
+            color: #000;
+        }
+
+        div span {
+            padding: 0 20px;
+            font-size: 28px;
+
+            &.active {
+                color: $red;
+            }
+
+            .iconfont {
+                padding-right: 8px;
+                font-size: 28px;
+                color: $red;
+            }
+        }
+    }
+
+    .detail-con {
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+    }
+
+    .detail-slider img {
+        height: 700px;
+    }
+
+
+    .detail-info {
+        width: 100%;
+        padding: 20px 30px;
+        font-size: 30px;
+        box-sizing: border-box;
+
+        .detail-info-name {
+            font-size: 40px;
+            color: #333;
+        }
+
+        .detail-info-subtitle {
+            padding: 10px 0;
+            font-size: 28px;
+            color: #999;
+        }
+
+        div {
+            @include fj;
+            padding: 10px 0;
+            font-size: 32px;
+            color: #999;
+
+            .detail-info-price {
+                color: $red;
+                font-size: 44px;
+            }
+        }
+    }
+
+    .detail-content {
+        width: 100%;
+
+        .detail-gap {
+            width: 100%;
+            height: 20px;
+            background: #eee;
+        }
+
+        ul {
+            @include fj;
+            width: 100%;
+            margin: 20px 0;
+
+            li {
+                flex: 1;
+                padding: 10px 0;
+                text-align: center;
+                font-size: 30px;
+                border-right: 1px solid #999;
+                box-sizing: border-box;
+
+                &:last-child {
+                    border-right: none;
+                }
+            }
+        }
+
+        div {
+            width: 100%;
+            overflow: hidden;
+
+            p {
+                width: 100%;
+                font-size: 40px;
+                text-align: center;
+            }
+
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    .detail-cart {
+        @include fj;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100px;
+        line-height: 100px;
+        font-size: 30px;
+        background: #FEFBF9;
+        z-index: 1000;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+        @include boxSizing;
+
+        .detail-cart-left {
+            @include fj;
+            width: 46%;
+            padding: 0 30px;
+            @include boxSizing;
+
+            .like {
+                width: 40%;
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+
+                .iconfont {
+                    font-size: 34px;
+                    line-height: 60px;
+                    color: #000000;
+                    font-weight: bold;
+
+                    &.icon-love {
+                        color: $red;
+                    }
+                }
+
+                span {
+                    line-height: 30px;
+                    font-size: 26px;
+                }
+            }
+
+            .cart {
+                @extend .like;
+                position: relative;
+
+                .cart-num {
+                    position: absolute;
+                    right: 20px;
+                    top: 0;
+                    width: 30px;
+                    height: 30px;
+                    text-align: center;
+                    line-height: 30px;
+                    color: #fff;
+                    font-size: 22px;
+                    background: $red;
+                    @include borderRadius(50%);
+                }
+
+                .iconfont {
+                    font-size: 40px;
+                    font-weight: normal;
+                }
+            }
+        }
+
+        .detail-cart-right {
+            width: 54%;
+
+            button {
+                width: 100%;
+                height: 100px;
+                color: #fff;
+                font-size: 30px;
+                background: $red;
+
+                &:nth-child(1) {
+                    margin-right: -10px;
+                    background: rgba(246, 53, 21, .9);
+                }
+            }
+        }
+    }
+
+    .modal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        background: rgba(0, 0, 0, .6);
+    }
+
+    .cart-wrap {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 60%;
+        z-index: 99999999;
+
+        .cart-content {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 30px;
+            background: #fff;
+
+            .cart-head {
+                display: flex;
+                width: 100%;
+                padding: 30px;
+                @include boxSizing;
+
+                img {
+                    width: 180px;
+                    height: 180px;
+                    margin-top: -60px;
+                    border: 1px solid #999;
+                }
+
+                div {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    width: 64%;
+                    margin-left: 20px;
+
+                    .price {
+                        display: block;
+                        font-size: 34px;
+                        color: $red;
+                        padding-bottom: 10px;
+                    }
+
+                    p {
+                        max-height: 40px;
+                        overflow: hidden;
+                    }
+                }
+
+                .iconfont {
+                    position: absolute;
+                    top: 30px;
+                    right: 30px;
+                    font-size: 28px;
+                    color: #dcdcdc;
+                }
+            }
+
+            .cart-config {
+                @extend .cart-head;
+                padding: 0 30px 30px 30px;
+
+                .subtitle {
+                    width: 100%;
+                    margin-left: 0;
+                    padding: 20px 0;
+
+                    span {
+                        &:first-child {
+                            color: #999;
+                            padding-bottom: 20px;
+                        }
+                    }
+                }
+            }
+
+            .cart-count {
+                @include fj;
+                width: 100%;
+                padding: 0 30px 30px 30px;
+                @include boxSizing;
+
+                .cart-quantity {
+                    @include fj;
+                    width: 210px;
+                    height: 60px;
+                    line-height: 60px;
+                    color: #999;
+                    background: #fff;
+
+                    span {
+                        width: 80px;
+                        height: 100%;
+                        text-align: center;
+                        line-height: 60px;
+                        background: #F7F7F7;
+                    }
+
+                    i {
+                        width: 60px;
+                        height: 100%;
+                        text-align: center;
+                        line-height: 60px;
+                        font-style: normal;
+                        font-size: 50px;
+                        background: #F7F7F7;
+
+                        &.active {
+                            color: #dcdcdc;
+                        }
+                    }
+                }
+            }
+
+            .add-cart {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100px;
+                text-align: center;
+                line-height: 100px;
+                color: #fff;
+                font-size: 30px;
+                background: $red;
+            }
+        }
+    }
+
+    .slide-up-enter-active,
+    .slide-up-leave-active {
+        transition: all 0.5s;
+    }
+
+    .slide-up-enter,
+    .slide-up-leave-to {
+        transform: translate3d(0, 100%, 0);
+    }
+}

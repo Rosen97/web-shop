@@ -1,0 +1,31 @@
+body {
+    user-select: none;
+}
+
+img {
+    vertical-align: middle;
+}
+
+#app {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    .page-container {
+        width: 100%;
+        height: 100%;
+        background-color: #f7f7f7;
+        overflow: scroll;
+    }
+}
+
+.single-omit {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ele-overflow-hidden {
+    overflow: hidden !important;
+}

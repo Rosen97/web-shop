@@ -1,0 +1,30 @@
+.page-header {
+    width: 100%;
+    height: 88px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: #fff;
+
+    &.white {
+        background: $red;
+    }
+
+    .left img {
+        display: block;
+        width: 40px;
+        height: 40px;
+        border: none;
+    }
+
+    .title {
+        font-size: 36px;
+        color: #272727;
+
+        &.white {
+            color: #fff;
+        }
+    }
+}

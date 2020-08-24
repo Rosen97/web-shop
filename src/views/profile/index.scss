@@ -1,0 +1,106 @@
+.user-head {
+    @include fj;
+    width: 100%;
+    height: 88px;
+    padding: 0 20px;
+    line-height: 88px;
+    font-size: 30px;
+    @include boxSizing;
+    border-bottom: 1px solid #f7f7f7;
+
+    .iconfont {
+        font-size: 44px;
+    }
+}
+
+.profile-content {
+    width: 100%;
+
+    .profile-title {
+        width: 100%;
+        padding: 30px;
+        @include boxSizing;
+        font-weight: normal;
+        color: #999;
+        border-bottom: 1px solid #f7f7f7;
+    }
+
+    .profile-item {
+        @extend .profile-title;
+        @include fj;
+        color: #999;
+        font-size: 30px;
+
+        &.info {
+            justify-content: left;
+
+            img {
+                width: 100px;
+                height: 100px;
+                @include borderRadius(50%);
+            }
+
+            div {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding-left: 30px;
+                font-size: 30px;
+                color: #666;
+
+                span:last-child {
+                    color: #999;
+                }
+            }
+        }
+
+        .iconfont {
+            font-size: 38px;
+        }
+    }
+}
+
+.profile-footer {
+    width: 100%;
+    margin-top: 200px;
+
+    .footer-con {
+        display: flex;
+        width: 100%;
+
+        div {
+            flex: 1;
+            height: 40px;
+            text-align: center;
+            line-height: 34px;
+            font-size: 26px;
+            color: #333;
+
+            &.client {
+                line-height: 50px;
+            }
+
+            &.logout {
+                line-height: 44px;
+            }
+
+            i {
+                font-style: normal;
+                font-size: 30px;
+                color: #999;
+
+                &.iconfont {
+                    font-size: 44px;
+                }
+            }
+        }
+    }
+
+    .mmall {
+        width: 100%;
+        margin-top: 140px;
+        text-align: center;
+        font-size: 50px;
+        color: $red;
+    }
+}

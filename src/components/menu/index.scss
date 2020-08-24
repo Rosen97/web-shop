@@ -1,0 +1,36 @@
+.nav-bar {
+    width: 100%;
+    padding: 10px 0;
+    z-index: 10;
+    background: #fff;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+
+    .nav-list {
+        width: 100%;
+        @include fj;
+        flex-direction: row;
+        padding: 0;
+
+        .nav-list-item {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            text-align: center;
+            color: #666;
+
+            &.active {
+                color: $red;
+            }
+
+            i {
+                text-align: center;
+                font-size: 44px;
+            }
+
+            span {
+                font-size: 24px;
+            }
+        }
+    }
+}
